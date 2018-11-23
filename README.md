@@ -4,6 +4,6 @@ Multimodal embedding music for automatic piece recognition spaces. Machine Learn
 
 You need to implement 4 functions:
 
-  - gemetric series $(U_n = \sum u_i)$
-  - the gamma function $(\Gamma (n)=(n-1)!)$
-  - function de fibonacci $F_{n+2}= F_{n+1} + F_{n}) $
+  - gemetric series Let $(U_n = \sum u_i)$
+  - the gamma function Let $(\Gamma (n)=(n-1)!)$
+  - function de fibonacci Let $F_{n+2}= F_{n+1} + F_{n}) $
