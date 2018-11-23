@@ -2,12 +2,10 @@
 Multimodal embedding music for automatic piece recognition spaces. Machine Learning project for ATIAM master's degree at IRCAM.
 
 
-You need to implement 4 functions:
+Another exercis, the idea is the following : we want to decompose a set of images into a larger set of squares of size k*k pixels (15*15 can be a good starting point) and sort all of this small images depending on their colors.
 
-  - gemetric series (U_n = somme des u_i)
-  - the gamma function (G(n)=(n-1)!)
-  - function de fibonacci (F_n+2 = F_n+1 + F_n)
-  - arithmetic function (u0 = 3 and r = 12)
+For that we propose the following method. 
+  - We list all the files in a directory and we create the small pictures 
+  - We use a discretized space of the pixels such as the points are equaly distributed. The figure below shows an exemple for a 2D space. 
   
-  
-Each of you implements one separetly and merge with all the others.
+ ![prout](/src/discretized.png)
