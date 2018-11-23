@@ -15,7 +15,7 @@ plt.figure();
 plt.plot(X, linear, label="y = x")
 plt.plot(f, label="fibonacci")
 plt.plot(X, fx.felix(100), label="Fonction Gamma")
-a,b = vlr.suite(100,100)
+a,b = vlr.suite(100,36)
 plt.plot(a, b, label="suite géométrique")
 plt.legend()
 plt.show()
