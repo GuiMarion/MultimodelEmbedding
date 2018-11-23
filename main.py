@@ -6,6 +6,7 @@ import fibo
 import matplotlib.pyplot as plt
 import numpy as np
 import felix as fx
+import valer as vlr
 
 X = np.arange(0, 100, 1)
 f = fibo.fib(1,1,100)
@@ -14,6 +15,8 @@ plt.figure();
 plt.plot(X, linear, label="y = x")
 plt.plot(f, label="fibonacci")
 plt.plot(X, fx.felix(100), label="Fonction Gamma")
+a,b = vlr.suite(100,1.05)
+plt.plot(a, b, label="suite géométrique")
 plt.legend()
 plt.show()
 
