@@ -10,3 +10,4 @@ You need to implement 4 functions:
   - arithmetic function (u0 = 3 and r = 12)
   
   
+Each of you implements one separetly and merge with all the others.
