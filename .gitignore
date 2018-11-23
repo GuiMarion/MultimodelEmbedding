@@ -1,0 +1,6 @@
+# DS_Store mac
+.DS_Store
+
+# __pycache__/
+
+__pycache__/*
