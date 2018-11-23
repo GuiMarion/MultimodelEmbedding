@@ -9,12 +9,12 @@ def fib(f0, f1, N):
 		f=fibo[len(fibo)-2]+fibo[len(fibo)-1]
 		fibo.append(f)
 
-	print(fibo)
-	plt.plot(fibo, label="fib")
-	plt.legend()
-	plt.show()
+	return fibo
+	#plt.plot(fibo, label="fib")
+	#plt.legend()
+	#plt.show()
 	
 
 
-fib(1,1,20)
+
 	
