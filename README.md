@@ -24,17 +24,23 @@ There is 4 functions to code.
   - constructDataBase() -> 10-15min
   - sortImages() -> 10min
   
-  As a lot of helper functions are already coded, this functions should be very easy to implement, don't forget to use the existing functions! 
+  As a lot of helper functions are already coded, this functions should be very easy to implement, don't forget to use the existing functions! Don't hesitate to take a look at google (stackoverflow if a very good website!) if there somethin you don't know how to do, listing files in a directory for exemple.
+  
+  All the functions you need to code are pre-declared and there a #### TODO #### where you shold put the code.
   
 ## Exemples
 
 Here are same example on how to use the existing functions : 
   
   i = img("Data/2005.Reykjavik.jpg") # open a file and construct an img object
+  
   i.save("prout") # save an img object as a file named prout.jpg
+  
   m = i.mean() # return the pixel mean of all the pixels : (rMean, vMean, bMean)
 
+
   S = discretizeSpace(3) # construct the discretized space with 3^3 points
+  
   print(findClosestPoint(S, (100, 100, 10))) # return the closest point in S
   
 ## Dataset
