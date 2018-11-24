@@ -31,9 +31,11 @@ There is 4 functions to code.
   - sortImages() -> 10-20min,
     from a set of images, find the closest point for each image, then save the image into the good folder.
   
-  As a lot of helper functions are already coded, this functions should be very easy to implement, don't forget to use the existing functions! If there somethin you don't know how to do (listing files from a directory for exemple), don't hesitate to take a look at google (stackoverflow if a very good website!).
+  As a lot of helper functions are already coded, this functions should be very easy to implement, don't forget to use the existing functions! If there somethin you don't know how to do (listing files from a directory for exemple), don't hesitate to take a look at google (stackoverflow if a very good website!). 
   
   All the functions you need to code are pre-declared and there is a #### TODO #### where you should put the code.
+  
+  Use numpy to manipulate matrix!
   
 ## Exemples
 
@@ -49,6 +51,12 @@ Here are same example on how to use the existing functions :
   S = discretizeSpace(3) # construct the discretized space with 3^3 points
   
   print(findClosestPoint(S, (100, 100, 10))) # return the closest point in S
+  
+  data = np.zeros((100, 100, 3), dtype=np.uint8) # Construct a matrix with only 0
+  
+  i = img(data, matrix = True) # Create a img object form the matrix
+  
+  i.save("ok") # Save the image
   
 ## Dataset
   
