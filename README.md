@@ -39,7 +39,7 @@ There is 4 functions to code.
   
 ## Exemples
 
-Here are same example on how to use the existing functions : 
+Here are same examples of how to use the existing functions : 
   
   i = img("Data/2005.Reykjavik.jpg") # open a file and construct an img object
   
@@ -60,4 +60,4 @@ Here are same example on how to use the existing functions :
   
 ## Dataset
   
-  A small dataset is given in Data/ keep in mind that processing the algorithm on whole imaged will be longer then on a little squared one. Note also that some function need another one to be executed.
+  A small dataset is given in Data/ keep in mind that processing an algorithm on a whole image will be longer then on a little squared one. Note also that some function need another one to be executed.
