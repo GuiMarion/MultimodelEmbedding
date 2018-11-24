@@ -2,11 +2,14 @@ import numpy as np
 from PIL import Image
 
 class img:
-	def __init__(self, path):
+	def __init__(self, path, matrix = False):
 		'''
 		Open an image and store the matrix
 		'''
-		self.matrix = np.array(Image.open(path))
+		if matrix:
+			self.matrix = path
+		else:
+			self.matrix = np.array(Image.open(path))
 
 	def mean(self):
 		'''
@@ -49,7 +52,7 @@ class img:
 
 		return 
 
-	def getSubQuares(self, n):
+	def getSubSquares(self, n):
 		'''
 		Should return subsquared of size n*n as a liste of img objects
 		'''
@@ -76,6 +79,7 @@ def sortImages(images):
 
 	return
 
+
 def discretizeSpace(n):
 	'''
 	Return n^3 points equaly distributed in the pixel space (0, 0, 0) -> (255, 255, 255)
@@ -89,6 +93,18 @@ def discretizeSpace(n):
 				points.append((r*255//n + 255//(2*n), v*255//n + 255//(2*n), b*255//n + 255//(2*n)))
 
 	return points
+
+def findClosestPoint(space, value):
+	r,v,b = value
+	dist =  100000
+	for elem in space:
+		r2, v2, b2 = elem
+		distTemp = np.sqrt((r-r2)**2 + (v-v2)**2 + (b-b2)**2)
+		if distTemp <= dist:
+			dist = distTemp
+			returnedValue = elem
+
+	return returnedValue
 
 
 def main():
