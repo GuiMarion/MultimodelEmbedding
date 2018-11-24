@@ -26,7 +26,7 @@ There is 4 functions to code.
   
   As a lot of helper functions are already coded, this functions should be very easy to implement, don't forget to use the existing functions! Don't hesitate to take a look at google (stackoverflow if a very good website!) if there somethin you don't know how to do, listing files in a directory for exemple.
   
-  All the functions you need to code are pre-declared and there a #### TODO #### where you shold put the code.
+  All the functions you need to code are pre-declared and there is a #### TODO #### where you shold put the code.
   
 ## Exemples
 
@@ -45,4 +45,4 @@ Here are same example on how to use the existing functions :
   
 ## Dataset
   
-  A small dataset is given in Data/ keep in mind that processing the algorithm on whole image will be longer then on a square. Note also that some function need another one to be executed.
+  A small dataset is given in Data/ keep in mind that processing the algorithm on whole imaged will be longer then on a little squared one. Note also that some function need another one to be executed.
