@@ -64,7 +64,7 @@ Here are same examples of how to use the existing functions :
   
 ## Oriented Object Programmation
 
-  In OOP we define objects that contain attributes (data) and class methods (functions) with the key-word $class$, each class contains a consctructor (__init__ in python) that is used to initialize the object. In python, 
+  In OOP we define objects that contain attributes (data) and class methods (functions) with the key-word *class*, each class contains a consctructor (__init__ in python) that is used to initialize the object. In python, 
   
   
     class car:
@@ -72,7 +72,7 @@ Here are same examples of how to use the existing functions :
         self.color = color
         self.model = model
         
-This object $voiture$, contains two attributes (color and model) that are initialized in the constructor by the parameters of the function. Each function of the class must contain self as first parameter. In a function, self is used to access an attribute or method of the object, it can be a function or a data. For exemple, 
+The class *car*, contains two attributes (color and model) that are initialized in the constructor by the parameters of the function. Each function of the class must contain self as first parameter. In a function, self is used to access an attribute or method of the object, it can be a function or a data. For exemple, 
 
       class car:
       def __init__(self, color, model, key):
@@ -91,13 +91,13 @@ This object $voiture$, contains two attributes (color and model) that are initia
           self.start(mykey)
         self.position += direction
         
- Here I used self.key in order to access the attribute named $key$ I initialized in the constructor, I also used self.start(mykey) to call the class function $start$ I defined into the class, note that I didn't put self as a argument (not self.start(self, mykey)).
+ Here I used self.key in order to access the attribute named *key* I initialized in the constructor, I also used self.start(mykey) to call the class function *start* I defined into the class, note that I didn't put self as a argument (not self.start(self, mykey)).
  
  Now you know how to define a class, we will see how to instintiate a class, an object is a part of the memory used for a class that we instantiated. For this, nothing simpler, we use the conscructor method that can be called this way:
  
     mycar = car("red", "peugeot105")
  
- We use the name of the class to call the constructor, we now have an object of type $car$ in our variable mycar. We can now access attributes and methods in a similar way of when we was inside the class, instead of using self we use the name of the variable. 
+ We use the name of the class to call the constructor, we now have an object of type *car* in our variable mycar. We can now access attributes and methods in a similar way of when we was inside the class, instead of using self we use the name of the variable. 
  
     mycar.drive("3435", (10, 10))
     print(mycar.position)
