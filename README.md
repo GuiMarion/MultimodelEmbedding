@@ -37,6 +37,6 @@ Here are same example on how to use the existing functions :
   S = discretizeSpace(3) # construct the discretized space with 3^3 points
   print(findClosestPoint(S, (100, 100, 10))) # return the closest point in S
   
-# Dataset
+## Dataset
   
   A small dataset is given in Data/ keep in mind that processing the algorithm on whole image will be longer then on a square. Note also that some function need another one to be executed.
