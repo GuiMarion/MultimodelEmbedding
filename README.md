@@ -41,6 +41,7 @@ There is 4 functions to code.
 
 Here are same examples of how to use the existing functions : 
   
+  '''python
   i = img("Data/2005.Reykjavik.jpg") # open a file and construct an img object
   
   i.save("prout") # save an img object as a file named prout.jpg
@@ -57,6 +58,7 @@ Here are same examples of how to use the existing functions :
   i = img(data, matrix = True) # Create a img object form the matrix
   
   i.save("ok") # Save the image
+  '''
   
 ## Dataset
   
