@@ -20,13 +20,20 @@ This idea is the classify the picture by color with a closest neigbour method in
 There is 4 functions to code.
 
   - computeDistance() -> 5min
-  - getSubQuares() -> 10-20min
+    compute distance between a 3D value and the mean pixel of the matrix, it's juste a 3D Euclidean distance.
+    
+  - getSubSquares() -> 10-20min
+    construct small images from a big one by croping squares from the original matrix. 
+    
   - constructDataBase() -> 10-15min
-  - sortImages() -> 10min
+    list files from a directory and apply the getSubSquares function.
   
-  As a lot of helper functions are already coded, this functions should be very easy to implement, don't forget to use the existing functions! Don't hesitate to take a look at google (stackoverflow if a very good website!) if there somethin you don't know how to do, listing files in a directory for exemple.
+  - sortImages() -> 10-20min
+    from a set of images, find the closest point for each image, then save the image into the good folder.
   
-  All the functions you need to code are pre-declared and there is a #### TODO #### where you shold put the code.
+  As a lot of helper functions are already coded, this functions should be very easy to implement, don't forget to use the existing functions! If there somethin you don't know how to do (listing files from a directory for exemple), don't hesitate to take a look at google (stackoverflow if a very good website!).
+  
+  All the functions you need to code are pre-declared and there is a #### TODO #### where you should put the code.
   
 ## Exemples
 
