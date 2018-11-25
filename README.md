@@ -77,7 +77,7 @@ Here are same examples of how to use the existing functions :
         
 The class *car*, contains two attributes (color and model) that are initialized in the constructor by the parameters of the function. Each function of the class must contain self as first parameter. In a function, self is used to access an attribute or method of the object, it can be a function or a data. For exemple, 
 ```python
-      class car:
+    class car:
       def __init__(self, color, model, key):
         self.color = color
         self.model = model
