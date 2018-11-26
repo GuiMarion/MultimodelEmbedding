@@ -1,6 +1,7 @@
 import numpy as np
 from PIL import Image
 import os
+from tqdm import tqdm
 
 class img:
 	def __init__(self, path, matrix = False):
@@ -62,7 +63,9 @@ class img:
 
 		for i in range(len(self.matrix) // n - 1):
 			for j in range(len(self.matrix[0]) // n - 1):
-				images.append(img(self.matrix[i*n : (i+1)*n, j*n : (j+1)*n], matrix = True))
+				for k1 in range(0, n, 25):
+					for k2 in range(0, n, 25):
+						images.append(img(self.matrix[i*n + k1 : (i+1)*n + k1, j*n + k2 : (j+1)*n + k2], matrix = True))
 
 		return images
 
@@ -95,13 +98,15 @@ def sortImages(images, OUT, spaceSize = 5):
 	For each image in images, find the closest point of the dicretized space and save the image in the directory with the name of this point
 	'''
 	space = discretizeSpace(spaceSize)
-	k = 0
-	for image in images:
 
-		point = image.findClosestPoint(space)
-
+	for point in space : 
 		if not os.path.exists(OUT + "/" + str(point)):
 		    os.makedirs(OUT + "/" + str(point))
+
+	k = 0
+	for image in tqdm(images):
+
+		point = image.findClosestPoint(space)
 
 		image.save(OUT + "/" + str(point) + "/" + str(k))
 		k += 1
@@ -127,7 +132,7 @@ def main():
 	'''
 	Do the job if all the functions are working correctly
 	'''
-	n = 10
+	n = 128
 	DATA = "Data/"
 	OUT = "OUT/"+DATA
 	spaceSize = 5
