@@ -49,6 +49,7 @@ class img:
 		Should return the distance between val et the mean of the image
 		'''
 		(r, v, b) = val
+		
 		(rimg, vimg, bimg) = self.mean()
 
 		#### TODO ####
@@ -62,7 +63,6 @@ class img:
 
 		#### TODO ####
 
-		lol
 
 		return
 
@@ -73,7 +73,7 @@ def constructDataBase(path):
 
 	#### TODO ####
 
-	liste = [f for f in listdir(path) if isfile(join(path, f))]
+	#liste = [f for f in listdir(path) if isfile(join(path, f))]
 
 
 	return 
