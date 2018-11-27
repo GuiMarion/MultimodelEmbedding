@@ -1,5 +1,7 @@
 import numpy as np
 from PIL import Image
+from os import listdir
+from os.path import isfile, join
 
 class img:
 	def __init__(self, path, matrix = False):
@@ -47,10 +49,11 @@ class img:
 		Should return the distance between val et the mean of the image
 		'''
 		(r, v, b) = val
+		(rimg, vimg, bimg) = img.mean()
 
 		#### TODO ####
 
-		return 
+		return np.sqrt((r - rimg) ** 2 + (v - vimg) ** 2 + (b - bimg) ** 2 )
 
 	def getSubSquares(self, n):
 		'''
@@ -67,6 +70,8 @@ def constructDataBase(path):
 	'''
 
 	#### TODO ####
+
+	files = [f for f in listdir(path) if isfile(join(path, f))]
 
 	return 
 
