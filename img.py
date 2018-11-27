@@ -63,8 +63,8 @@ class img:
 
 		for i in range(len(self.matrix) // n - 1):
 			for j in range(len(self.matrix[0]) // n - 1):
-				for k1 in range(0, n, 25):
-					for k2 in range(0, n, 25):
+				for k1 in range(0, n, 60):
+					for k2 in range(0, n, 60):
 						images.append(img(self.matrix[i*n + k1 : (i+1)*n + k1, j*n + k2 : (j+1)*n + k2], matrix = True))
 
 		return images
