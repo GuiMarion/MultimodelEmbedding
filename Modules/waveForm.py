@@ -32,7 +32,8 @@ class waveForm:
 		return "TODO"
 
 	def getFFT(self):
-		# return FFT
+		# return FFT if already computed or compute it, store it and return it
+		# store the result of the FFT as attribute in order to compute it only once
 		return "TODO"
 
 	def plotFFT(self):
