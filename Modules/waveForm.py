@@ -11,6 +11,7 @@ class waveForm:
 		
 	def loadFromFile(self, path):
 		# update the attributes, should use loadFrom data
+
 		return "TODO"
 
 	def loadFromData(self, sequence):
@@ -21,7 +22,9 @@ class waveForm:
 
 	def play(self):
 		# play the data, use the module sound device
-		return "TODO"
+
+		fs = self.sampleRate
+		return sd.play(myarray, fs)
 
 	def save(self, path):
 		# save as a wav file at path

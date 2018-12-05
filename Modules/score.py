@@ -64,12 +64,12 @@ class score:
 
 	def getPianoRoll(self):
 		# return the np.array containing the pianoRoll
-		piece, all_parts = computePianoRoll(self,velocity=False)
+		piece, all_parts = self.computePianoRoll(velocity=False)
 		return all_parts
 
 	def plot(self):
 		# plot the pianoRool representation
-		piece, all_parts = computePianoRoll(self,velocity=False)
+		piece, all_parts = self.computePianoRoll(velocity=False)
 		return piece.plot()
 
 	def toWaveForm(self, sound="default"):
@@ -85,3 +85,4 @@ class score:
 SCORE = score("John_Lennon_Imagine.mid",velocity=False)
 #piece, all_parts = SCORE.computePianoRoll(velocity=False)
 #piece.plot()
+SCORE.plot()
