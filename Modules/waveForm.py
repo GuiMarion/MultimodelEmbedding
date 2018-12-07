@@ -1,3 +1,6 @@
+import sounddevice as sd # On importe sounddevice
+
+
 class waveForm:
 	def __init__(self, path):
 
@@ -21,7 +24,8 @@ class waveForm:
 
 	def play(self):
 		# play the data, use the module sound device
-		return "TODO"
+		
+		return sd.play(self.data)
 
 	def save(self, path):
 		# save as a wav file at path
