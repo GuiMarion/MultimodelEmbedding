@@ -8,11 +8,14 @@ from Modules import waveForm
 	You can create instanciate from a score object
 '''
 
-# Import one of my masterpieces ...
-s = score.score("Gui's_song.mid")
+
+'''
+	Or also directly from a file
+'''
+
+w = waveForm.waveForm("Gui's_song.wav")
 
 # play the waveform of the piece
-w = s.toWaveForm()
 w.play()
 
 # plot the signal
@@ -27,11 +30,10 @@ print(w.getFFT())
 w.save("testouille.wav")
 
 
-'''
-	Or also directly from a file
-'''
+quit()
 
-w = waveForm.waveForm("Gui's_song.wav")
+# Import one of my masterpieces ...
+s = score.score("Gui's_song.mid")
 
 # play the waveform of the piece
 w = s.toWaveForm()
