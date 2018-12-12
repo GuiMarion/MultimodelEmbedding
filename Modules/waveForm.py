@@ -11,8 +11,9 @@ class waveForm:
 		if path is not None:
 			self.data = None
 			self.sampleRate = None
-			self.loadFromFile(path)
-			self.length = len(self.data) / self.sampleRate
+			self.loadFromFile(path) # retrieves data from path
+			self.length = len(self.data) / self.sampleRate # data's duration in seconds
+			self.tempo = 0 # Comment récupérer le tempo?
 
 
 		else:
@@ -21,16 +22,16 @@ class waveForm:
 			self.data = []
 			self.length = 0
 
-		self.name = os.path.splitext(os.path.basename(path))[0]
+		self.name = os.path.splitext(os.path.basename(path))[0] # reads the file's name
 		
-	def loadFromFile(self, path):
+	def loadFromFile(self, path): #loads data from a file with a specified path
 		# update the attributes, should use loadFrom data
 		self.data, self.sampleRate = sf.read(path)
 
 		return "Fichier chargé."
 
 
-	def loadFromData(self, sequence, sampleRate):
+	def loadFromData(self, sequence, sampleRate): #loads data from a sequence with a specifided sampleRate
 		# update the attributes
 		# input sequence is a vector of samples
 		# should work with mono as well as with stereo 
@@ -51,12 +52,16 @@ class waveForm:
 	def save(self, path):
 		# save as a wav file at path
 
+		sf.write(path, self.data, self.sampleRate)
+
 		return "Fichier sauvegardé."
 
 	def plot(self):
 		# plot the signal
 		plt.figure()
-		t = np.linspace(0, self.length, len(self.data) )
+
+		t = np.linspace(0, self.length, len(self.data) ) # Time vector
+
 		plt.plot(t, self.data)
 		plt.show()
 
@@ -66,11 +71,15 @@ class waveForm:
 		# store the result of the FFT as attribute in order to compute it only once
 
 		self.FFT = np.fft.fft(self.data, nextpow2(len(self.data)))
-		self.freq = np.linspace(0, self.sampleRate / 2, nextpow2(len(self.data)) / 2)
+		self.freq = np.linspace(0, self.sampleRate / 2, nextpow2(len(self.data)) / 2) # Freq vector
 
-		return "TODO"
 
 	def plotFFT(self):
 		# plot FFT
 
-		return "TODO"
+		plt.figure()
+
+		plt.plot(self.freq, self.FFT)
+
+
+

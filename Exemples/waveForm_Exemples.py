@@ -21,10 +21,14 @@ w.play()
 # plot the signal
 w.plot()
 
+# get FFT
+
+w.getFFT()
+
 # plt the FFT
 w.plotFFT()
 
-print(w.getFFT())
+#print(w.getFFT())
 
 # create a file testouille containing the waveform
 w.save("testouille.wav")
