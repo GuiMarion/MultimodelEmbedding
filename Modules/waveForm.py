@@ -77,7 +77,6 @@ class waveForm:
 		# store the result of the FFT as attribute in order to compute it only once
 
 		self.FFT = np.fft.fft(self.data)
-		#self.freq = np.linspace(0, self.sampleRate / 2, len(self.data) / 2) # Freq vector
 		self.freq = np.fft.fftfreq(len(self.data))
 
 
