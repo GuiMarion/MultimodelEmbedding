@@ -62,7 +62,13 @@ class waveForm:
 
 		t = np.linspace(0, self.length, len(self.data) ) # Time vector
 
+		plt.figure(1)
+
 		plt.plot(t, self.data)
+		plt.xlabel('Time')
+		plt.ylabel('Amplitude')
+		plt.title('Wave Form')
+
 		plt.show()
 
 
@@ -70,16 +76,23 @@ class waveForm:
 		# return FFT if already computed or compute it, store it and return it
 		# store the result of the FFT as attribute in order to compute it only once
 
-		self.FFT = np.fft.fft(self.data, nextpow2(len(self.data)))
-		self.freq = np.linspace(0, self.sampleRate / 2, nextpow2(len(self.data)) / 2) # Freq vector
+		self.FFT = np.fft.fft(self.data)
+		#self.freq = np.linspace(0, self.sampleRate / 2, len(self.data) / 2) # Freq vector
+		self.freq = np.fft.fftfreq(len(self.data))
+
 
 
 	def plotFFT(self):
 		# plot FFT
 
-		plt.figure()
+		plt.figure(2)
 
-		plt.plot(self.freq, self.FFT)
+		plt.plot(self.freq, np.abs(self.FFT))
+		plt.xlabel('Frequencies')
+		plt.ylabel('Amplitude')
+		plt.title('FFT')
+
+		plt.show()
 
 
 

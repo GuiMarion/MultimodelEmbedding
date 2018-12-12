@@ -4,6 +4,7 @@ sys.path.append('..')
 from Modules import score
 from Modules import waveForm
 
+
 '''
 	You can create instanciate from a score object
 '''
@@ -25,13 +26,14 @@ w.plot()
 
 w.getFFT()
 
+
 # plt the FFT
 w.plotFFT()
 
-#print(w.getFFT())
 
 # create a file testouille containing the waveform
 w.save("testouille.wav")
+
 
 
 quit()
