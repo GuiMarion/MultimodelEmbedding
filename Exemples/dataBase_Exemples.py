@@ -5,7 +5,8 @@ from Modules import dataBase
 
 ## Construct and save database
 D1 = dataBase.dataBase()
-D1.constructDatabase("dataBaseTest")
+D1.constructDatabase("dataBaseTest") # only on the short database
+#D1.constructDatabase("../DataBase") # on the whole database
 D1.save()
 D1.print()
 

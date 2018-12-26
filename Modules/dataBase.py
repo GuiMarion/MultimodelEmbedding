@@ -60,11 +60,13 @@ class dataBase:
 	def save(self, path="../DataBase/Serialized/"):
 		# Save database as a pickle
 
+		answer = "y"
+
 		if os.path.isfile(path+self.name+'.data'):
 			answer = str(input("'"+path+self.name+'.data'+"'" + " already exists, do you want to replace it ? (Y/n)"))
 
-		while answer not in ["", "y", "n"]:
-			answer = str(input("We didn't understand, please tape enter, 'y' or 'n'"))
+			while answer not in ["", "y", "n"]:
+				answer = str(input("We didn't understand, please tape enter, 'y' or 'n'"))
 
 		if answer in ["", "y"]:
 			pickle.dump(self.dico, open(path+self.name+'.data','wb'))
