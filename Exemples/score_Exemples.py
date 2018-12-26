@@ -5,7 +5,7 @@ from Modules import score
 from Modules import waveForm
 
 # Import one of my masterpieces ...
-s = score.score("Gui's_song.mid")
+s = score.score("Gui's_score.mid")
 
 # Plot the piano roll representation of the score
 s.plot()

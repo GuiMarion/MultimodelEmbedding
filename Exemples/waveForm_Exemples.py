@@ -9,7 +9,7 @@ from Modules import waveForm
 '''
 
 # Import one of my masterpieces ...
-s = score.score("Gui's_song.mid")
+s = score.score("Gui's_score.mid")
 
 # play the waveform of the piece
 w = s.toWaveForm()

@@ -1,3 +1,5 @@
+import sounddevice as sd
+
 class waveForm:
 	def __init__(self, path):
 

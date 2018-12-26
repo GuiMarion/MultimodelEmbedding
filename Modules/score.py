@@ -1,7 +1,8 @@
-#from Modules import waveForm
+from Modules import waveForm
 from music21 import converter
 import math
 import numpy as np
+import os
 
 class score:
 	def __init__(self, pathToMidi, velocity=False):
@@ -82,7 +83,3 @@ class score:
 		# should return a temporal part of pianoroll as a score object
 		return score("")
 
-SCORE = score("John_Lennon_Imagine.mid",velocity=False)
-#piece, all_parts = SCORE.computePianoRoll(velocity=False)
-#piece.plot()
-SCORE.plot()
