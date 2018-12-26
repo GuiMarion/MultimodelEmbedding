@@ -21,6 +21,7 @@ class score:
 
 	def plot(self):
 		# plot the pianoRool representation
+		print("TODO")
 		return "TODO"
 
 	def toWaveForm(self, sound="default"):
