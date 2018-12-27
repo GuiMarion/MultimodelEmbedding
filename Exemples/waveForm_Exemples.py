@@ -14,7 +14,7 @@ from Modules import waveForm
 	Or also directly from a file
 '''
 
-w = waveForm.waveForm("Gui's_song.wav")
+w = waveForm.waveForm("Sinus.wav")
 
 # play the waveform of the piece
 w.play()
@@ -23,7 +23,6 @@ w.play()
 w.plot()
 
 # get FFT
-
 w.getFFT()
 
 

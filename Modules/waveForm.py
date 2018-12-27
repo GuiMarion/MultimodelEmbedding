@@ -14,6 +14,7 @@ class waveForm:
 			self.loadFromFile(path) # retrieves data from path
 			self.length = len(self.data) / self.sampleRate # data's duration in seconds
 			self.tempo = 0 # Comment récupérer le tempo?
+			self.FFT = None
 
 
 		else:
@@ -83,6 +84,9 @@ class waveForm:
 
 	def plotFFT(self):
 		# plot FFT
+
+		if self.FFT is None:
+			self.getFFT()
 
 		plt.figure(2)
 
