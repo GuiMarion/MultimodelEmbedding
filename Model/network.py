@@ -97,7 +97,7 @@ class Net(nn.Module):
     def learn(self, x, y, EPOCHS, learning_rate=1e-4, momentum=0.9):
         criterion = torch.nn.MSELoss(reduction='sum')
         #optimizer = torch.optim.SGD(self.parameters(), lr=learning_rate, momentum=momentum)
-        optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+        optimizer = torch.optim.Adam(self.parameters(), lr=learning_rate)
         for t in range(EPOCHS):
             # Forward pass: Compute predicted y by passing x to the model
             y_pred = self.forward(x)
@@ -131,23 +131,4 @@ class Net(nn.Module):
 
         return loss
 
-
-N = 10
-EPOCHS = 50
-# create a complete CNN
-model = Net()
-x = torch.randn(N, 1, 80, 100)
-y = torch.randn(N, dim_latent)
-
-x_learn = x[:len(x)//2]
-y_learn = y[:len(y)//2]
-
-x_test = x[len(x)//2:]
-y_test = y[len(y)//2:]
-
-model.learn(x_learn, y_learn, EPOCHS, learning_rate=1e-1)
-
-print("VALIDATION : ", model.eval(x_eval, y_eval))
-
-# TODO Validation test in order to avoid overfitting
 
