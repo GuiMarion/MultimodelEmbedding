@@ -44,7 +44,7 @@ class Net(nn.Module):
         self.conv4 = nn.Conv2d(4 * num_filters, dim_latent, kernel_size = 1, padding = 0)
         self.conv4_bn = nn.BatchNorm2d(dim_latent)
 
-        #self.linear = nn.Linear(D_in, H)
+        self.linear = nn.Linear(dim_latent, dim_latent)
     
         # max pooling layer
         self.pool = nn.MaxPool2d(kernel_size_pool, stride_pool)
@@ -85,6 +85,9 @@ class Net(nn.Module):
         #Fifth Layer Conv2d + Linear + BN
         x = self.conv4_bn(self.conv4(x)) # Il manque l'opération linéaire Identity
 
+        # Linear layer
+        #x = self.linear(x)
+        print(x.shape)
 
         #Global Pooling
         global_pool = nn.AvgPool2d((x.size(2), x.size(3)))
@@ -92,6 +95,7 @@ class Net(nn.Module):
 
         #Flattening
         x = x.view(N, dim_latent)
+
         return x
 
     def learn(self, x, y, EPOCHS, learning_rate=1e-4, momentum=0.9):
@@ -112,6 +116,8 @@ class Net(nn.Module):
             optimizer.step()
 
     def loss_test(self, y_pred, y):
+        # copute the loss for the final test part
+        # use the MSE for now
         if len(y_pred) != dim_latent and len(y) != dim_latent:
             raise RuntimeError("y and y_pred dosn't have same shape for test.")
 
