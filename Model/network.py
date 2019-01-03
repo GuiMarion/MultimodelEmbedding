@@ -43,8 +43,6 @@ class Net(nn.Module):
         # convolutional layer 5
         self.conv4 = nn.Conv2d(4 * num_filters, dim_latent, kernel_size = 1, padding = 0)
         self.conv4_bn = nn.BatchNorm2d(dim_latent)
-
-        self.linear = nn.Linear(dim_latent, dim_latent)
     
         # max pooling layer
         self.pool = nn.MaxPool2d(kernel_size_pool, stride_pool)
@@ -83,11 +81,7 @@ class Net(nn.Module):
         x = self.pool(x)
 
         #Fifth Layer Conv2d + Linear + BN
-        x = self.conv4_bn(self.conv4(x)) # Il manque l'opération linéaire Identity
-
-        # Linear layer
-        #x = self.linear(x)
-        print(x.shape)
+        x = self.conv4_bn(self.conv4(x))
 
         #Global Pooling
         global_pool = nn.AvgPool2d((x.size(2), x.size(3)))
