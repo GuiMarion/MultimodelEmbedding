@@ -1,9 +1,16 @@
 import os
 from glob import glob
 import pickle
+from tqdm import tqdm
 
 from Modules import score
 from Modules import waveForm
+
+# Parameters for the data extration part
+WINDOW_SIZE = 1 # in beat
+STEP = 500 # in sample
+
+FONTS = ["000_Florestan_Piano.sf2"] # TODO add more fonts
 
 class dataBase:
 	def __init__(self, name=None):
@@ -37,6 +44,7 @@ class dataBase:
 		# Total number of files
 		N = 0
 		dico = {}
+		scores = []
 		for filename in glob(self.path+'/**', recursive=True):
 
 			if filename[filename.rfind("."):] in [".mid", ".midi"]:
@@ -44,7 +52,8 @@ class dataBase:
 					print("	-", filename)
 					try : 
 						score_temp = score.score(filename)
-						dico[filename] = (score_temp, score_temp.toWaveForm())
+						scores.extend(score_temp.extractAllParts(WINDOW_SIZE, step=STEP))
+						
 					except RuntimeError:
 						skipedFiles += 1
 					N += 1
@@ -55,6 +64,20 @@ class dataBase:
 		print("We passed a total of ", N, "files.")
 		print(skipedFiles,"of them have been skiped.")
 		print()
+
+		print("_____ Augmenting database ...")
+		print()
+
+		scores = self.augmentData(scores)
+
+		print("_____ Computing the sound ...")
+		print()
+
+		for s in tqdm(scores):
+			waveforms = []
+			for font in FONTS:
+				waveforms.append(score_temp.toWaveForm(font=font))
+			dico[s] = [waveforms]
 
 
 	def save(self, path="../DataBase/Serialized/"):
@@ -96,14 +119,20 @@ class dataBase:
 		print("____Printing database")
 		print()
 		for key in self.dico:
-			print("	-", self.dico[key][0].name)
+			print("	-", key.name)
 
 	def get(self):
 		return self.dico
 
-	def augmentWithTranspo(self):
-		# tranpose every piece of the dico in order to extend it
-		# len(dico) should be 12 times bigger after the function then before the functions
+	def augmentData(self, scores):
+		# augment the data with some techniques like transposition
+		
+		augmentedData = []
 
-		print("TODO")
+		for s in scores:
+			augmentedData.extend(s.getTransposed())
+
+
+		return augmentedData
+
 

@@ -5,8 +5,9 @@ from Modules import dataBase
 
 ## Construct and save database
 D1 = dataBase.dataBase()
-D1.constructDatabase("dataBaseTest") # only on the short database
+D1.constructDatabase("dataBaseTest") # on a tiny dataset
 #D1.constructDatabase("../DataBase") # on the whole database
+print("ok construct")
 D1.save()
 D1.print()
 
@@ -19,5 +20,5 @@ D2.print()
 dico = D2.get()
 for key in dico:
 	# should plot the scores
-	dico[key][0].plot()
+	key.plot()
 	

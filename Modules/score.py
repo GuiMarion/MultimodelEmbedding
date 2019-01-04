@@ -12,10 +12,16 @@ velocity : ok
 getpianoroll : ok
 plot : plot parts separatly but it doesn't matter
 length(in timebeat) : ok
-extract part: no 
-towaveform : no
+extract part: ok 
+towaveform : ok
 tranpose : no
 
+'''
+
+'''
+TODO :
+	- Tranpose
+	- Check midi validity and raise an error
 '''
 
 class score:
@@ -23,10 +29,13 @@ class score:
 
 
 		if frompyRoll[0] == None:
-			# use pypianoroll to parse the midifile
-			self.pyRoll = proll(pathToMidi,beat_resolution=quantization)
-			self.name = os.path.splitext(os.path.basename(pathToMidi))[0]
-			self.pianoroll = self.pyRoll.get_merged_pianoroll()
+			try:
+				# use pypianoroll to parse the midifile
+				self.pyRoll = proll(pathToMidi,beat_resolution=quantization)
+				self.name = os.path.splitext(os.path.basename(pathToMidi))[0]
+				self.pianoroll = self.pyRoll.get_merged_pianoroll()
+			except OSError:
+				raise RuntimeError("incorrect midi file.")
 
 		else:
 			self.pyRoll = frompyRoll[0]
@@ -59,27 +68,53 @@ class score:
 		self.pyRoll.plot()
 		plt.show()
 
-	def extractPart(self, start, end):
+	def extractPart(self, start, end, inBeats=False):
 
 		# return a score object including this one between start and end in time beat
+		if inBeats is True:
+			if start >= 0 and end < self.length:
+				pianoRollPart = self.pianoroll[start*self.quantization : end*self.quantization, : ]
+				newName = self.name+"_" + str(start) + "_" + str(end)
 
-		if start >= 0 and end < self.length:
-			pianoRollPart = self.pianoroll[start*self.quantization : end*self.quantization, : ]
-			newName = self.name+"_" + str(start) + "_" + str(end)
+				pyrollPart = Track(pianoroll=pianoRollPart, program=0, is_drum=False,
+	              name=newName)
+				
+				scorePart = score("", frompyRoll=(pyrollPart, newName))
 
-			pyrollPart = Track(pianoroll=pianoRollPart, program=0, is_drum=False,
-              name=newName)
-			
-			scorePart = score("", frompyRoll=(pyrollPart, newName))
-
-			return scorePart
+				return scorePart
+			else:
+				raise IndexError("ExtractPart is asked to go over the range of the pianoRoll.")
 		else:
-			raise IndexError("ExtractPart is asked to go over the range of the pianoRoll.")
+			if start >= 0 and end < self.length*self.quantization:
+				pianoRollPart = self.pianoroll[start : end, : ]
+				newName = self.name+"_" + str(start) + "_" + str(end)
 
-	def toWaveForm(self, pathFont="../SoundFonts/000_Florestan_Piano.sf2"):
+				pyrollPart = Track(pianoroll=pianoRollPart, program=0, is_drum=False,
+	              name=newName)
+				
+				scorePart = score("", frompyRoll=(pyrollPart, newName))
+
+				return scorePart
+			else:
+				raise IndexError("ExtractPart is asked to go over the range of the pianoRoll.")		
+
+
+	def extractAllParts(self, length, step=1):
+		# Extract all parts of size length beats
+		N = self.length*self.quantization
+		windowSize = length*self.quantization
+		retParts = []
+
+		for i in range(N//step - windowSize):
+			retParts.append(self.extractPart(i*step, i*step+windowSize))
+
+		return retParts
+
+	def toWaveForm(self, font="000_Florestan_Piano.sf2"):
 
 		midiPath = ".TEMP/"+self.name+".mid"
 		wavePath = ".TEMP/"+self.name+".wav"
+		pathFont = "../SoundFonts/" + font
 
 		self.pyRoll.write(midiPath)
 		process = subprocess.Popen("fluidsynth -F "+wavePath+" "+pathFont+" "+midiPath, shell=True, stderr=subprocess.DEVNULL ,stdout=subprocess.DEVNULL)
@@ -92,6 +127,13 @@ class score:
 		process.wait()
 
 		return newWaveForm
+
+	def getTransposed(self):
+		# should return a list of 12 objects corresponding au 12 tonalities.
+		# the algorithm should make a good choice in up-tranposing or down-tranposing
+		# for exemple if the piece is very high we will down-tranpose.
+
+		return self
 
 
 
