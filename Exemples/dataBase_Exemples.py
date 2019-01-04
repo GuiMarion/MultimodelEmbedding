@@ -9,6 +9,7 @@ D1.constructDatabase("dataBaseTest") # on a tiny dataset
 #D1.constructDatabase("../DataBase") # on the whole database
 print("ok construct")
 D1.save()
+print("ok save")
 D1.print()
 
 # load a previous saved database
