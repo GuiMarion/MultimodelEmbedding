@@ -5,6 +5,15 @@ from pypianoroll import Multitrack as proll
 import matplotlib.pyplot as plt
 import os
 
+'''
+velocity : ok 
+getpianoroll : ok
+plot : plot parts separatly but it doesn't matter
+extract part: no 
+towaveform = no
+
+'''
+
 class score:
 	def __init__(self, pathToMidi, velocity=False):
 
@@ -14,8 +23,8 @@ class score:
 		self.pyRoll = proll(pathToMidi)
 		self.velocity = velocity
 
-		if velocity is True:
-			pyRoll.binarize()
+		if velocity is False:
+			self.pyRoll.binarize()
 
 
 		self.tempo = 0
