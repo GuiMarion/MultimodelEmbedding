@@ -44,9 +44,10 @@ class waveForm:
 		return "Données chargées."
 
 
-	def play(self, length=10):
+	def play(self, length=None):
 		# play the data, use the module sound device
-		
+		if length is None:
+			length = len(self.data)//self.sampleRate
 		sd.play(self.data, self.sampleRate)
 		time.sleep(length)
 
