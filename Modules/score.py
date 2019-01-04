@@ -1,4 +1,8 @@
 from Modules import waveForm
+
+from pypianoroll import Multitrack as proll
+
+import matplotlib.pyplot as plt
 import os
 
 class score:
@@ -6,24 +10,27 @@ class score:
 
 		# Attributs to fill from the file
 		self.name = os.path.splitext(os.path.basename(pathToMidi))[0]
-		self.tempo = 0
 		# compute the pianoroll with computePianoRoll, just also work with velocity = True
-		self.pianoRoll = ""
-		self.instrument = ""
+		self.pyRoll = proll(pathToMidi)
+		self.velocity = velocity
+
+		if velocity is True:
+			pyRoll.binarize()
+
+
+		self.tempo = 0
 		self.length = 0
-
-	def computePianoRoll(self, velocity=False):
-
-		return "TODO"
 
 	def getPianoRoll(self):
 		# return the np.array containing the pianoRoll
-		return "TODO"
+
+		return self.pyRoll.get_merged_pianoroll()
 
 	def plot(self):
 		# plot the pianoRool representation
-		print("TODO")
-		return "TODO"
+		
+		self.pyRoll.plot()
+		plt.show()
 
 	def toWaveForm(self, sound="default"):
 
