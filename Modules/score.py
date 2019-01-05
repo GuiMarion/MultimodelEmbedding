@@ -2,7 +2,6 @@ from Modules import waveForm
 
 from pypianoroll import Multitrack as proll
 from pypianoroll import Track
-from pypianoroll import transpose
 
 import matplotlib.pyplot as plt
 import subprocess

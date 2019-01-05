@@ -3,7 +3,6 @@ sys.path.append('../')
 
 from Modules import score
 from Modules import waveForm
-from pypianoroll import transpose
 
 # Import one of my masterpieces ...
 #s = score.score("chp_op18.mid")
