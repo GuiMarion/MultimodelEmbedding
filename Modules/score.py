@@ -2,10 +2,12 @@ from Modules import waveForm
 
 from pypianoroll import Multitrack as proll
 from pypianoroll import Track
+from pypianoroll import transpose
 
 import matplotlib.pyplot as plt
 import subprocess
 import os
+import numpy as np
 
 '''
 velocity : ok 
@@ -133,7 +135,21 @@ class score:
 		# the algorithm should make a good choice in up-tranposing or down-tranposing
 		# for exemple if the piece is very high we will down-tranpose.
 
-		return [self]
+		transposed_pianorolls = []
+		range_pianoroll = self.pyRoll.get_active_pitch_range()
+
+		if np.abs(range_pianoroll[0]-69) < np.abs(range_pianoroll[1]-69):
+
+			for tonality in range(12):
+				transposed_pianorolls += [self.pyRoll.transpose(-tonality)]
+
+		else:
+
+			for tonality in range(12):
+				transposed_pianorolls += [self.pyRoll.transpose(+tonality)]
+
+
+		return transposed_pianorolls
 
 
 
