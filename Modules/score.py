@@ -133,7 +133,7 @@ class score:
 		# the algorithm should make a good choice in up-tranposing or down-tranposing
 		# for exemple if the piece is very high we will down-tranpose.
 
-		return self
+		return [self]
 
 
 

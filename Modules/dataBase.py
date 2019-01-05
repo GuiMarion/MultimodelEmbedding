@@ -8,15 +8,15 @@ from Modules import waveForm
 
 # Parameters for the data extration part
 WINDOW_SIZE = 1 # in beat
-STEP = 500 # in sample
+STEP = 600 # in sample
 
 FONTS = ["000_Florestan_Piano.sf2"] # TODO add more fonts
 
 class dataBase:
-	def __init__(self, name=None):
+	def __init__(self, name="database"):
 
 		self.name = name
-		self.dico = None
+		self.data = []
 		self.path = None
 
 
@@ -43,7 +43,6 @@ class dataBase:
 		skipedFiles = 0
 		# Total number of files
 		N = 0
-		dico = {}
 		scores = []
 		for filename in glob(self.path+'/**', recursive=True):
 
@@ -57,8 +56,6 @@ class dataBase:
 					except RuntimeError:
 						skipedFiles += 1
 					N += 1
-
-		self.dico = dico
 
 		print()
 		print("We passed a total of ", N, "files.")
@@ -77,7 +74,7 @@ class dataBase:
 			waveforms = []
 			for font in FONTS:
 				waveforms.append(score_temp.toWaveForm(font=font))
-			dico[s] = [waveforms]
+			self.data.append((s, waveforms))
 
 
 	def save(self, path="../DataBase/Serialized/"):
@@ -92,7 +89,8 @@ class dataBase:
 				answer = str(input("We didn't understand, please tape enter, 'y' or 'n'"))
 
 		if answer in ["", "y"]:
-			pickle.dump(self.dico, open(path+self.name+'.data','wb'))
+			print("____ Saving database ...")
+			pickle.dump(self.data, open(path+self.name+'.data','wb'))
 			print()
 			print("The new database is saved.")
 		else:
@@ -107,7 +105,7 @@ class dataBase:
 			raise RuntimeError("Invalid file path")
 
 		try:
-			self.dico = pickle.load(open(path, 'rb'))
+			self.data = pickle.load(open(path, 'rb'))
 			print("We sucessfully loaded the database.")
 			print()
 		except (RuntimeError, UnicodeDecodeError) as error:
@@ -118,8 +116,8 @@ class dataBase:
 		# Print name of all items in database
 		print("____Printing database")
 		print()
-		for key in self.dico:
-			print("	-", key.name)
+		for i in range(len(data)):
+			print(data[i].name)
 
 	def get(self):
 		return self.dico

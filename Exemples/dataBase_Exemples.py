@@ -7,14 +7,12 @@ from Modules import dataBase
 D1 = dataBase.dataBase()
 D1.constructDatabase("dataBaseTest") # on a tiny dataset
 #D1.constructDatabase("../DataBase") # on the whole database
-print("ok construct")
-D1.save()
-print("ok save")
+D1.save("dataBaseTest/Serialized/")
 D1.print()
 
 # load a previous saved database
 D2 = dataBase.dataBase()
-D2.load("../DataBase/Serialized/dataBaseTest.data")
+D2.load("dataBaseTest/Serialized/dataBaseTest.data")
 D2.print()
 
 
