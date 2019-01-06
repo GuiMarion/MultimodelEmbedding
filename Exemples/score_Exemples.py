@@ -7,7 +7,7 @@ from Modules import waveForm
 # Import one of my masterpieces ...
 #s = score.score("chp_op18.mid")
 #s = score.score("velocity.mid")
-s = score.score("kikou.mid")
+s = score.score("chp_op18.mid")
 """
 '''
 Part for the midi
@@ -53,5 +53,11 @@ w.play(5)
 
 
 """
+sub = s.extractPart(0, 10)
+import matplotlib.pyplot as plt
+sub.plot()
+plt.show()
+sub.pyRoll.transpose(2)
 
-list = s.pyRoll.tranpose(2)
+sub.plot()
+plt.show()

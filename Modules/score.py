@@ -140,12 +140,12 @@ class score:
 		if np.abs(range_pianoroll[0]-69) < np.abs(range_pianoroll[1]-69):
 
 			for tonality in range(12):
-				transposed_pianorolls += [self.pyRoll.transpose(-tonality)]
+				transposed_pianorolls.append(self.pyRoll.transpose(-tonality))
 
 		else:
 
 			for tonality in range(12):
-				transposed_pianorolls += [self.pyRoll.transpose(+tonality)]
+				transposed_pianorolls.append(self.pyRoll.transpose(+tonality))
 
 
 		return transposed_pianorolls
