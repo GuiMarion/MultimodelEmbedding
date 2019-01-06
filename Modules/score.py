@@ -135,6 +135,11 @@ class score:
 		# the algorithm should make a good choice in up-tranposing or down-tranposing
 		# for exemple if the piece is very high we will down-tranpose.
 
+		if not isinstance(self.pyRoll, Track):
+
+			raise TypeError("Can only transpose Track objects")
+
+
 		transposed_pianorolls = []
 		range_pianoroll = self.pyRoll.get_active_pitch_range() # return piano roll pitch range
 

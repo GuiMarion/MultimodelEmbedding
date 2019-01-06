@@ -66,9 +66,12 @@ plt.show()
 
 transposed_pianorolls = []
 
+
+
 sub = s.extractPart(0,10)
 
-sub1 = sub.getTransposed()
+
+sub1 = s.getTransposed()
 
 sub.pyRoll.plot()
 plt.show()
