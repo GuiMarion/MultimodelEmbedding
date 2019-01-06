@@ -68,14 +68,11 @@ transposed_pianorolls = []
 
 
 
-sub = s.extractPart(0,10)
+sub = s.extractPart(0,30, inBeats=True)
 
+sub.plot()
 
-sub1 = s.getTransposed()
+sub1 = sub.getTransposed()
 
-sub.pyRoll.plot()
-plt.show()
-
-
-sub1[12].plot()
-plt.show()
+for elem in sub1:
+	elem.plot()

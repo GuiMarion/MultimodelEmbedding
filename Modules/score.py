@@ -140,28 +140,31 @@ class score:
 			raise TypeError("Can only transpose Track objects")
 
 
-		transposed_pianorolls = []
+		transposed_scores = [self]
 		range_pianoroll = self.pyRoll.get_active_pitch_range() # return piano roll pitch range
+		centroid = (range_pianoroll[0] + range_pianoroll[1]) // 2
 
-		if np.abs(range_pianoroll[0]-69) < np.abs(range_pianoroll[1]-69): # compare piano roll pitch range with note A4
+		for tranposition in range(1, 12):
+			centroidUp = centroid + tranposition
+			centroidDown = centroid - (12 - tranposition)
 
-			# down-transposing
-
-			for tonality in range(12):
+			# We compute the euclidian distance between the centroids and the middle A4
+			# and we choose the one that is the closest
+			if abs(centroidUp - 69) < abs(centroid - 69):
 				pyRoll_temp = copy.deepcopy(self.pyRoll)
-				pyRoll_temp.transpose(-tonality)
-				transposed_pianorolls.append(pyRoll_temp)
+				pyRoll_temp.transpose(tranposition)
+				tranposed_score = score("", frompyRoll=(pyRoll_temp, self.name+"_+"+str(tranposition)))
+				transposed_scores.append(tranposed_score)
 
-		else:
 
-			# up-transposing
-
-			for tonality in range(12):
+			else:
 				pyRoll_temp = copy.deepcopy(self.pyRoll)
-				pyRoll_temp.transpose(+tonality)
-				transposed_pianorolls.append(pyRoll_temp)
+				pyRoll_temp.transpose(- (12 - tranposition))
+				tranposed_score = score("", frompyRoll=(pyRoll_temp, self.name+"_-"+str(12-tranposition)))
+				transposed_scores.append(tranposed_score)
 
-		return transposed_pianorolls
+
+		return transposed_scores
 
 
 
