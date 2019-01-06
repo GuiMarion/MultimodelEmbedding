@@ -3,6 +3,8 @@ sys.path.append('../')
 
 from Modules import score
 from Modules import waveForm
+import matplotlib.pyplot as plt
+import copy
 
 # Import one of my masterpieces ...
 #s = score.score("chp_op18.mid")
@@ -52,12 +54,25 @@ w = s.toWaveForm()
 w.play(5)
 
 
-"""
 sub = s.extractPart(0, 10)
-import matplotlib.pyplot as plt
 sub.plot()
 plt.show()
 sub.pyRoll.transpose(2)
 
 sub.plot()
+plt.show()
+
+"""
+
+transposed_pianorolls = []
+
+sub = s.extractPart(0,10)
+
+sub1 = sub.getTransposed()
+
+sub.pyRoll.plot()
+plt.show()
+
+
+sub1[12].plot()
 plt.show()

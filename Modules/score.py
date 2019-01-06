@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import subprocess
 import os
 import numpy as np
+import copy
 
 '''
 velocity : ok 
@@ -135,18 +136,25 @@ class score:
 		# for exemple if the piece is very high we will down-tranpose.
 
 		transposed_pianorolls = []
-		range_pianoroll = self.pyRoll.get_active_pitch_range()
+		range_pianoroll = self.pyRoll.get_active_pitch_range() # return piano roll pitch range
 
-		if np.abs(range_pianoroll[0]-69) < np.abs(range_pianoroll[1]-69):
+		if np.abs(range_pianoroll[0]-69) < np.abs(range_pianoroll[1]-69): # compare piano roll pitch range with note A4
+
+			# down-transposing
 
 			for tonality in range(12):
-				transposed_pianorolls.append(self.pyRoll.transpose(-tonality))
+				pyRoll_temp = copy.deepcopy(self.pyRoll)
+				pyRoll_temp.transpose(-tonality)
+				transposed_pianorolls.append(pyRoll_temp)
 
 		else:
 
-			for tonality in range(12):
-				transposed_pianorolls.append(self.pyRoll.transpose(+tonality))
+			# up-transposing
 
+			for tonality in range(12):
+				pyRoll_temp = copy.deepcopy(self.pyRoll)
+				pyRoll_temp.transpose(+tonality)
+				transposed_pianorolls.append(pyRoll_temp)
 
 		return transposed_pianorolls
 
