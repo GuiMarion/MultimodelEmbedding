@@ -3,13 +3,24 @@ sys.path.append('../')
 
 from Modules import score
 from Modules import waveForm
+from Modules.score import shift
 import matplotlib.pyplot as plt
+import numpy as np
 import copy
 
 # Import one of my masterpieces ...
-#s = score.score("chp_op18.mid")
 #s = score.score("velocity.mid")
 s = score.score("chp_op18.mid")
+
+# ~ a = s.getPianoRoll
+# ~ b = s.getLength
+# ~ print(b)
+# ~ s.plot()
+# ~ bb = s.getTransposed()[11]
+# ~ bb.plot()
+# ~ print(bb.name)
+s.toWaveForm().plot()
+
 """
 '''
 Part for the midi
@@ -64,15 +75,4 @@ plt.show()
 
 """
 
-transposed_pianorolls = []
 
-
-
-sub = s.extractPart(0,30, inBeats=True)
-
-sub.plot()
-
-sub1 = sub.getTransposed()
-
-for elem in sub1:
-	elem.plot()

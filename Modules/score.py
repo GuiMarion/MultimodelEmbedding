@@ -27,29 +27,24 @@ TODO :
 '''
 
 class score:
-	def __init__(self, pathToMidi, velocity=False, quantization=24, frompyRoll=(None, "")):
+	def __init__(self, pathToMidi, velocity=False, quantization=24, fromArray=(None, "")):
 
 
-		if frompyRoll[0] == None:
+		if fromArray[0] is None:
 			try:
 				# use pypianoroll to parse the midifile
-				self.pyRoll = proll(pathToMidi,beat_resolution=quantization)
+				self.pianoroll = proll(pathToMidi,beat_resolution=quantization).get_merged_pianoroll()
 				self.name = os.path.splitext(os.path.basename(pathToMidi))[0]
-				self.pianoroll = self.pyRoll.get_merged_pianoroll()
 			except OSError:
 				raise RuntimeError("incorrect midi file.")
 
 		else:
-			self.pyRoll = frompyRoll[0]
-			self.name = frompyRoll[1]
-			self.pianoroll = self.pyRoll.get_pianoroll_copy()
+			self.name = fromArray[1]
+			self.pianoroll = fromArray[0]
 
 		# store the numpy array corresponding to the pianoroll
 		self.velocity = velocity
-		self.quantization=quantization
-
-		if velocity is False:
-			self.pyRoll.binarize()
+		self.quantization = quantization
 
 		#store length in time beat
 		self.length = len(self.pianoroll)//16
@@ -65,9 +60,16 @@ class score:
 		return self.length
 
 	def plot(self):
-		# plot the pianoRool representation
+		# plot the pianoRoll representation
 		
-		self.pyRoll.plot()
+		plt.imshow(self.pianoroll.T, aspect='auto', origin='lower')
+		plt.xlabel('time (beat)')
+		plt.ylabel('midi note')
+		plt.grid(b=True, axis='y')
+		plt.yticks([0, 12, 24, 36, 48, 60, 72, 84, 96, 108, 120],
+           ["C-2", "C-1", "C0", "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8"])
+		color = plt.colorbar()
+		color.set_label('velocity', rotation=270)
 		plt.show()
 
 	def extractPart(self, start, end, inBeats=False):
@@ -76,12 +78,9 @@ class score:
 		if inBeats is True:
 			if start >= 0 and end < self.length:
 				pianoRollPart = self.pianoroll[start*self.quantization : end*self.quantization, : ]
-				newName = self.name+"_" + str(start) + "_" + str(end)
-
-				pyrollPart = Track(pianoroll=pianoRollPart, program=0, is_drum=False,
-	              name=newName)
+				newName = self.name+ "_" + str(start) + "_" + str(end)
 				
-				scorePart = score("", frompyRoll=(pyrollPart, newName))
+				scorePart = score("", fromArray=(pianoRollPart, newName))
 
 				return scorePart
 			else:
@@ -91,11 +90,8 @@ class score:
 				pianoRollPart = self.pianoroll[start : end, : ]
 				newName = self.name+"_" + str(start) + "_" + str(end)
 
-				pyrollPart = Track(pianoroll=pianoRollPart, program=0, is_drum=False,
-	              name=newName)
+				scorePart = score("", fromArray=(pianoRollPart, newName))
 				
-				scorePart = score("", frompyRoll=(pyrollPart, newName))
-
 				return scorePart
 			else:
 				raise IndexError("ExtractPart is asked to go over the range of the pianoRoll.")		
@@ -118,7 +114,7 @@ class score:
 		wavePath = ".TEMP/"+self.name+".wav"
 		pathFont = "../SoundFonts/" + font
 
-		self.pyRoll.write(midiPath)
+		self.writeToMidi(midiPath)
 		process = subprocess.Popen("fluidsynth -F "+wavePath+" "+pathFont+" "+midiPath, shell=True, stderr=subprocess.DEVNULL ,stdout=subprocess.DEVNULL)
 		process.wait()
 		# should return on an object of type waveForm defined in this folder
@@ -131,41 +127,41 @@ class score:
 		return newWaveForm
 
 	def getTransposed(self):
-		# should return a list of 12 objects corresponding au 12 tonalities.
-		# the algorithm should make a good choice in up-tranposing or down-tranposing
-		# for exemple if the piece is very high we will down-tranpose.
+		# Should return a list of 12 scores corresponding to the 12 tonalities.
 
-		if not isinstance(self.pyRoll, Track):
-
-			raise TypeError("Can only transpose Track objects")
-
-
-		transposed_scores = [self]
-		range_pianoroll = self.pyRoll.get_active_pitch_range() # return piano roll pitch range
-		centroid = (range_pianoroll[0] + range_pianoroll[1]) // 2
-
-		for tranposition in range(1, 12):
-			centroidUp = centroid + tranposition
-			centroidDown = centroid - (12 - tranposition)
-
-			# We compute the euclidian distance between the centroids and the middle A4
-			# and we choose the one that is the closest
-			if abs(centroidUp - 69) < abs(centroidDown - 69):
-				pyRoll_temp = copy.deepcopy(self.pyRoll)
-				pyRoll_temp.transpose(tranposition)
-				tranposed_score = score("", frompyRoll=(pyRoll_temp, self.name+"_+"+str(tranposition)))
-				transposed_scores.append(tranposed_score)
-
-
-			else:
-				pyRoll_temp = copy.deepcopy(self.pyRoll)
-				pyRoll_temp.transpose(- (12 - tranposition))
-				tranposed_score = score("", frompyRoll=(pyRoll_temp, self.name+"_-"+str(12-tranposition)))
-				transposed_scores.append(tranposed_score)
-
+		transposed_scores = []
+		
+		# Transposes from 6 semitones down to 5 semitones up
+		# And stores each transposition as a new score
+		for t in range(-6, 6):
+			transRoll = shift(self.pianoroll, t) # transposed piano roll matrix
+			newName = self.name + '_' + str(t)
+			
+			transposed_score = score("", fromArray=(transRoll, newName))
+			transposed_scores.append(transposed_score)
 
 		return transposed_scores
+		
+	def writeToMidi(self, midiPath):
+		tempTrack = Track(pianoroll=self.pianoroll, program=0, is_drum=False,
+									name=self.name)
+		tempMulti = proll(tracks=(tempTrack,), beat_resolution=self.quantization)
+		tempMulti.write(midiPath)
 
-
-
-
+def shift(mat, t):
+	# Vertically shifts a matrix by t rows.
+	# Shifts up if t is positive, down if t is negative.
+	# Fills empty slots with zeros.
+	
+    result = np.empty_like(mat)
+    if t < 0:
+        result[:-t] = 0
+        result[-t:] = mat[:t]
+    elif t > 0:
+        result[-t:] = 0
+        result[:-t] = mat[t:]
+    else:
+        result = mat
+        
+    return result
+	
