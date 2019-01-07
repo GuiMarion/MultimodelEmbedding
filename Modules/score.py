@@ -150,7 +150,7 @@ class score:
 
 			# We compute the euclidian distance between the centroids and the middle A4
 			# and we choose the one that is the closest
-			if abs(centroidUp - 69) < abs(centroid - 69):
+			if abs(centroidUp - 69) < abs(centroidDown - 69):
 				pyRoll_temp = copy.deepcopy(self.pyRoll)
 				pyRoll_temp.transpose(tranposition)
 				tranposed_score = score("", frompyRoll=(pyRoll_temp, self.name+"_+"+str(tranposition)))
