@@ -73,8 +73,7 @@ class dataBase:
 		for s in tqdm(scores):
 			waveforms = []
 			for font in FONTS:
-				waveforms.append(s.toWaveForm(font=font))
-			self.data.append((s, waveforms))
+				self.data.append((s.getPianoRoll(), s.toWaveForm(font=font).getSTFTlog()), s.name()+ "_" + str(font))
 
 
 	def save(self, path="../DataBase/Serialized/"):
@@ -123,7 +122,7 @@ class dataBase:
 		print("____Printing database")
 		print()
 		for i in range(len(self.data)):
-			print(self.data[i][0].name)
+			print(self.data[i][2])
 
 	def getData(self):
 		return self.data
