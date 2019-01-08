@@ -30,8 +30,8 @@ class Modele():
 
 		print("Loading batch: ", num)
 
-		self.X1 = [torch.randn(self.batch_size, 1, 80, 100) for i in range(self.batch_size)]
-		self.X2 = [torch.randn(self.batch_size, 1, 80, 100) for i in range(self.batch_size)]
+		self.X1 = [torch.randn(self.batch_size, 1, 80, 100)-1 for i in range(self.batch_size)]
+		self.X2 = [torch.randn(self.batch_size, 1, 80, 100)-1 for i in range(self.batch_size)]
 		self.L1 = [str(i) for i in range(self.batch_size)]
 		self.L2 = [str(j) for j in range(self.batch_size)]
 
@@ -85,10 +85,7 @@ class Modele():
 	def learn(self, EPOCHS, learning_rate=1e-7, momentum=0.9):
 		criterion = torch.nn.MSELoss(reduction='sum')
 		#optimizer = torch.optim.SGD(self.parameters(), lr=learning_rate, momentum=momentum)
-		print(self.model1.parameters())
-		print(self.model2.parameters())
 		parameters = [p for p in self.model1.parameters()] + [p for p in self.model2.parameters()]
-		print(parameters)
 
 		optimizer = torch.optim.Adam(parameters, lr=learning_rate) ## if you can use +
 		for t in range(EPOCHS):
@@ -108,8 +105,6 @@ class Modele():
 
 			if t % self.batch_size == self.batch_size -1:
 				self.loadBatch(t // self.batch_size +1)
-
-
 
 
 			# append the losses to self.losses and self.losses_test
