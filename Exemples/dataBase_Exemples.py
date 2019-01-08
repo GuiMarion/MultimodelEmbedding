@@ -25,5 +25,4 @@ for key in dico:
 	# should plot the scores
 	for minibout in key[1]:
 		minibout.play()
-	key[0].plot()
-	
+key[0].plot()
