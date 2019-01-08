@@ -7,7 +7,8 @@ from Modules import dataBase
 D1 = dataBase.dataBase()
 D1.constructDatabase("dataBaseTest") # on a tiny dataset
 #D1.constructDatabase("../DataBase") # on the whole database
-D1.save("dataBaseTest/Serialized/")
+
+D1.save(path="dataBaseTest/Serialized/")
 D1.print()
 
 # load a previous saved database
@@ -24,5 +25,4 @@ for key in dico:
 	# should plot the scores
 	for minibout in key[1]:
 		minibout.play()
-	key[0].plot()
-	
+key[0].plot()

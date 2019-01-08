@@ -65,7 +65,7 @@ class dataBase:
 		print("_____ Augmenting database ...")
 		print()
 
-		#scores = self.augmentData(scores)
+		scores = self.augmentData(scores)
 
 		print("_____ Computing the sound ...")
 		print()
@@ -73,8 +73,7 @@ class dataBase:
 		for s in tqdm(scores):
 			waveforms = []
 			for font in FONTS:
-				waveforms.append(s.toWaveForm(font=font))
-			self.data.append((s, waveforms))
+				self.data.append((s.getPianoRoll(), s.toWaveForm(font=font).getSTFTlog()), s.name()+ "_" + str(font))
 
 
 	def save(self, path="../DataBase/Serialized/"):
@@ -83,14 +82,20 @@ class dataBase:
 		answer = "y"
 
 		if os.path.isfile(path+self.name+'.data'):
-			answer = str(input("'"+path+self.name+'.data'+"'" + " already exists, do you want to replace it ? (Y/n)"))
+			print(path + self.name + ".data" + " " + " already exists, do you want to replace it ? (Y/n)")
+			answer = input()
 
 			while answer not in ["", "y", "n"]:
-				answer = str(input("We didn't understand, please type enter, 'y' or 'n'"))
+				print("We didn't understand, please type enter, 'y' or 'n'")
+				answer = input()
 
 		if answer in ["", "y"]:
+			os.remove(path+self.name + '.data')
 			print("____ Saving database ...")
-			pickle.dump(self.data, open(path+self.name+'.data','wb'))
+			f = open(path+self.name + '.data', 'wb') 
+			pickle.dump(self.data, f)
+			f.close()
+
 			print()
 			print("The new database is saved.")
 		else:
@@ -117,7 +122,7 @@ class dataBase:
 		print("____Printing database")
 		print()
 		for i in range(len(self.data)):
-			print(self.data[i][0].name)
+			print(self.data[i][2])
 
 	def getData(self):
 		return self.data
