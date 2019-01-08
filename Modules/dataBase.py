@@ -7,8 +7,8 @@ from Modules import score
 from Modules import waveForm
 
 # Parameters for the data extraction part
-WINDOW_SIZE = 5 # in beat
-STEP = 120 # in sample
+WINDOW_SIZE = 10 # in beat
+STEP = 240 # in sample
 
 FONTS = ["000_Florestan_Piano.sf2"] # TODO add more fonts
 

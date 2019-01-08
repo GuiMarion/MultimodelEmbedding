@@ -2,6 +2,8 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import matplotlib.pyplot as plt
+import numpy as np
 
 #Conv layer specs
 in_channels = 1 # number of inputs in depth, 3 for a RGB image for example, 1 in our case
@@ -18,6 +20,10 @@ dim_latent = 32 # Dimension of the embedding latent space
 class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
+        
+        # History of the losses for cross-validation
+        self.losses = np.array([])
+        self.losses_test = np.array([])
 
         # convolutional layer 1
         self.conv1 = nn.Conv2d(in_channels, num_filters, kernel_size_conv, padding = 1)
@@ -92,7 +98,7 @@ class Net(nn.Module):
 
         return x
 
-    def learn(self, x, y, EPOCHS, learning_rate=1e-4, momentum=0.9):
+    def learn(self, x, y, EPOCHS, learning_rate=1e-4, momentum=0.9, x_test=[], y_test=[]):
         criterion = torch.nn.MSELoss(reduction='sum')
         #optimizer = torch.optim.SGD(self.parameters(), lr=learning_rate, momentum=momentum)
         optimizer = torch.optim.Adam(self.parameters(), lr=learning_rate)
@@ -108,6 +114,15 @@ class Net(nn.Module):
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
+            
+            # append the losses to self.losses and self.losses_test
+            self.losses = np.append(self.losses, self.eval(x,y))
+            self.losses_test= np.append(self.losses_test, self.eval(x_test,y_test))
+            
+            if(t > 10 and self.is_over_fitting()):
+                print("OVERFITTING!")
+                break
+            
 
     def loss_test(self, y_pred, y):
         # copute the loss for the final test part
@@ -130,5 +145,26 @@ class Net(nn.Module):
         loss /= min(len(x), len(y))
 
         return loss
-
-
+        
+    def plot_losses(self):
+        # plot the losses over time
+        loss, = plt.plot(np.array(self.losses), label='Loss on training')
+        lossTest, = plt.plot(np.array(self.losses_test), label='Loss on test')
+        plt.legend(handles=[loss, lossTest])
+        plt.show()
+        
+    def save_weights(self, name):
+        # save the weights of the model with the name name
+        torch.save(self, "params/" + name + '.pt')
+        
+    def is_over_fitting(self):
+        # return True is the modele is overfitting
+        # find an algorithm that do the job i.e.
+        # if self.losses_test is not decreasing for T epochs
+        # with a threshold of K
+        T = 10
+        K = 0.1
+        if(np.all(self.losses_test[-T:] > self.losses_test[-T]-K) == True):
+            return True
+        else:
+            return False

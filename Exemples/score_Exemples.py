@@ -11,20 +11,20 @@ import copy
 # Import one of my masterpieces ...
 #s = score.score("velocity.mid")
 s = score.score("testFelix.mid")
-print(s.getLength())
-aaa = s.extractAllParts(10, step=100)
-print(len(aaa))
-aaa[0].plot()
+# ~ print(s.getLength())
+# ~ aaa = s.extractAllParts(10, step=100)
+# ~ print(len(aaa))
+# ~ aaa[0].plot()
 
 # ~ a = s.extractAllParts(10, step=600)
 # ~ print(len(a))
 # ~ a[12].plot()
 
+print(s.pianoroll.shape)
+
 # ~ x = s.getTransposed()
-# ~ print(x[0].name)
-# ~ x[0].plot()
-# ~ aaa = s.toWaveForm()
-# ~ aaa.play()
+# ~ for transpy in x:
+	# ~ transpy.plot()
 
 """
 '''
