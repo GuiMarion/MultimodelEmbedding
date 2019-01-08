@@ -26,7 +26,7 @@ class waveForm:
 			self.length = 0
 
 		self.name = os.path.splitext(os.path.basename(path))[0] # reads the file's name
-		
+
 	def loadFromFile(self, path): #loads data from a file with a specified path
 		# update the attributes, should use loadFrom data
 		self.data, self.sampleRate = sf.read(path)
@@ -37,7 +37,7 @@ class waveForm:
 	def loadFromData(self, sequence, sampleRate): #loads data from a sequence with a specifided sampleRate
 		# update the attributes
 		# input sequence is a vector of samples
-		# should work with mono as well as with stereo 
+		# should work with mono as well as with stereo
 
 		self.data = sequence
 		self.sampleRate = sampleRate
@@ -66,7 +66,7 @@ class waveForm:
 
 		t = np.linspace(0, self.length, len(self.data) ) # Time vector
 
-		plt.figure(1)
+		plt.figure()
 
 		plt.plot(t, self.data)
 		plt.xlabel('Time')
@@ -90,7 +90,7 @@ class waveForm:
 		if self.FFT is None:
 			self.getFFT()
 
-		plt.figure(2)
+		plt.figure()
 
 		plt.plot(self.freq, np.abs(self.FFT))
 		plt.xlabel('Frequencies')
@@ -163,7 +163,3 @@ class waveForm:
 		plt.xlabel('Time(s)')
 		plt.ylabel('Frequency bin')
 		plt.show()
-
-
-
-
