@@ -12,18 +12,18 @@ import copy
 '''
 velocity : ok 
 getpianoroll : ok
-plot : plot parts separatly but it doesn't matter
-length(in timebeat) : ok
+plot : ok
+length(in timebeat) : pas ok
 extract part: ok 
 towaveform : ok
-tranpose : no
+transpose : ok
 
 '''
 
 '''
 TODO :
-	- Tranpose
-	- Check midi validity and raise an error
+	- Test compatibility with other modules (database, waveform)
+	- Resoudre probleme de tempo
 '''
 
 class score:
@@ -47,7 +47,7 @@ class score:
 		self.quantization = quantization
 
 		#store length in time beat
-		self.length = len(self.pianoroll)//16
+		self.length = len(self.pianoroll)//self.quantization
 
 	def getPianoRoll(self):
 		# return the np.array containing the pianoRoll
@@ -55,7 +55,7 @@ class score:
 		return self.pianoroll
 
 	def getLength(self):
-		# return the length in tim beat
+		# return the length in time beat
 
 		return self.length
 
@@ -103,19 +103,20 @@ class score:
 		windowSize = length*self.quantization
 		retParts = []
 
-		for i in range(N//step - windowSize):
+		for i in range((N-windowSize)//step):
 			retParts.append(self.extractPart(i*step, i*step+windowSize))
 
 		return retParts
 
-	def toWaveForm(self, font="000_Florestan_Piano.sf2"):
+	def toWaveForm(self, font="MotifES6ConcertPiano.sf2"):
 
 		midiPath = ".TEMP/"+self.name+".mid"
 		wavePath = ".TEMP/"+self.name+".wav"
 		pathFont = "../SoundFonts/" + font
 
 		self.writeToMidi(midiPath)
-		process = subprocess.Popen("fluidsynth -F "+wavePath+" "+pathFont+" "+midiPath, shell=True, stderr=subprocess.DEVNULL ,stdout=subprocess.DEVNULL)
+		process = subprocess.Popen("fluidsynth -F "+wavePath+" "+pathFont+" "+midiPath, shell=True, 
+									stderr=subprocess.DEVNULL ,stdout=subprocess.DEVNULL)
 		process.wait()
 		# should return on an object of type waveForm defined in this folder
 		newWaveForm = waveForm.waveForm(wavePath)

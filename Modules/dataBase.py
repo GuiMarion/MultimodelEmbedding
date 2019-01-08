@@ -6,9 +6,9 @@ from tqdm import tqdm
 from Modules import score
 from Modules import waveForm
 
-# Parameters for the data extration part
-WINDOW_SIZE = 1 # in beat
-STEP = 600 # in sample
+# Parameters for the data extraction part
+WINDOW_SIZE = 5 # in beat
+STEP = 120 # in sample
 
 FONTS = ["000_Florestan_Piano.sf2"] # TODO add more fonts
 
@@ -65,7 +65,7 @@ class dataBase:
 		print("_____ Augmenting database ...")
 		print()
 
-		scores = self.augmentData(scores)
+		#scores = self.augmentData(scores)
 
 		print("_____ Computing the sound ...")
 		print()
@@ -73,7 +73,7 @@ class dataBase:
 		for s in tqdm(scores):
 			waveforms = []
 			for font in FONTS:
-				waveforms.append(score_temp.toWaveForm(font=font))
+				waveforms.append(s.toWaveForm(font=font))
 			self.data.append((s, waveforms))
 
 
@@ -86,7 +86,7 @@ class dataBase:
 			answer = str(input("'"+path+self.name+'.data'+"'" + " already exists, do you want to replace it ? (Y/n)"))
 
 			while answer not in ["", "y", "n"]:
-				answer = str(input("We didn't understand, please tape enter, 'y' or 'n'"))
+				answer = str(input("We didn't understand, please type enter, 'y' or 'n'"))
 
 		if answer in ["", "y"]:
 			print("____ Saving database ...")
@@ -106,7 +106,7 @@ class dataBase:
 
 		try:
 			self.data = pickle.load(open(path, 'rb'))
-			print("We sucessfully loaded the database.")
+			print("We successfully loaded the database.")
 			print()
 		except (RuntimeError, UnicodeDecodeError) as error:
 			print("The file you provided is not valid ...")
@@ -116,11 +116,11 @@ class dataBase:
 		# Print name of all items in database
 		print("____Printing database")
 		print()
-		for i in range(len(data)):
-			print(data[i].name)
+		for i in range(len(self.data)):
+			print(self.data[i][0].name)
 
-	def get(self):
-		return self.dico
+	def getData(self):
+		return self.data
 
 	def augmentData(self, scores):
 		# augment the data with some techniques like transposition

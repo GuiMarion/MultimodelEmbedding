@@ -10,17 +10,21 @@ import copy
 
 # Import one of my masterpieces ...
 #s = score.score("velocity.mid")
-s = score.score("chp_op18.mid")
+s = score.score("testFelix.mid")
+print(s.getLength())
+aaa = s.extractAllParts(10, step=100)
+print(len(aaa))
+aaa[0].plot()
 
-# ~ a = s.getPianoRoll
-# ~ b = s.getLength
-# ~ print(b)
-# ~ s.plot()
-# ~ bb = s.getTransposed()[11]
-# ~ bb.plot()
-# ~ print(bb.name)
+# ~ a = s.extractAllParts(10, step=600)
+# ~ print(len(a))
+# ~ a[12].plot()
 
-a = s.toWaveForm
+# ~ x = s.getTransposed()
+# ~ print(x[0].name)
+# ~ x[0].plot()
+# ~ aaa = s.toWaveForm()
+# ~ aaa.play()
 
 """
 '''
