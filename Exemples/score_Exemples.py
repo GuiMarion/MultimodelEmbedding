@@ -19,7 +19,8 @@ s = score.score("chp_op18.mid")
 # ~ bb = s.getTransposed()[11]
 # ~ bb.plot()
 # ~ print(bb.name)
-s.toWaveForm().plot()
+
+a = s.toWaveForm
 
 """
 '''
