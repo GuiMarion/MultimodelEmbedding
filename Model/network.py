@@ -81,7 +81,7 @@ class Net(nn.Module):
         x = self.pool(x)
 
         #Fifth Layer Conv2d + Linear + BN
-        x = self.conv4_bn(self.conv4(x))
+        x = self.conv4_bn(F.linear(self.conv4(x)))
 
         #Global Pooling
         global_pool = nn.AvgPool2d((x.size(2), x.size(3)))
