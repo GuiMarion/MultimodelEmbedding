@@ -6,9 +6,9 @@ from tqdm import tqdm
 from Modules import score
 from Modules import waveForm
 
-# Parameters for the data extration part
-WINDOW_SIZE = 1 # in beat
-STEP = 600 # in sample
+# Parameters for the data extraction part
+WINDOW_SIZE = 5 # in beat
+STEP = 120 # in sample
 
 FONTS = ["000_Florestan_Piano.sf2"] # TODO add more fonts
 
@@ -73,8 +73,7 @@ class dataBase:
 		for s in tqdm(scores):
 			waveforms = []
 			for font in FONTS:
-				waveforms.append(score_temp.toWaveForm(font=font))
-			self.data.append((s, waveforms))
+				self.data.append((s.getPianoRoll(), s.toWaveForm(font=font).getSTFTlog()), s.name()+ "_" + str(font))
 
 
 	def save(self, path="../DataBase/Serialized/"):
@@ -83,14 +82,20 @@ class dataBase:
 		answer = "y"
 
 		if os.path.isfile(path+self.name+'.data'):
-			answer = str(input("'"+path+self.name+'.data'+"'" + " already exists, do you want to replace it ? (Y/n)"))
+			print(path + self.name + ".data" + " " + " already exists, do you want to replace it ? (Y/n)")
+			answer = input()
 
 			while answer not in ["", "y", "n"]:
-				answer = str(input("We didn't understand, please tape enter, 'y' or 'n'"))
+				print("We didn't understand, please type enter, 'y' or 'n'")
+				answer = input()
 
 		if answer in ["", "y"]:
+			os.remove(path+self.name + '.data')
 			print("____ Saving database ...")
-			pickle.dump(self.data, open(path+self.name+'.data','wb'))
+			f = open(path+self.name + '.data', 'wb') 
+			pickle.dump(self.data, f)
+			f.close()
+
 			print()
 			print("The new database is saved.")
 		else:
@@ -106,7 +111,7 @@ class dataBase:
 
 		try:
 			self.data = pickle.load(open(path, 'rb'))
-			print("We sucessfully loaded the database.")
+			print("We successfully loaded the database.")
 			print()
 		except (RuntimeError, UnicodeDecodeError) as error:
 			print("The file you provided is not valid ...")
@@ -116,11 +121,11 @@ class dataBase:
 		# Print name of all items in database
 		print("____Printing database")
 		print()
-		for i in range(len(data)):
-			print(data[i].name)
+		for i in range(len(self.data)):
+			print(self.data[i][2])
 
-	def get(self):
-		return self.dico
+	def getData(self):
+		return self.data
 
 	def augmentData(self, scores):
 		# augment the data with some techniques like transposition
