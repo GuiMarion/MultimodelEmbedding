@@ -62,8 +62,6 @@ class waveForm:
 
 	def plot(self):
 		# plot the signal
-		plt.figure()
-
 		t = np.linspace(0, self.length, len(self.data) ) # Time vector
 
 		plt.figure()
