@@ -18,4 +18,4 @@ model.learn(x_learn, y_learn, EPOCHS, learning_rate=1e-1)
 
 print("VALIDATION : ", model.eval(x_test, y_test))
 
-# TODO Validation test in order to avoid overfitting
+# TODO Validation test in order to avoid overfitting	
