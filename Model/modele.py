@@ -10,7 +10,7 @@ class Modele():
 		self.model1 = network.Net()
 		self.model2 = network.Net() 
 
-		self.batch_size = 100
+		self.batch_size = 32
 
 		self.loadBatch(0)
 
