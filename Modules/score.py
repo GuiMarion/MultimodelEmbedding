@@ -33,7 +33,7 @@ class score:
 		if fromArray[0] is None:
 			try:
 				# use pypianoroll to parse the midifile
-				self.pianoroll = proll(pathToMidi,beat_resolution=quantization).get_merged_pianoroll()
+				self.pianoroll = proll(pathToMidi, beat_resolution=quantization).get_merged_pianoroll()
 				self.name = os.path.splitext(os.path.basename(pathToMidi))[0]
 			except OSError:
 				raise RuntimeError("incorrect midi file.")
@@ -127,6 +127,23 @@ class score:
 
 		return newWaveForm
 
+	def transpose(self, t):
+
+		# Vertically shifts a matrix by t rows.
+		# Fills empty slots with zeros.
+		
+	    result = np.empty_like(self.pianoroll)
+	    if t > 0:
+	        result[:,:t] = 0
+	        result[:,t:] = self.pianoroll[:,:-t]
+	    elif t < 0:
+	        result[:,t:] = 0
+	        result[:,:t] = self.pianoroll[:,-t:]
+	    else:
+	        result = self.pianoroll
+	        
+	    return result
+	
 	def getTransposed(self):
 		# Should return a list of 12 scores corresponding to the 12 tonalities.
 
@@ -135,13 +152,21 @@ class score:
 		# Transposes from 6 semitones down to 5 semitones up
 		# And stores each transposition as a new score
 		for t in range(-6, 6):
-			transRoll = shift(self.pianoroll, t) # transposed piano roll matrix
+			transRoll = self.transpose(t) # transposed piano roll matrix
 			newName = self.name + '_' + str(t)
 			
 			transposed_score = score("", fromArray=(transRoll, newName))
 			transposed_scores.append(transposed_score)
 
 		return transposed_scores
+
+	def aumgmentData(self):
+		# function that do data augmentation
+
+		data = getTransposed
+
+		return data
+
 		
 	def writeToMidi(self, midiPath):
 		tempTrack = Track(pianoroll=self.pianoroll, program=0, is_drum=False,
@@ -149,20 +174,4 @@ class score:
 		tempMulti = proll(tracks=(tempTrack,), beat_resolution=self.quantization)
 		tempMulti.write(midiPath)
 
-def shift(mat, t):
-	# Vertically shifts a matrix by t rows.
-	# Shifts up if t is positive, down if t is negative.
-	# Fills empty slots with zeros.
-	
-    result = np.empty_like(mat)
-    if t < 0:
-        result[:-t] = 0
-        result[-t:] = mat[:t]
-    elif t > 0:
-        result[-t:] = 0
-        result[:-t] = mat[t:]
-    else:
-        result = mat
-        
-    return result
 	
