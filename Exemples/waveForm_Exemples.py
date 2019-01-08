@@ -14,35 +14,8 @@ from Modules import waveForm
 	Or also directly from a file
 '''
 
-w = waveForm.waveForm("Sinus.wav")
-
 # play the waveform of the piece
-w.play()
-
-# plot the signal
-w.plot()
-
-# get FFT
-w.getFFT()
-
-
-# plt the FFT
-w.plotFFT()
-
-
-# create a file testouille containing the waveform
-w.save("testouille.wav")
-
-
-
-quit()
-
-# Import one of my masterpieces ...
-s = score.score("Gui's_song.mid")
-
-# play the waveform of the piece
-w = s.toWaveForm()
-w.play()
+w = waveForm.waveForm("Gui's_song.wav")
 
 # plot the signal
 w.plot()
@@ -50,7 +23,17 @@ w.plot()
 # plt the FFT
 w.plotFFT()
 
-print(w.getFFT())
+# get the STFT
+w.getSTFT()
+
+#plot the STFT
+w.plotSTFT()
+
+#get the log-frequency spectrogram
+w.getSTFTlog()
+
+#plot the log-STFT
+w.plotSTFTlog()
 
 # create a file testouille containing the waveform
 w.save("testouille.wav")
