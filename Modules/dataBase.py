@@ -7,8 +7,8 @@ from Modules import score
 from Modules import waveForm
 
 # Parameters for the data extraction part
-WINDOW_SIZE = 5 # in beat
-STEP = 120 # in sample
+WINDOW_SIZE = 10 # in beat
+STEP = 240 # in sample
 
 FONTS = ["000_Florestan_Piano.sf2"] # TODO add more fonts
 
@@ -73,7 +73,7 @@ class dataBase:
 		for s in tqdm(scores):
 			waveforms = []
 			for font in FONTS:
-				self.data.append( (s.getPianoRoll(), s.toWaveForm(font=font).getSTFTlog(), s.name + "_" + font) )
+				self.data.append( (s.getPianoRoll(), s.toWaveForm(font=font).getSTFTlog(), s.name + "-" + font) )
 
 
 	def save(self, path="../DataBase/Serialized/"):

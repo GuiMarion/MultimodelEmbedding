@@ -17,7 +17,6 @@ length(in timebeat) : pas ok
 extract part: ok 
 towaveform : ok
 transpose : ok
-
 '''
 
 '''
@@ -173,5 +172,3 @@ class score:
 									name=self.name)
 		tempMulti = proll(tracks=(tempTrack,), beat_resolution=self.quantization)
 		tempMulti.write(midiPath)
-
-	

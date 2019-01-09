@@ -56,6 +56,4 @@ w.play(5)
 
 T = sub.getTransposed()
 for elem in T:
-	elem.plot()
-
-
+elem.plot()
