@@ -10,11 +10,11 @@ import numpy as np
 import copy
 
 '''
-velocity : ok 
+velocity : ok
 getpianoroll : ok
 plot : ok
 length(in timebeat) : pas ok
-extract part: ok 
+extract part: ok
 towaveform : ok
 transpose : ok
 '''
@@ -60,7 +60,7 @@ class score:
 
 	def plot(self):
 		# plot the pianoRoll representation
-		
+
 		plt.imshow(self.pianoroll.T, aspect='auto', origin='lower')
 		plt.xlabel('time (beat)')
 		plt.ylabel('midi note')
@@ -78,7 +78,7 @@ class score:
 			if start >= 0 and end < self.length:
 				pianoRollPart = self.pianoroll[start*self.quantization : end*self.quantization, : ]
 				newName = self.name+ "_" + str(start) + "_" + str(end)
-				
+
 				scorePart = score("", fromArray=(pianoRollPart, newName))
 
 				return scorePart
@@ -90,10 +90,10 @@ class score:
 				newName = self.name+"_" + str(start) + "_" + str(end)
 
 				scorePart = score("", fromArray=(pianoRollPart, newName))
-				
+
 				return scorePart
 			else:
-				raise IndexError("ExtractPart is asked to go over the range of the pianoRoll.")		
+				raise IndexError("ExtractPart is asked to go over the range of the pianoRoll.")
 
 
 	def extractAllParts(self, length, step=1):
@@ -109,12 +109,12 @@ class score:
 
 	def toWaveForm(self, font="MotifES6ConcertPiano.sf2"):
 
-		midiPath = ".TEMP/"+self.name+".mid"
-		wavePath = ".TEMP/"+self.name+".wav"
+		midiPath = "../Exemples/dataBaseTest/scoreTest/"+self.name+".mid"
+		wavePath = "../Exemples/dataBaseTest/scoreTest/"+self.name+".wav"
 		pathFont = "../SoundFonts/" + font
 
 		self.writeToMidi(midiPath)
-		process = subprocess.Popen("fluidsynth -F "+wavePath+" "+pathFont+" "+midiPath, shell=True, 
+		process = subprocess.Popen("fluidsynth -F "+wavePath+" "+pathFont+" "+midiPath, shell=True,
 									stderr=subprocess.DEVNULL ,stdout=subprocess.DEVNULL)
 		process.wait()
 		# should return on an object of type waveForm defined in this folder
@@ -130,7 +130,7 @@ class score:
 
 		# Vertically shifts a matrix by t rows.
 		# Fills empty slots with zeros.
-		
+
 	    result = np.empty_like(self.pianoroll)
 	    if t > 0:
 	        result[:,:t] = 0
@@ -140,20 +140,20 @@ class score:
 	        result[:,:t] = self.pianoroll[:,-t:]
 	    else:
 	        result = self.pianoroll
-	        
+
 	    return result
-	
+
 	def getTransposed(self):
 		# Should return a list of 12 scores corresponding to the 12 tonalities.
 
 		transposed_scores = []
-		
+
 		# Transposes from 6 semitones down to 5 semitones up
 		# And stores each transposition as a new score
 		for t in range(-6, 6):
 			transRoll = self.transpose(t) # transposed piano roll matrix
 			newName = self.name + '_' + str(t)
-			
+
 			transposed_score = score("", fromArray=(transRoll, newName))
 			transposed_scores.append(transposed_score)
 
@@ -166,7 +166,7 @@ class score:
 
 		return data
 
-		
+
 	def writeToMidi(self, midiPath):
 		tempTrack = Track(pianoroll=self.pianoroll, program=0, is_drum=False,
 									name=self.name)
