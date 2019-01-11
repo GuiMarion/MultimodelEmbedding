@@ -36,6 +36,9 @@ class dataBase:
 			print("The path you gave is not a directory, please provide a correct directory.")
 			raise RuntimeError("Invalid database directory")
 
+		if not os.path.isdir(".TEMP"):
+			os.makedirs(".TEMP")
+
 		print("_____ Filling the database ...")
 		print()
 
