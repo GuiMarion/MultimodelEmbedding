@@ -14,10 +14,13 @@ def generateSyntData(N, nbFonts, size1=(80,100), size2=(100, 128)):
 
 	return ret
 
-def MYFUNCTION(dataset, batchSize):
-	pass
+def MYFUNCTION():
+	# your function here
 
-def testMyBatchFunction(batch, batchSize, data):
+	time.sleep(1)
+	return ""
+
+def testMyBatchFunction(data, batchSize):
 	print("____ Executing the function")
 	start_time = time.time()
 	batchSet = MYFUNCTION()
@@ -32,7 +35,15 @@ def testMyBatchFunction(batch, batchSize, data):
 
 
 def isBatchValid(batchSet, batchSize):
-	
+		
+	if batchSet == "":
+		print("Seems that you need to code your function")
+		return False
+
+	if len(batchSet) == 0:
+		print("Your batchSet is empty ... ")
+		return False
+
 	for batch in batchSet:
 		if len(batch) != batchSize:
 			return False

@@ -31,3 +31,5 @@ for i in range(len(data)):
 	print("Name:")
 	print(data[i][2])
 	print()
+
+gen.testMyBatchFunction(data, 32)
