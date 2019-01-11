@@ -32,4 +32,4 @@ for i in range(len(data)):
 	print(data[i][2])
 	print()
 
-gen.testMyBatchFunction(data, 32)
+gen.testMyBatchFunction(32)

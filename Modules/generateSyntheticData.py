@@ -14,16 +14,18 @@ def generateSyntData(N, nbFonts, size1=(80,100), size2=(100, 128)):
 
 	return ret
 
-def MYFUNCTION():
+def MYFUNCTION(data):
 	# your function here
-	
+	print(data)
 	time.sleep(1)
 	return ""
 
-def testMyBatchFunction(data, batchSize):
+def testMyBatchFunction(batchSize):
+
+	data = generateSyntData(1000, 4)
 	print("____ Executing the function")
 	start_time = time.time()
-	batchSet = MYFUNCTION()
+	batchSet = MYFUNCTION(data)
 	print("--- %s seconds ---" % (time.time() - start_time))
 
 	print("____ Testing the results")
