@@ -1,4 +1,3 @@
-import sounddevice as sd # On importe sounddevice
 import os
 import soundfile as sf
 import time
@@ -8,6 +7,13 @@ try:
 	plot = True
 except ImportError:
 	plot = False
+
+try :
+	import sounddevice as sd # in order to play
+	sound = True
+except OSError:
+	sound = False
+
 
 
 class waveForm:
@@ -53,6 +59,11 @@ class waveForm:
 
 	def play(self, length=None):
 		# play the data, use the module sound device
+
+		if sound == False:
+			print("You cannot play inthing as PortAudio is not available")
+			return
+
 		if length is None:
 			length = len(self.data)//self.sampleRate
 		sd.play(self.data, self.sampleRate)

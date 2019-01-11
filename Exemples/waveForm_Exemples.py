@@ -17,6 +17,8 @@ from Modules import waveForm
 # play the waveform of the piece
 w = waveForm.waveForm("Gui's_song.wav")
 
+w.play(5)
+
 # plot the signal
 w.plot()
 
