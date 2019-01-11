@@ -3,7 +3,12 @@ import os
 import soundfile as sf
 import time
 import numpy as np
-import matplotlib.pyplot as plt
+try:
+	import matplotlib.pyplot as plt
+	plot = True
+except ImportError:
+	plot = False
+
 
 class waveForm:
 	def __init__(self, path):
@@ -62,6 +67,11 @@ class waveForm:
 
 	def plot(self):
 		# plot the signal
+
+		if plot == False:
+			print("You cannot plot as matplotlib is not available")
+			return
+
 		t = np.linspace(0, self.length, len(self.data) ) # Time vector
 
 		plt.figure()
@@ -84,6 +94,10 @@ class waveForm:
 
 	def plotFFT(self):
 		# plot FFT
+
+		if plot == False:
+			print("You cannot plot as matplotlib is not available")
+			return
 
 		if self.FFT is None:
 			self.getFFT()
@@ -122,6 +136,12 @@ class waveForm:
 			self.STFT[:,fen] = np.abs(Fft_m[0:round(Nfft/2)+1, fen])
 
 	def plotSTFT(self):
+
+		if plot == False:
+			print("You cannot plot as matplotlib is not available")
+			return
+
+
 		if self.STFT is None:
 			self.computeSTFT()
 		plt.figure()
@@ -153,6 +173,12 @@ class waveForm:
 				self.STFTlog[bin,fen] = np.mean(tronc) / (up_lim - down_lim)
 
 	def plotSTFTlog(self):
+
+		if plot == False:
+			print("You cannot plot as matplotlib is not available")
+			return
+
+			
 		if self.STFTlog is None:
 			self.computeSTFTlog()
 

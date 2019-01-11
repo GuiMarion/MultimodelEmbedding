@@ -16,7 +16,7 @@ def generateSyntData(N, nbFonts, size1=(80,100), size2=(100, 128)):
 
 def MYFUNCTION():
 	# your function here
-
+	
 	time.sleep(1)
 	return ""
 

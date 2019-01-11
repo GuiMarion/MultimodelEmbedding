@@ -2,8 +2,11 @@ from Modules import waveForm
 
 from pypianoroll import Multitrack as proll
 from pypianoroll import Track
-
-import matplotlib.pyplot as plt
+try:
+	import matplotlib.pyplot as plt
+	plot = True
+except ImportError:
+	plot = False
 import subprocess
 import os
 import numpy as np
@@ -60,7 +63,10 @@ class score:
 
 	def plot(self):
 		# plot the pianoRoll representation
-		
+		if plot == False:
+			print("you cannot plot anything as matplotlib is not available")
+			return
+
 		plt.imshow(self.pianoroll.T, aspect='auto', origin='lower')
 		plt.xlabel('time (beat)')
 		plt.ylabel('midi note')
