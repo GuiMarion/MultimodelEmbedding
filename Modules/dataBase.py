@@ -8,7 +8,7 @@ from Modules import waveForm
 
 # Parameters for the data extraction part
 WINDOW_SIZE = 10 # in beat
-STEP = 240 # in sample
+STEP = 1 # in sample
 
 FONTS = ["000_Florestan_Piano.sf2"] # TODO add more fonts
 
@@ -135,7 +135,7 @@ class dataBase:
 		
 		augmentedData = []
 
-		for s in scores:
+		for s in tqdm(scores):
 			augmentedData.extend(s.getTransposed())
 
 
