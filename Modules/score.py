@@ -11,7 +11,13 @@ import subprocess
 import os
 import numpy as np
 import copy
+from midi2audio import FluidSynth
 
+import sys
+
+class NullWriter(object):
+	def write(self, arg):
+		pass
 '''
 velocity : ok 
 getpianoroll : ok
@@ -120,9 +126,19 @@ class score:
 		pathFont = "../SoundFonts/" + font
 
 		self.writeToMidi(midiPath)
-		process = subprocess.Popen("fluidsynth -F "+wavePath+" "+pathFont+" "+midiPath, shell=True, 
-									stderr=subprocess.DEVNULL ,stdout=subprocess.DEVNULL)
-		process.wait()
+
+		nullwrite = NullWriter()
+		oldstdout = sys.stdout
+		oldstderr = sys.stderr
+		sys.stdout = nullwrite # disable output
+		sys.stderr = nullwrite
+
+		F = FluidSynth(pathFont)
+		F.midi_to_audio(midiPath, wavePath)
+
+		sys.stdout = oldstdout # enable output
+		sys.stderr = oldstderr
+
 		# should return on an object of type waveForm defined in this folder
 		newWaveForm = waveForm.waveForm(wavePath)
 
