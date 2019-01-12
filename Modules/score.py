@@ -109,8 +109,8 @@ class score:
 
 	def toWaveForm(self, font="MotifES6ConcertPiano.sf2"):
 
-		midiPath = "../Exemples/dataBaseTest/scoreTest/"+self.name+".mid"
-		wavePath = "../Exemples/dataBaseTest/scoreTest/"+self.name+".wav"
+		midiPath = "../"+self.name+".mid"
+		wavePath = "../"+self.name+".wav"
 		pathFont = "../SoundFonts/" + font
 
 		self.writeToMidi(midiPath)
