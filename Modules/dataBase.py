@@ -80,7 +80,7 @@ class dataBase:
         for s in tqdm(scores):
             waveforms = []
             for font in FONTS:
-                spectrum_temp = s.toWaveForm(font=font).getSTFTlog()
+                spectrum_temp = s.toWaveForm(font=font).getCQT()
 
                 N = s.length * s.quantization
                 windowSize = WINDOW_SIZE * s.quantization
@@ -90,14 +90,14 @@ class dataBase:
                 tmpPart1 = []
                 tmpPart2 = []
                 for i in range((N-windowSize)//STEP):
-                    tmpPart1 = s.extractPart(i*STEP, i*STEP+windowSize).getPianoRoll()
+                    tmpPart1 = s.extractPart(i*STEP, i*STEP+windowSize)
                     tmpPart2 = spectrum_temp[:,round(i*STEP*r) : round(i*STEP*r) + round(windowSize*r)]
 
 
-                    #self.data.append( (tmpPart1, tmpPart2, s.name + "-" + font) )
+                    self.data.append( (tmpPart1.getPianoRoll(), tmpPart2, tmpPart1.name + "-" + font) )
 
-                    if str(tmpPart1.shape) not in shapes1:
-                        shapes1.append(str(tmpPart1.shape))
+                    if str(tmpPart1.getPianoRoll().shape) not in shapes1:
+                        shapes1.append(str(tmpPart1.getPianoRoll().shape))
                     if str(tmpPart2.shape) not in shapes2:
                         shapes2.append(str(tmpPart2.shape))
 
