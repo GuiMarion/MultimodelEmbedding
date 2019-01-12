@@ -47,6 +47,8 @@ class waveForm:
 
 		return "Données chargées."
 
+	def getData(self):
+		return self.data
 
 	def play(self, length=None):
 		# play the data, use the module sound device
@@ -154,7 +156,7 @@ class waveForm:
 
 
 	def computeCQT(self):
-		vect = self.data[:,]
+		vect = self.data[:,0]
 		self.CQT = np.abs(librosa.cqt(vect, sr=self.sampleRate, fmin=30, n_bins=128, bins_per_octave=16))
 
 	def getCQT(self):

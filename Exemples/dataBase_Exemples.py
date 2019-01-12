@@ -8,6 +8,15 @@ D1 = dataBase.dataBase()
 D1.constructDatabase("dataBaseTest") # on a tiny dataset
 #D1.constructDatabase("../DataBase") # on the whole database
 
+D1.print()
+print(len(D1.getData()))
+D = D1.getBatches(32)
+
+for elem in D:
+	print(elem[3])
+
+quit()
+
 D1.save(path="dataBaseTest/Serialized/")
 D1.print()
 

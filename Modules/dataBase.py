@@ -2,6 +2,8 @@ import os
 from glob import glob
 import pickle
 from tqdm import tqdm
+import random
+import numpy as np
 
 from Modules import score
 from Modules import waveForm
@@ -10,7 +12,11 @@ from Modules import waveForm
 WINDOW_SIZE = 10 # in beat
 STEP = 120 # in sample
 
-FONTS = ["000_Florestan_Piano.sf2"] # TODO add more fonts
+DEBUG = False
+
+FONTS = ["000_Florestan_Piano.sf2", "SteinwayGrandPiano_1.2.sf2"] # TODO add more fonts
+
+
 
 class dataBase:
     def __init__(self, name="database"):
@@ -18,7 +24,6 @@ class dataBase:
         self.name = name
         self.data = []
         self.path = None
-
 
     def constructDatabase(self, path, name=None):
         # construct a dictionary wich contains, for every file, a tuple with the corresponding score and waveForm object
@@ -69,7 +74,7 @@ class dataBase:
         print("_____ Augmenting database ...")
         print()
 
-        #scores = self.augmentData(scores)
+        scores = self.augmentData(scores)
 
         print("_____ Computing the sound ...")
         print()
@@ -79,35 +84,42 @@ class dataBase:
 
         for s in tqdm(scores):
             waveforms = []
-            for font in FONTS:
-                spectrum_temp = s.toWaveForm(font=font).getCQT()
+            spectrum_temp = []
 
-                N = s.length * s.quantization
-                windowSize = WINDOW_SIZE * s.quantization
-                retParts = []
-                r = spectrum_temp.shape[1] / s.getPianoRoll().shape[1]
+            N = s.length * s.quantization
+            windowSize = WINDOW_SIZE * s.quantization
+            retParts = []
+            r = []
 
-                tmpPart1 = []
+            for f in range(len(FONTS)):
+                spectrum_temp.append(s.toWaveForm(font=FONTS[f]).getCQT())
+                r.append(spectrum_temp[f].shape[1] / s.getPianoRoll().shape[1])
+
+
+            tmpPart1 = []
+            tmpPart2 = []
+            for i in range((N-windowSize)//STEP):
+                tmpPart1 = s.extractPart(i*STEP, i*STEP+windowSize)
                 tmpPart2 = []
-                for i in range((N-windowSize)//STEP):
-                    tmpPart1 = s.extractPart(i*STEP, i*STEP+windowSize)
-                    tmpPart2 = spectrum_temp[:,round(i*STEP*r) : round(i*STEP*r) + round(windowSize*r)]
+                tmpNames = []
+                for f in range(len(FONTS)):
 
+                    tmpPart2.append(spectrum_temp[f][:,round(i*STEP*r[f]) : round(i*STEP*r[f]) + round(windowSize*r[f])])
+                    tmpNames.append(tmpPart1.name + "-" + FONTS[f])
 
-                    self.data.append( (tmpPart1.getPianoRoll(), tmpPart2, tmpPart1.name + "-" + font) )
+                self.data.append( (tmpPart1.getPianoRoll(), tmpPart2, tmpNames) )
 
+                if DEBUG:
                     if str(tmpPart1.getPianoRoll().shape) not in shapes1:
                         shapes1.append(str(tmpPart1.getPianoRoll().shape))
                     if str(tmpPart2.shape) not in shapes2:
                         shapes2.append(str(tmpPart2.shape))
-
-                #self.data.append( (s.getPianoRoll(), s.toWaveForm(font=font).getSTFTlog(), s.name + "-" + font) )
-
-        print("Shape 1")
-        print(shapes1)
-        print()
-        print("Shape 2")
-        print(shapes2)
+        if DEBUG :
+            print("Shape 1")
+            print(shapes1)
+            print()
+            print("Shape 2")
+            print(shapes2)
 
     def save(self, path="../DataBase/Serialized/"):
         # Save database as a pickle
@@ -172,5 +184,59 @@ class dataBase:
 
 
         return augmentedData
+
+
+    def getBatches(self, batchSize):
+        # return efficiently valid batches from data if len(data) > 32
+        random.shuffle(self.data)
+
+        batches = []
+        for i in range(len(self.data) // batchSize):
+            batches.extend(self.getSmallSetofBatch(self.data[i*batchSize : (i+1)*batchSize], batchSize))
+
+        return batches
+
+    def getSmallSetofBatch(self, data, batchSize):
+        # construct valid batchs from data, is effiencient if len(data) <=32
+
+        numberofData = len(data)*len(data[0][2])
+        numberofBatches = numberofData // batchSize
+        batches = []
+        empty = []
+
+        for b in range(numberofBatches):
+
+            X1 = []
+            X2 = []
+            L1 = []
+            L2 = []
+            unseenX = np.delete(np.arange(len(data)), empty)
+            for i in range(batchSize):
+                k1 = np.random.randint(len(unseenX))
+                k = unseenX[k1]
+                X1.append(data[k][0])
+                k2 = np.random.randint(len(data[k][1]))
+                X2.append(data[k][1][k2])
+                L1.append(data[k][2][0][:data[k][2][0].find("-")])
+                L2.append(data[k][2][k2])
+                # We delete the indice we just saw
+                unseenX = np.concatenate((unseenX[:k1], unseenX[k1+1:]), axis=None)
+                # We also delete the spectrum we used
+                del data[k][1][k2]
+                del data[k][2][k2]
+
+                if len(data[k][2]) == 0 :
+                    empty.append(k)
+
+            # We shuffle X2 in order to don't the make matching indices in each batch
+            # We need to shuffle L2 the same way in order to get the right names
+            c = list(zip(X2, L2))
+            random.shuffle(c)
+            X2, L2 = zip(*c)
+
+            batches.append((X1, X2, L1, L2))
+
+
+        return batches
 
 

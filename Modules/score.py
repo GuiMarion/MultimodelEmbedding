@@ -41,7 +41,9 @@ class score:
 		if fromArray[0] is None:
 			try:
 				# use pypianoroll to parse the midifile
-				self.pianoroll = proll(pathToMidi, beat_resolution=quantization).get_merged_pianoroll()
+				self.pianoroll = proll(pathToMidi, beat_resolution=quantization)
+				self.pianoroll.trim_trailing_silence()
+				self.pianoroll = self.pianoroll.get_merged_pianoroll()
 				self.name = os.path.splitext(os.path.basename(pathToMidi))[0]
 			except OSError:
 				raise RuntimeError("incorrect midi file.")
@@ -56,6 +58,8 @@ class score:
 
 		#store length in time beat
 		self.length = len(self.pianoroll)//self.quantization
+
+		self.transposition = 0
 
 	def getPianoRoll(self):
 		# return the np.array containing the pianoRoll
@@ -174,9 +178,10 @@ class score:
 		# And stores each transposition as a new score
 		for t in range(-6, 6):
 			transRoll = self.transpose(t) # transposed piano roll matrix
-			newName = self.name + '_' + str(t)
+			newName = self.name + '_' + str(t) + "_"
 			
 			transposed_score = score("", fromArray=(transRoll, newName))
+			transposed_score.transposition = t
 			transposed_scores.append(transposed_score)
 
 		return transposed_scores
