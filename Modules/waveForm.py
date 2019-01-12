@@ -1,20 +1,11 @@
+import sounddevice as sd # On importe sounddevice
 import os
 import soundfile as sf
 import time
 import numpy as np
-try:
-	import matplotlib.pyplot as plt
-	plot = True
-except ImportError:
-	plot = False
-
-try :
-	import sounddevice as sd # in order to play
-	sound = True
-except OSError:
-	sound = False
-
-
+import matplotlib.pyplot as plt
+from scipy.sparse import hstack, vstack, coo_matrix
+import librosa
 
 class waveForm:
 	def __init__(self, path):
@@ -28,7 +19,7 @@ class waveForm:
 			self.FFT = None
 			self.STFT = None
 			self.STFTlog = None
-
+			self.CQT = None
 
 		else:
 			self.tempo = 0
@@ -59,11 +50,6 @@ class waveForm:
 
 	def play(self, length=None):
 		# play the data, use the module sound device
-
-		if sound == False:
-			print("You cannot play inthing as PortAudio is not available")
-			return
-
 		if length is None:
 			length = len(self.data)//self.sampleRate
 		sd.play(self.data, self.sampleRate)
@@ -78,11 +64,6 @@ class waveForm:
 
 	def plot(self):
 		# plot the signal
-
-		if plot == False:
-			print("You cannot plot as matplotlib is not available")
-			return
-
 		t = np.linspace(0, self.length, len(self.data) ) # Time vector
 
 		plt.figure()
@@ -106,10 +87,6 @@ class waveForm:
 	def plotFFT(self):
 		# plot FFT
 
-		if plot == False:
-			print("You cannot plot as matplotlib is not available")
-			return
-
 		if self.FFT is None:
 			self.getFFT()
 
@@ -127,32 +104,24 @@ class waveForm:
 			self.computeSTFT()
 		return self.STFT, self.STFTsec, self.STFTfreq
 
-	def computeSTFT(self, L_n = 2048):
-
+	def computeSTFT(self, L_n = 4096):
 		STEP_n = int(self.sampleRate // 20)
 		Nfft =  L_n * 4
-
-		nLim = int((len(self.data)-L_n) // (STEP_n))
+		nLim = int((len(self.data)-L_n) / (STEP_n))
 
 		Fft_m = np.zeros((Nfft, nLim))
 		self.STFT = np.zeros((round(Nfft/2)+1, nLim))
 		self.STFTfreq = np.linspace(1, self.sampleRate/2, round(Nfft/2)+1)
 		self.STFTsec = np.linspace(0, self.length, nLim)
 
-		window = np.blackman(L_n)
+		window = np.hamming(L_n)
 		self.data = self.data[:,0]
-		# For each window, we first calculate the corresponding DFT and then put its amplitude spectrum in the STFT array
+
 		for fen in range(nLim):
 			Fft_m[:,fen] = np.fft.fft(window * self.data[fen*STEP_n:fen*STEP_n+L_n], Nfft)
 			self.STFT[:,fen] = np.abs(Fft_m[0:round(Nfft/2)+1, fen])
 
 	def plotSTFT(self):
-
-		if plot == False:
-			print("You cannot plot as matplotlib is not available")
-			return
-
-
 		if self.STFT is None:
 			self.computeSTFT()
 		plt.figure()
@@ -183,18 +152,24 @@ class waveForm:
 				tronc = np.array(self.STFT[down_lim : up_lim, fen])
 				self.STFTlog[bin,fen] = np.mean(tronc) / (up_lim - down_lim)
 
-	def plotSTFTlog(self):
 
-		if plot == False:
-			print("You cannot plot as matplotlib is not available")
-			return
+	def computeCQT(self):
+		vect = self.data[:,]
+		self.CQT = np.abs(librosa.cqt(vect, sr=self.sampleRate, fmin=30, n_bins=128, bins_per_octave=16))
 
-			
-		if self.STFTlog is None:
-			self.computeSTFTlog()
+	def getCQT(self):
+		if self.CQT is None:
+			self.computeCQT()
+		return self.CQT
+
+	def plotCQT(self):
+		if self.CQT is None:
+			self.computeCQT()
 
 		plt.figure()
-		plt.pcolormesh(self.STFTsec, np.arange(0,128), np.sqrt(self.STFTlog))
-		plt.xlabel('Time(s)')
+		plt.pcolormesh(np.arange(0,len(C[0,:])), np.arange(0,len(C[:,0])), C)
+		plt.colorbar(format='%+2.0f dB')
+		plt.tight_layout()
+		plt.xlabel('Time')
 		plt.ylabel('Frequency bin')
 		plt.show()

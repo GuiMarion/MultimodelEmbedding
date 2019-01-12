@@ -15,14 +15,3 @@ D1.print()
 D2 = dataBase.dataBase()
 D2.load("dataBaseTest/Serialized/dataBaseTest.data")
 D2.print()
-
-dico = D2.getData()
-print("\nPlaying and displaying snippets :")
-print()
-
-for key in dico:
-	print(key[0].name + '♪')
-	# should plot the scores
-	for minibout in key[1]:
-		minibout.play()
-key[0].plot()

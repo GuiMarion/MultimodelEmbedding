@@ -60,7 +60,7 @@ class score:
 	def getPianoRoll(self):
 		# return the np.array containing the pianoRoll
 
-		return self.pianoroll
+		return np.transpose(self.pianoroll)
 
 	def getLength(self):
 		# return the length in time beat
