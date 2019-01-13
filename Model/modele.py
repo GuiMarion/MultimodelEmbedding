@@ -88,6 +88,10 @@ class Modele():
                         y_pred1 = self.model1.forward(X1)
                         y_pred2 = self.model2.forward(X2)
 
+                        #  Appel à ta loss sur batch
+                        # update loss
+                        #  ce qui suit sera supprimé
+
                         for i in range(min(len(y_pred1), len(y_pred2))):
                                 tmpLoss += self.loss_test(y_pred1[i], y_pred2[i])
 
