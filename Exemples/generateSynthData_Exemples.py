@@ -7,6 +7,12 @@ from Modules import dataBase as db
 
 data = gen.generateSyntData(100, 2)
 
+D1 = db.dataBase()
+D1.data = data
+D = D1.getBatches(32)
+
+quit()
+
 # this script help you to understand the usages for the generateSyntheticData one. 
 # It generate random data but with the exact same structure than our reel data
 

@@ -237,11 +237,12 @@ class dataBase:
 
             # We shuffle X2 in order to don't the make matching indices in each batch
             # We need to shuffle L2 the same way in order to get the right names
-            c = list(zip(X2, L2))
+            indices = np.arange(len(L1))
+            c = list(zip(X2, L2, indices))
             random.shuffle(c)
-            X2, L2 = zip(*c)
-
-            batches.append((X1, X2, L1, L2))
+            X2, L2, indices = zip(*c)
+            
+            batches.append((X1, X2, L1, L2, indices))
 
 
         return batches
