@@ -4,17 +4,22 @@ import pickle
 from tqdm import tqdm
 import random
 import numpy as np
+import torch
 
 from Modules import score
 from Modules import waveForm
 
 # Parameters for the data extraction part
 WINDOW_SIZE = 10 # in beat
-STEP = 120 # in sample
+STEP = 50 # in sample
+
+TRAINSIZE = 0.6
+TESTSIZE = 0.2
+VALIDATIONSIZE = 0.2
 
 DEBUG = False
 
-FONTS = ["000_Florestan_Piano.sf2", "SteinwayGrandPiano_1.2.sf2"] # TODO add more fonts
+FONTS = ["Full_Grand_Piano.sf2", "SteinwayGrandPiano_1.2.sf2"]
 
 
 
@@ -74,7 +79,7 @@ class dataBase:
         print("_____ Augmenting database ...")
         print()
 
-        scores = self.augmentData(scores)
+        #scores = self.augmentData(scores)
 
         print("_____ Computing the sound ...")
         print()
@@ -114,6 +119,9 @@ class dataBase:
                         shapes1.append(str(tmpPart1.getPianoRoll().shape))
                     if str(tmpPart2.shape) not in shapes2:
                         shapes2.append(str(tmpPart2.shape))
+
+        random.shuffle(self.data)
+
         if DEBUG :
             print("Shape 1")
             print(shapes1)
@@ -188,10 +196,9 @@ class dataBase:
 
     def getBatches(self, batchSize):
         # return efficiently valid batches from data if len(data) > 32
-        random.shuffle(self.data)
 
         batches = []
-        for i in range(len(self.data) // batchSize):
+        for i in tqdm(range(int(TRAINSIZE * len(self.data)) // batchSize)):
             batches.extend(self.getSmallSetofBatch(self.data[i*batchSize : (i+1)*batchSize], batchSize))
 
         return batches
@@ -239,4 +246,19 @@ class dataBase:
 
         return batches
 
+    def getTestSet(self, batchSize):
+
+        batches = []
+        for i in tqdm(range(int(TRAINSIZE * len(self.data)) // batchSize, int((TRAINSIZE + TESTSIZE) * len(self.data)) // batchSize)):
+            batches.extend(self.getSmallSetofBatch(self.data[i*batchSize : (i+1)*batchSize], batchSize))
+
+        return batches
+
+    def getValidationSet(self, batchSize):
+
+        batches = []
+        for i in tqdm(range(int((TRAINSIZE + TESTSIZE) * len(self.data)) // batchSize, len(self.data) // batchSize)):
+            batches.extend(self.getSmallSetofBatch(self.data[i*batchSize : (i+1)*batchSize], batchSize))
+
+        return batches
 

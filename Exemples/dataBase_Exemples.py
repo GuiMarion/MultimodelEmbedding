@@ -8,14 +8,25 @@ D1 = dataBase.dataBase()
 D1.constructDatabase("dataBaseTest") # on a tiny dataset
 #D1.constructDatabase("../DataBase") # on the whole database
 
-D1.print()
+#D1.print()
 print(len(D1.getData()))
-D = D1.getBatches(32)
+print()
+print("End of dataset Construction")
+print()
+D = D1.getBatches(64)
 
 for elem in D:
 	print(elem[3])
 
 quit()
+
+D = D1.getTestSet(32)
+for elem in D:
+	print(elem[2])
+
+D = D1.getValidationSet(32)
+for elem in D:
+	print(elem[2])	
 
 D1.save(path="dataBaseTest/Serialized/")
 D1.print()

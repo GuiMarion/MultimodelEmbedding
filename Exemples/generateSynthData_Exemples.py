@@ -3,7 +3,9 @@ sys.path.append('../')
 import numpy as np
 
 from Modules import generateSyntheticData as gen
+from Modules import dataBase as db
 
+data = gen.generateSyntData(100, 2)
 
 # this script help you to understand the usages for the generateSyntheticData one. 
 # It generate random data but with the exact same structure than our reel data
