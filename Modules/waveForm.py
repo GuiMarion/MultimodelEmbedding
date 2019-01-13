@@ -111,7 +111,7 @@ class waveForm:
 		Nfft =  L_n * 4
 		nLim = int((len(self.data)-L_n) / (STEP_n))
 
-		Fft_m = np.zeros((Nfft, nLim))
+		Fft_m = np.zeros((Nfft, nLim), dtype='complex64')
 		self.STFT = np.zeros((round(Nfft/2)+1, nLim))
 		self.STFTfreq = np.linspace(1, self.sampleRate/2, round(Nfft/2)+1)
 		self.STFTsec = np.linspace(0, self.length, nLim)
@@ -123,23 +123,12 @@ class waveForm:
 			Fft_m[:,fen] = np.fft.fft(window * self.data[fen*STEP_n:fen*STEP_n+L_n], Nfft)
 			self.STFT[:,fen] = np.abs(Fft_m[0:round(Nfft/2)+1, fen])
 
-	def plotSTFT(self):
-		if self.STFT is None:
-			self.computeSTFT()
-		plt.figure()
-		#plt.imshow(np.sqrt(self.STFT), origin='lower', aspect='auto', extent=[self.STFTsec[0], self.STFTsec[-1], self.STFTfreq[0], self.STFTfreq[-1]], interpolation='nearest')
-		plt.pcolormesh(self.STFTsec, self.STFTfreq, np.sqrt(self.STFT))
-		plt.ylim((30, 6000))
-		plt.xlabel('Time(s)')
-		plt.ylabel('Fréquence(Hz)')
-		plt.show()
-
 	def getSTFTlog(self):
 		if self.STFTlog is None:
 			self.computeSTFTlog()
 		return self.STFTlog
 
-	def computeSTFTlog(self):
+	def computeSTFTlog(self, b=16):
 		if self.STFT is None:
 			self.computeSTFT()
 
@@ -147,17 +136,37 @@ class waveForm:
 		dF = self.sampleRate / len(self.STFTfreq)
 		self.STFTlog = np.zeros((128, len(self.STFTsec)))
 		for bin in range(0,128):
-			freq_c = np.power(2, (bin + 1)/16) * f0
-			down_lim = int(np.floor(freq_c * np.power(2, -1/32)) / dF)
-			up_lim = int(np.ceil(freq_c * np.power(2, 1/32)) / dF) + 1
+			freq_c = np.power(2, (bin + 1)/b) * f0
+			down_lim = int(np.floor(freq_c * np.power(2, -1/(2*b))) / dF)
+			up_lim = int(np.ceil(freq_c * np.power(2, 1/(2*b))) / dF) + 1
 			for fen in range(0, len(self.STFTsec)-1):
 				tronc = np.array(self.STFT[down_lim : up_lim, fen])
 				self.STFTlog[bin,fen] = np.mean(tronc) / (up_lim - down_lim)
 
+	def plotSTFT(self, log=True):
+		if log:
+			if self.STFTlog is None:
+				self.computeSTFTlog()
+			plt.figure()
+			#plt.imshow(np.sqrt(self.STFT), origin='lower', aspect='auto', extent=[self.STFTsec[0], self.STFTsec[-1], self.STFTfreq[0], self.STFTfreq[-1]], interpolation='nearest')
+			plt.pcolormesh(self.STFTsec, np.arange(0, 128), np.sqrt(self.STFTlog))
+			plt.ylim((0, 128))
+			plt.xlabel('Time(s)')
+			plt.ylabel('Fréquency bin')
+		else:
+			if self.STFT is None:
+				self.computeSTFT()
+			plt.figure()
+			#plt.imshow(np.sqrt(self.STFT), origin='lower', aspect='auto', extent=[self.STFTsec[0], self.STFTsec[-1], self.STFTfreq[0], self.STFTfreq[-1]], interpolation='nearest')
+			plt.pcolormesh(self.STFTsec, self.STFTfreq, np.sqrt(self.STFT))
+			plt.ylim((30, 6000))
+			plt.xlabel('Time(s)')
+			plt.ylabel('Fréquency(Hz)')
+		plt.show()
 
-	def computeCQT(self):
-		vect = self.data[:,0]
-		self.CQT = np.abs(librosa.cqt(vect, sr=self.sampleRate, fmin=30, n_bins=128, bins_per_octave=16))
+	def computeCQT(self, nbins=128):
+		vect = self.data[:,]
+		self.CQT = np.abs(librosa.cqt(vect, sr=self.sampleRate, fmin=30, n_bins=nbins, bins_per_octave=16))
 
 	def getCQT(self):
 		if self.CQT is None:
@@ -169,7 +178,7 @@ class waveForm:
 			self.computeCQT()
 
 		plt.figure()
-		plt.pcolormesh(np.arange(0,len(C[0,:])), np.arange(0,len(C[:,0])), C)
+		plt.pcolormesh(np.arange(0,len(self.CQT[0,:])), np.arange(0,len(self.CQT[:,0])), self.CQT)
 		plt.colorbar(format='%+2.0f dB')
 		plt.tight_layout()
 		plt.xlabel('Time')
