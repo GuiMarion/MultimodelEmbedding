@@ -69,8 +69,8 @@ class Modele():
 			print("We have", len(batches), "batches for the training part.")
 			self.nbOfBatches = len(batches)
 
-			self.X1_L_tmp = []
-			self.X2_L_tmp = []
+			self.X1_L = []
+			self.X2_L = []
 			self.L1_L = []
 			self.L2_L = []
 			self.indices_L = []
@@ -78,18 +78,18 @@ class Modele():
 			for batch in batches:
 				N1 = np.array(batch[0]).astype(float)
 				N1 = N1.reshape(self.batch_size, 1, N1.shape[1], N1.shape[2])
-				X1 = torch.autograd.Variable(torch.FloatTensor(N1), requires_grad=False)
+				X1 = torch.autograd.Variable(torch.FloatTensor(N1), requires_grad=True)
 
 				N2 = np.array(batch[1]).astype(float)
 				N2 = N2.reshape(self.batch_size, 1, N2.shape[1], N2.shape[2])
-				X2 = torch.autograd.Variable(torch.FloatTensor(N2), requires_grad=False)
+				X2 = torch.autograd.Variable(torch.FloatTensor(N2), requires_grad=True)
 
 				if self.GPU:
 					X1 = X1.cuda()
 					X2 = X2.cuda()
 
-				self.X1_L_tmp.append(X1)
-				self.X2_L_tmp.append(X2)
+				self.X1_L.append(X1)
+				self.X2_L.append(X2)
 				self.L1_L.append(batch[2])
 				self.L2_L.append(batch[3])
 				self.indices_L.append(batch[4])
@@ -116,6 +116,13 @@ class Modele():
 
 		for batch in batches:
 
+			N1 = np.array(batch[0]).astype(float)
+			N1 = N1.reshape(self.batch_size, 1, N1.shape[1], N1.shape[2])
+			X1 = torch.autograd.Variable(torch.FloatTensor(N1), requires_grad=False)
+
+			N2 = np.array(batch[1]).astype(float)
+			N2 = N2.reshape(self.batch_size, 1, N2.shape[1], N2.shape[2])
+			X2 = torch.autograd.Variable(torch.FloatTensor(N2), requires_grad=False)
 
 			y_pred1 = self.model1.forward(X1)
 			y_pred2 = self.model2.forward(X2)
