@@ -41,7 +41,7 @@ class Modele():
 		self.losses_test = []
 
 		# We don't store loss greater than that
-		self.lastloss = 100
+		self.lastloss = 1000
 
 	def loadBatch(self):
 		# Load mini batch from file named batch_num
