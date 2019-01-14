@@ -1,11 +1,11 @@
-import sys 
-sys.path.append('../')
+
 from Modules import dataBase
+from Model import network
 
 import numpy as np
-import network
 import torch
 import pickle
+import tqdm
 try:
 	import matplotlib.pyplot as plt
 	plot = True
@@ -168,7 +168,7 @@ class Modele():
 		for t in range(EPOCHS):
 			# Make learn the two models with respects to x and y
 
-			for batch in self.batches:
+			for batch in tqdm(self.batches):
 				N1 = np.array(batch[0]).astype(float)
 				N1 = N1.reshape(self.batch_size, 1, N1.shape[1], N1.shape[2])
 				X1 = torch.autograd.Variable(torch.FloatTensor(N1), requires_grad=True)
@@ -190,7 +190,7 @@ class Modele():
 
 				# Compute and print loss
 				loss = self.myloss((y_pred1, y_pred2, L1, L2, indices))
-				print(t, loss.item())
+				#print(t, loss.item())
 
 				# Zero gradients, perform a backward pass, and update the weights.
 				optimizer.zero_grad()
