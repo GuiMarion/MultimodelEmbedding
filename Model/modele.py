@@ -69,11 +69,11 @@ class Modele():
 			print("We have", len(batches), "batches for the training part.")
 			self.nbOfBatches = len(batches)
 
-			X1_L = []
-			X2_L = []
-			L1_L = []
-			L2_L = []
-			indices_L = []
+			self.X1_L = []
+			self.X2_L = []
+			self.L1_L = []
+			self.L2_L = []
+			self.indices_L = []
 
 			for batch in batches:
 				N1 = np.array(batch[0]).astype(float)
@@ -88,11 +88,11 @@ class Modele():
 				if self.GPU:
 					X2 = X2.cuda()
 
-				X1_L.append(X1)
-				X2_L.append(X2)
-				L1_L.append(batch[2])
-				L2_L.append(batch[3])
-				indices_L.append(batch[4])
+				self.X1_L.append(X1)
+				self.X2_L.append(X2)
+				self.L1_L.append(batch[2])
+				self.L2_L.append(batch[3])
+				self.indices_L.append(batch[4])
 
 
 
@@ -187,12 +187,12 @@ class Modele():
 			for k in range(self.nbOfBatches):
 
 
-				y_pred1 = self.model1.forward(X1_L[k])
-				y_pred2 = self.model2.forward(X2_L[k])
+				y_pred1 = self.model1.forward(self.X1_L[k])
+				y_pred2 = self.model2.forward(self.X2_L[k])
 
 
 				# Compute and print loss
-				loss = self.myloss((y_pred1, y_pred2, L1_L[k], L2_L[k], indices_L[k]))
+				loss = self.myloss((y_pred1, y_pred2, self.L1_L[k], self.L2_L[k], self.indices_L[k]))
 				#print(t, loss.item())
 
 				# Zero gradients, perform a backward pass, and update the weights.
