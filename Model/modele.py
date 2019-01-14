@@ -178,9 +178,10 @@ class Modele():
 				X1 = X1.cuda()
 
 			Y = self.model1.forward(X1).data
-			dico[Y] = batch[2]
+			for i in range(len(batch[2])):
+				dico[Y[i]] = batch[2][i]
 
-		pickle.dump(dico, open( "dico.p", "wb" ) )
+		pickle.dump(dico, open( "/fast_1/guilhem/params/dico.p", "wb" ) )
 
 
 
