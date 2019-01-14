@@ -84,10 +84,6 @@ class Modele():
 				#N2 = N2.reshape(self.batch_size, 1, N2.shape[1], N2.shape[2])
 				X2 = torch.autograd.Variable(torch.FloatTensor(N2), requires_grad=False)
 
-				if self.GPU:
-					X1 = X1.cuda()
-					X2 = X2.cuda()
-
 				X1_L_tmp.append(X1)
 				X2_L_tmp.append(X2)
 				self.L1_L.append(batch[2])
