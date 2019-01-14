@@ -66,7 +66,8 @@ class Modele():
 
 			self.testBatches = D.getTestSet(self.batch_size)
 
-			print("We have", len(self.batches), "batches for the training part.")
+			print("We have", len(batches), "batches for the training part.")
+			self.nbOfBatches = len(batches)
 
 			X1_L = []
 			X2_L = []
@@ -183,8 +184,7 @@ class Modele():
 		for t in range(EPOCHS):
 			# Make learn the two models with respects to x and y
 
-			k = 0
-			for batch in tqdm(self.batches):
+			for k in range(self.nbOfBatches):
 
 
 				y_pred1 = self.model1.forward(X1_L[k])
