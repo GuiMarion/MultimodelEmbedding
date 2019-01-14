@@ -124,8 +124,8 @@ class Net(nn.Module):
             optimizer.step()
             
             # append the losses to self.losses and self.losses_test
-            self.losses = np.append(self.losses, self.eval(x,y))
-            self.losses_test= np.append(self.losses_test, self.eval(x_test,y_test))
+            self.losses = np.append(self.losses, self.TestEval(x,y))
+            self.losses_test= np.append(self.losses_test, self.TestEval(x_test,y_test))
             
             if(t > 10 and self.is_over_fitting()):
                 print("OVERFITTING!")
@@ -144,7 +144,7 @@ class Net(nn.Module):
 
         return loss
 
-    def eval(self, x, y):
+    def TestEval(self, x, y):
         loss = 0
         y_pred = self.forward(x)
         for i in range(min(len(y_pred), len(y))):

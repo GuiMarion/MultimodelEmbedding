@@ -85,7 +85,7 @@ class Modele():
 		return loss
 
 
-	def eval(self, batches):
+	def TestEval(self, batches):
 		# Evaluation fonction
 		# return the meaned loss for batches
 
@@ -120,9 +120,9 @@ class Modele():
 	def save_weights(self):
 		# save the weights of the model with the name name
 		print("____ Saving the models.")
-		self.model1.cpu().parameters().save("/fast-1/guilhem/params/model1.data")
-		self.model2.cpu().parameters().save("/fast-1/guilhem/params/model2.data")
 
+		torch.save(self.model1.cpu(), "/fast-1/guilhem/params/model1.data")
+		torch.save(self.model2.cpu(), "/fast-1/guilhem/params/model2.data")
 
 	def plot_losses(self):
 		# plot the losses over time
@@ -200,7 +200,7 @@ class Modele():
 
 			# appending losses
 			self.losses.append(float(loss.item()))
-			self.losses_test.append(self.eval(self.testBatches))
+			self.losses_test.append(self.TestEval(self.testBatches))
 
 			print("____ Test Loss:", self.losses_test[t])
 
