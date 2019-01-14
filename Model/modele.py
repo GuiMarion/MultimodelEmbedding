@@ -69,41 +69,30 @@ class Modele():
 			print("We have", len(batches), "batches for the training part.")
 			self.nbOfBatches = len(batches)
 
-			X1_L_tmp = []
-			X2_L_tmp = []
+			self.X1_L_tmp = []
+			self.X2_L_tmp = []
 			self.L1_L = []
 			self.L2_L = []
 			self.indices_L = []
 
 			for batch in batches:
 				N1 = np.array(batch[0]).astype(float)
-				#N1 = N1.reshape(self.batch_size, 1, N1.shape[1], N1.shape[2])
+				N1 = N1.reshape(self.batch_size, 1, N1.shape[1], N1.shape[2])
 				X1 = torch.autograd.Variable(torch.FloatTensor(N1), requires_grad=False)
 
 				N2 = np.array(batch[1]).astype(float)
-				#N2 = N2.reshape(self.batch_size, 1, N2.shape[1], N2.shape[2])
+				N2 = N2.reshape(self.batch_size, 1, N2.shape[1], N2.shape[2])
 				X2 = torch.autograd.Variable(torch.FloatTensor(N2), requires_grad=False)
 
-				X1_L_tmp.append(X1)
-				X2_L_tmp.append(X2)
+				if self.GPU:
+					X1 = X1.cuda()
+					X2 = X2.cuda()
+
+				self.X1_L_tmp.append(X1)
+				self.X2_L_tmp.append(X2)
 				self.L1_L.append(batch[2])
 				self.L2_L.append(batch[3])
 				self.indices_L.append(batch[4])
-
-			self.X1_L = torch.FloatTensor(self.nbOfBatches, X1.shape[0], X1.shape[1], X1.shape[2])
-			self.X2_L = torch.FloatTensor(self.nbOfBatches, X2.shape[0], X2.shape[1], X2.shape[2])
-
-			torch.cat(X1_L_tmp, out=self.X1_L)
-			torch.cat(X2_L_tmp, out=self.X2_L)
-			self.X1_L =  self.X1_L.view(self.nbOfBatches, X1.shape[0], 1, X1.shape[1], X1.shape[2])
-			self.X2_L =  self.X2_L.view(self.nbOfBatches, X1.shape[0], 1, X2.shape[1], X2.shape[2])
-
-			if self.GPU:
-				print()
-				print("ON GPUUUUUU")
-				print()
-				self.X1_L = self.X1_L.cuda()
-				self.X1_L = self.X2_L.cuda()
 
 
 	def loss_test(self, y_pred1, y_pred2):
