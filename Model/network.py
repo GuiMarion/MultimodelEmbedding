@@ -2,8 +2,14 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import matplotlib.pyplot as plt
 import numpy as np
+
+try:
+    import matplotlib.pyplot as plt
+    plot = True
+except ImportError:
+    plot = False
+
 
 #Conv layer specs
 in_channels = 1 # number of inputs in depth, 3 for a RGB image for example, 1 in our case

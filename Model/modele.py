@@ -6,8 +6,13 @@ import numpy as np
 import network
 import torch
 import pickle
-import matplotlib.pyplot as plt
+try:
+        import matplotlib.pyplot as plt
+        plot = True
+except ImportError:
+        plot = False
 
+GPU = False
 
 class Modele():
 
@@ -18,7 +23,10 @@ class Modele():
                 else :
                         GPU = True
 
+
                 if GPU:
+                        torch.brackends.cudnn.benchmark = True
+                        torch.cuda.setdevice(gpu)
                         self.model1 = network.Net().cuda()
                         self.model2 = network.Net().cuda()
                 else:
@@ -30,10 +38,6 @@ class Modele():
                 self.databasePath = databasePath
 
                 self.loadBatch()
-
-                if GPU == True:
-                        torch.brackends.cudnn.benchmark = True
-                        torch.cuda.setdevice(gpu)
 
                 self.losses = []
                 self.losses_test = []
@@ -121,10 +125,13 @@ class Modele():
 
         def plot_losses(self):
                 # plot the losses over time
-                loss, = plt.plot(np.array(self.losses), label='Loss on training')
-                lossTest, = plt.plot(np.array(self.losses_test), label='Loss on test')
-                plt.legend(handles=[loss, lossTest])
-                plt.show()
+                if plot == True:
+                        loss, = plt.plot(np.array(self.losses), label='Loss on training')
+                        lossTest, = plt.plot(np.array(self.losses_test), label='Loss on test')
+                        plt.legend(handles=[loss, lossTest])
+                        plt.show()
+                else:
+                        print("Impossible to plot, tkinter not available.")
 
         def is_over_fitting(self):
                 # return True of False is the modele is overfitting
