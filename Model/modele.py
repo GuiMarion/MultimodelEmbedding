@@ -8,12 +8,22 @@ import torch
 import pickle
 import matplotlib.pyplot as plt
 
+
 class Modele():
 
-        def __init__(self, databasePath=None, batch_size=32):
+        def __init__(self, databasePath=None, batch_size=32, gpu=None):
 
-                self.model1 = network.Net()
-                self.model2 = network.Net() 
+                if gpu is None:
+                        GPU = False
+                else :
+                        GPU = True
+
+                if GPU:
+                        self.model1 = network.Net().cuda()
+                        self.model2 = network.Net().cuda()
+                else:
+                        self.model1 = network.Net()
+                        self.model2 = network.Net()
 
                 self.batch_size = batch_size
 
@@ -21,6 +31,9 @@ class Modele():
 
                 self.loadBatch()
 
+                if GPU == True:
+                        torch.brackends.cudnn.benchmark = True
+                        torch.cuda.setdevice(gpu)
 
                 self.losses = []
                 self.losses_test = []
@@ -88,9 +101,6 @@ class Modele():
                         y_pred1 = self.model1.forward(X1)
                         y_pred2 = self.model2.forward(X2)
 
-                        #  Appel à ta loss sur batch
-                        # update loss
-                        #  ce qui suit sera supprimé
 
                         for i in range(min(len(y_pred1), len(y_pred2))):
                                 tmpLoss += self.loss_test(y_pred1[i], y_pred2[i])
@@ -102,6 +112,9 @@ class Modele():
 
         def save_weights(self, name):
                 # save the weights of the model with the name name
+
+                # Passer en .cpu()
+                # et remettre en .cuda()
 
                 pass
 
@@ -122,10 +135,24 @@ class Modele():
 
                 return False
 
+        def myloss(self, batch, alpha=0.7):
+
+                s = torch.nn.CosineSimilarity(dim=0)
+                X1, X2, L1, L2, indices = batch
+
+                rank = 0
+
+                for x in range(len(X1)):
+                        for y in range(len(X2)):
+                                if y != x:
+                                        rank += max(0, alpha - s(X1[indices[x]], X2[x]) + s(X1[indices[x]], X2[y]))
+
+                return rank
+
         def learn(self, EPOCHS, learning_rate=1e-7, momentum=0.9):
 
                 print("_____ Training")
-                criterion = torch.nn.MSELoss(reduction='sum')
+                #criterion = myloss()
                 #optimizer = torch.optim.SGD(self.parameters(), lr=learning_rate, momentum=momentum)
                 parameters = [p for p in self.model1.parameters()] + [p for p in self.model2.parameters()]
 
@@ -136,17 +163,25 @@ class Modele():
                         for batch in self.batches:
                                 N1 = np.array(batch[0]).astype(float)
                                 N1 = N1.reshape(self.batch_size, 1, N1.shape[1], N1.shape[2])
-                                X1 = torch.FloatTensor(N1)
+                                X1 = torch.autograd.Variable(torch.FloatTensor(N1), requires_grad=True)
+                                if GPU:
+                                        X1.cuda()
 
                                 N2 = np.array(batch[1]).astype(float)
                                 N2 = N2.reshape(self.batch_size, 1, N2.shape[1], N2.shape[2])
-                                X2 = torch.FloatTensor(N2)
+                                X2 = torch.autograd.Variable(torch.FloatTensor(N2), requires_grad=True)
+                                if GPU:
+                                        X2.cuda()
 
-                                y_pred_test1 = self.model1.forward(X1)
-                                y_pred_test2 = self.model2.forward(X2)
+                                y_pred1 = self.model1.forward(X1)
+                                y_pred2 = self.model2.forward(X2)
+
+                                L1 = batch[2]
+                                L2 = batch[3]
+                                indices = batch[4]
 
                                 # Compute and print loss
-                                loss = criterion(y_pred_test1, y_pred_test2)
+                                loss = self.myloss((y_pred1, y_pred2, L1, L2, indices))
                                 print(t, loss.item())
 
                                 # Zero gradients, perform a backward pass, and update the weights.
