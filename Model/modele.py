@@ -93,14 +93,14 @@ class Modele():
 
 			N1 = np.array(batch[0]).astype(float)
 			N1 = N1.reshape(self.batch_size, 1, N1.shape[1], N1.shape[2])
-			X1 = torch.FloatTensor(N1)
+			X1 = torch.autograd.Variable(torch.FloatTensor(N1), requires_grad=True)
+			if self.GPU:
+				X1 = X1.cuda()
 
 			N2 = np.array(batch[1]).astype(float)
 			N2 = N2.reshape(self.batch_size, 1, N2.shape[1], N2.shape[2])
-			X2 = torch.FloatTensor(N2)
-
+			X2 = torch.autograd.Variable(torch.FloatTensor(N2), requires_grad=True)
 			if self.GPU:
-				X1 = X1.cuda()
 				X2 = X2.cuda()
 
 			y_pred1 = self.model1.forward(X1)
@@ -110,7 +110,8 @@ class Modele():
 			L2 = batch[3]
 			indices = batch[4]
 
-			loss += self.myloss((X1, X2, L1, L2 indices)).item()
+			# Compute and print loss
+			loss += self.myloss((y_pred1, y_pred2, L1, L2, indices)).item()
 
 		return loss/len(batches)
 
