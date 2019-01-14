@@ -15,6 +15,8 @@ from midi2audio import FluidSynth
 
 import sys
 
+SERVER = False
+
 class NullWriter(object):
 	def write(self, arg):
 		pass
@@ -125,8 +127,13 @@ class score:
 
 	def toWaveForm(self, font="MotifES6ConcertPiano.sf2"):
 
-		midiPath = "/fast-1/guilhem/"+self.name+".mid"
-		wavePath = "/fast-1/guilhem/"+self.name+".wav"
+		if SERVER == True:
+			midiPath = "/fast-1/guilhem/"+self.name+".mid"
+			wavePath = "/fast-1/guilhem/"+self.name+".wav"
+		else:
+			midiPath = ".TEMP/"+self.name+".mid"
+			wavePath = ".TEMP/"+self.name+".wav"	
+
 		pathFont = "../SoundFonts/" + font
 
 		self.writeToMidi(midiPath)
