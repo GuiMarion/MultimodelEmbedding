@@ -29,8 +29,8 @@ class Modele():
 		if GPU:
 			torch.backends.cudnn.benchmark = True
 			torch.cuda.set_device(gpu)
-			self.model1.cuda()
-			self.model2.cuda()
+			self.model1 = self.model1.cuda()
+			self.model2 = self.model2.cuda()
 
 		self.batch_size = batch_size
 
@@ -171,13 +171,13 @@ class Modele():
 				N1 = N1.reshape(self.batch_size, 1, N1.shape[1], N1.shape[2])
 				X1 = torch.autograd.Variable(torch.FloatTensor(N1), requires_grad=True)
 				if GPU:
-					X1.cuda()
+					X1 = X1.cuda()
 
 				N2 = np.array(batch[1]).astype(float)
 				N2 = N2.reshape(self.batch_size, 1, N2.shape[1], N2.shape[2])
 				X2 = torch.autograd.Variable(torch.FloatTensor(N2), requires_grad=True)
 				if GPU:
-					X2.cuda()
+					X2 = X2.cuda()
 
 				y_pred1 = self.model1.forward(X1)
 				y_pred2 = self.model2.forward(X2)
