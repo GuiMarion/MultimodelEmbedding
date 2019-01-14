@@ -181,7 +181,7 @@ class Modele():
 			for i in range(len(batch[2])):
 				dico[Y[i]] = batch[2][i]
 
-		pickle.dump(dico, open( "/fast_1/guilhem/params/dico.p", "wb" ) )
+		pickle.dump(dico, open( "/fast-1/guilhem/params/dico.p", "wb" ) )
 
 
 
@@ -244,13 +244,18 @@ class Modele():
 				# stop learning
 				return
 
-		print(self.losses)
-		print(self.losses_test)
+
 
 		self.plot_losses()
 
+		self.model1 = torch.load("/fast1/guilhem/params/model1.data")
+		self.model2 = torch.load("/fast1/guilhem/params/model2.data")
+
+		print("Test Loss for the best trained model:", self.TestEval(self.testBatches))
+
 		self.constructDict()
 
-
+		print(self.losses)
+		print(self.losses_test)
 
 
