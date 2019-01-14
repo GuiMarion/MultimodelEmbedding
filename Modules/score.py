@@ -125,8 +125,8 @@ class score:
 
 	def toWaveForm(self, font="MotifES6ConcertPiano.sf2"):
 
-		midiPath = ".TEMP/"+self.name+".mid"
-		wavePath = ".TEMP/"+self.name+".wav"
+		midiPath = "/fast-1/guilhem/"+self.name+".mid"
+		wavePath = "/fast-1/guilhem/"+self.name+".wav"
 		pathFont = "../SoundFonts/" + font
 
 		self.writeToMidi(midiPath)

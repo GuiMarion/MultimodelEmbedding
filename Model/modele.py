@@ -23,15 +23,14 @@ class Modele():
                 else :
                         GPU = True
 
+                self.model1 = network.Net().cuda()
+                self.model2 = network.Net().cuda()
 
-                if GPU:
-                        torch.brackends.cudnn.benchmark = True
-                        torch.cuda.setdevice(gpu)
-                        self.model1 = network.Net().cuda()
-                        self.model2 = network.Net().cuda()
-                else:
-                        self.model1 = network.Net()
-                        self.model2 = network.Net()
+		if GPU:
+                	torch.backends.cudnn.benchmark = True
+                        torch.cuda.set_device(gpu)
+			self.model1.cuda()
+			self.model2.cuda()
 
                 self.batch_size = batch_size
 
