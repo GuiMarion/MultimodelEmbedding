@@ -5,7 +5,7 @@ from Model import network
 import numpy as np
 import torch
 import pickle
-from tqdm import tqdm
+import tqdm
 try:
 	import matplotlib.pyplot as plt
 	plot = True
@@ -41,7 +41,7 @@ class Modele():
 		self.losses_test = []
 
 		# We don't store loss greater than that
-		self.lastloss = 100
+		self.lastloss = 1000
 
 	def loadBatch(self):
 		# Load mini batch from file named batch_num
@@ -62,36 +62,13 @@ class Modele():
 			## Construct and save database
 			D = dataBase.dataBase()
 			D.constructDatabase(self.databasePath)
-			batches = D.getBatches(self.batch_size)
+			self.batches = D.getBatches(self.batch_size)
 
 			self.testBatches = D.getTestSet(self.batch_size)
 
 			print("We have", len(self.batches), "batches for the training part.")
 
-			X1_L = []
-			X2_L = []
-			L1_L = []
-			L2_L = []
-			indices_L = []
 
-			for batch in batches:
-				N1 = np.array(batch[0]).astype(float)
-				N1 = N1.reshape(self.batch_size, 1, N1.shape[1], N1.shape[2])
-				X1 = torch.autograd.Variable(torch.FloatTensor(N1), requires_grad=False)
-				if self.GPU:
-					X1 = X1.cuda()
-
-				N2 = np.array(batch[1]).astype(float)
-				N2 = N2.reshape(self.batch_size, 1, N2.shape[1], N2.shape[2])
-				X2 = torch.autograd.Variable(torch.FloatTensor(N2), requires_grad=False)
-				if self.GPU:
-					X2 = X2.cuda()
-
-				X1_L.append(X1)
-				X2_L.append(X2)
-				L1_L.append(batch[2])
-				L2_L.append(batch[3])
-				indices_L.append(batch[4])
 
 
 
@@ -116,6 +93,17 @@ class Modele():
 
 		for batch in batches:
 
+			N1 = np.array(batch[0]).astype(float)
+			N1 = N1.reshape(self.batch_size, 1, N1.shape[1], N1.shape[2])
+			X1 = torch.autograd.Variable(torch.FloatTensor(N1), requires_grad=False)
+			if self.GPU:
+				X1 = X1.cuda()
+
+			N2 = np.array(batch[1]).astype(float)
+			N2 = N2.reshape(self.batch_size, 1, N2.shape[1], N2.shape[2])
+			X2 = torch.autograd.Variable(torch.FloatTensor(N2), requires_grad=False)
+			if self.GPU:
+				X2 = X2.cuda()
 
 			y_pred1 = self.model1.forward(X1)
 			y_pred2 = self.model2.forward(X2)
@@ -135,9 +123,6 @@ class Modele():
 
 		torch.save(self.model1.cpu(), "/fast-1/guilhem/params/model1.data")
 		torch.save(self.model2.cpu(), "/fast-1/guilhem/params/model2.data")
-
-		self.model1 = self.model1.cuda()
-		self.model2 = self.model2.cuda()
 
 	def plot_losses(self):
 		# plot the losses over time
@@ -183,16 +168,28 @@ class Modele():
 		for t in range(EPOCHS):
 			# Make learn the two models with respects to x and y
 
-			k = 0
 			for batch in tqdm(self.batches):
+				N1 = np.array(batch[0]).astype(float)
+				N1 = N1.reshape(self.batch_size, 1, N1.shape[1], N1.shape[2])
+				X1 = torch.autograd.Variable(torch.FloatTensor(N1), requires_grad=True)
+				if self.GPU:
+					X1 = X1.cuda()
 
+				N2 = np.array(batch[1]).astype(float)
+				N2 = N2.reshape(self.batch_size, 1, N2.shape[1], N2.shape[2])
+				X2 = torch.autograd.Variable(torch.FloatTensor(N2), requires_grad=True)
+				if self.GPU:
+					X2 = X2.cuda()
 
-				y_pred1 = self.model1.forward(X1_L[k])
-				y_pred2 = self.model2.forward(X2_L[k])
+				y_pred1 = self.model1.forward(X1)
+				y_pred2 = self.model2.forward(X2)
 
+				L1 = batch[2]
+				L2 = batch[3]
+				indices = batch[4]
 
 				# Compute and print loss
-				loss = self.myloss((y_pred1, y_pred2, L1_L[k], L2_L[k], indices_L[k]))
+				loss = self.myloss((y_pred1, y_pred2, L1, L2, indices))
 				#print(t, loss.item())
 
 				# Zero gradients, perform a backward pass, and update the weights.
