@@ -171,6 +171,9 @@ class Modele():
 			N1 = N1.reshape(self.batch_size, 1, N1.shape[1], N1.shape[2])
 			X1 = torch.FloatTensor(N1)
 
+			if self.GPU:
+				X1 = X1.cuda()
+
 			Y = self.model1.forward(X1).data
 			dico[Y] = batch[2]
 
