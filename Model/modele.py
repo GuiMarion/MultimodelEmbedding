@@ -69,8 +69,8 @@ class Modele():
 			print("We have", len(batches), "batches for the training part.")
 			self.nbOfBatches = len(batches)
 
-			self.X1_L = []
-			self.X2_L = []
+			self.X1_L_tmp = []
+			self.X2_L_tmp = []
 			self.L1_L = []
 			self.L2_L = []
 			self.indices_L = []
@@ -79,21 +79,26 @@ class Modele():
 				N1 = np.array(batch[0]).astype(float)
 				N1 = N1.reshape(self.batch_size, 1, N1.shape[1], N1.shape[2])
 				X1 = torch.autograd.Variable(torch.FloatTensor(N1), requires_grad=False)
-				if self.GPU:
-					X1 = X1.cuda()
 
 				N2 = np.array(batch[1]).astype(float)
 				N2 = N2.reshape(self.batch_size, 1, N2.shape[1], N2.shape[2])
 				X2 = torch.autograd.Variable(torch.FloatTensor(N2), requires_grad=False)
-				if self.GPU:
-					X2 = X2.cuda()
 
-				self.X1_L.append(X1)
-				self.X2_L.append(X2)
+				self.X1_L_tmp.append(X1)
+				self.X2_L_tmp.append(X2)
 				self.L1_L.append(batch[2])
 				self.L2_L.append(batch[3])
 				self.indices_L.append(batch[4])
 
+				self.X1_L = torch.Tensor(self.nbOfBatches, X1.shape[1], X1.shape[2], X1.shape[3])
+				self.X2_L = torch.Tensor(self.nbOfBatches, X2.shape[1], X2.shape[2], X2.shape[3])
+
+				torch.cat(X1_L_tmp, out=X1_L)
+				torch.cat(X2_L_tmp, out=X2_L)
+
+				if self.GPU:
+					X1_L = X1_L.cuda()
+					X1_L = X2_L.cuda()
 
 
 	def loss_test(self, y_pred1, y_pred2):
