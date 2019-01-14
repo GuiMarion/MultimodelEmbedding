@@ -5,7 +5,7 @@ from Model import network
 import numpy as np
 import torch
 import pickle
-from import tqdm
+from tqdm import tqdm
 try:
 	import matplotlib.pyplot as plt
 	plot = True
