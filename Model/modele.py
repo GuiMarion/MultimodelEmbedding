@@ -163,7 +163,7 @@ class Modele():
 		print("____ Consctructing the dictionary")
 
 		dico = {}
-		model1.eval()
+		self.model1.eval()
 
 		for batch in self.batches:
 
@@ -171,7 +171,7 @@ class Modele():
 			N1 = N1.reshape(self.batch_size, 1, N1.shape[1], N1.shape[2])
 			X1 = torch.FloatTensor(N1)
 
-			Y = model1.forward(X1).data
+			Y = self.model1.forward(X1).data
 			dico[Y] = batch[2]
 
 		pickle.dump(dico, open( "dico.p", "wb" ) )
@@ -223,7 +223,9 @@ class Modele():
 			self.losses.append(float(loss.item()))
 			self.losses_test.append(self.TestEval(self.testBatches))
 
+			print()
 			print("________ EPOCH ", t)
+			print()
 			print("____ Train Loss:", loss.item())
 			print("____ Test Loss:", self.losses_test[t])
 
