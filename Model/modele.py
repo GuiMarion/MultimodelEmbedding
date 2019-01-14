@@ -5,7 +5,7 @@ from Model import network
 import numpy as np
 import torch
 import pickle
-import tqdm
+from tqdm import tqdm
 try:
 	import matplotlib.pyplot as plt
 	plot = True
@@ -41,7 +41,7 @@ class Modele():
 		self.losses_test = []
 
 		# We don't store loss greater than that
-		self.lastloss = 1000
+		self.lastloss = 100
 
 	def loadBatch(self):
 		# Load mini batch from file named batch_num
@@ -123,6 +123,9 @@ class Modele():
 
 		torch.save(self.model1.cpu(), "/fast-1/guilhem/params/model1.data")
 		torch.save(self.model2.cpu(), "/fast-1/guilhem/params/model2.data")
+
+		self.model1 = self.model1.cuda()
+		self.model2 = self.model2.cuda()
 
 	def plot_losses(self):
 		# plot the losses over time
