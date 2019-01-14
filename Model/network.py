@@ -53,6 +53,8 @@ class Net(nn.Module):
         # max pooling layer
         self.pool = nn.MaxPool2d(kernel_size_pool, stride_pool)
 
+        self.dim_latent = dim_latent
+
 
     def forward(self, x):
 

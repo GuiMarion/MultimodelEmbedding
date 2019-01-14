@@ -9,7 +9,7 @@ import copy
 
 # Import one of my masterpieces ...
 #s = score.score("velocity.mid")
-s = score.score("chp_op18.mid")
+s = score.score("dataBaseTest/MIDIs/xmas/bk_xmas3.mid")
 
 
 '''
@@ -56,4 +56,4 @@ w.play(5)
 
 T = sub.getTransposed()
 for elem in T:
-elem.plot()
+	elem.plot()

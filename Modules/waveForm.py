@@ -47,6 +47,8 @@ class waveForm:
 
 		return "Données chargées."
 
+	def getData(self):
+		return self.data
 
 	def play(self, length=None):
 		# play the data, use the module sound device
@@ -99,6 +101,7 @@ class waveForm:
 
 		plt.show()
 
+<<<<<<< HEAD
 	def computeSTFT(self, L_n=4096):
 		STEP_n = int(self.sampleRate // 20)
 		Nfft =  L_n * 4
@@ -109,11 +112,28 @@ class waveForm:
 		except ValueError:
 			raise IndexError('Size of audio part is too short to compute STFT.')
 
+=======
+	def getSTFT(self):
+		if self.STFT is None:
+			self.computeSTFT()
+		return self.STFT, self.STFTsec, self.STFTfreq
+
+	def computeSTFT(self, L_n = 4096):
+		STEP_n = int(self.sampleRate // 20)
+		Nfft =  L_n * 4
+		nLim = int((len(self.data)-L_n) / (STEP_n))
+
+		Fft_m = np.zeros((Nfft, nLim), dtype='complex64')
+>>>>>>> 2d8e66547586195e097e1c6a0d957ffaea2701f4
 		self.STFT = np.zeros((round(Nfft/2)+1, nLim))
 		self.STFTfreq = np.linspace(1, self.sampleRate/2, round(Nfft/2)+1)
 		self.STFTsec = np.linspace(0, self.length, nLim)
 
+<<<<<<< HEAD
 		window = np.hanning(L_n)
+=======
+		window = np.hamming(L_n)
+>>>>>>> 2d8e66547586195e097e1c6a0d957ffaea2701f4
 		self.data = self.data[:,0]
 
 		for fen in range(nLim):
@@ -146,11 +166,18 @@ class waveForm:
 				self.computeSTFTlog()
 			plt.figure()
 			#plt.imshow(np.sqrt(self.STFT), origin='lower', aspect='auto', extent=[self.STFTsec[0], self.STFTsec[-1], self.STFTfreq[0], self.STFTfreq[-1]], interpolation='nearest')
+<<<<<<< HEAD
 			plt.pcolormesh(self.STFTsec, np.arange(0,128), np.sqrt(self.STFTlog))
 			plt.ylim((0, 128))
 			plt.xlabel('Time(s)')
 			plt.ylabel('Fréquency bin')
 			plt.show()
+=======
+			plt.pcolormesh(self.STFTsec, np.arange(0, 128), np.sqrt(self.STFTlog))
+			plt.ylim((0, 128))
+			plt.xlabel('Time(s)')
+			plt.ylabel('Fréquency bin')
+>>>>>>> 2d8e66547586195e097e1c6a0d957ffaea2701f4
 		else:
 			if self.STFT is None:
 				self.computeSTFT()
@@ -160,11 +187,20 @@ class waveForm:
 			plt.ylim((30, 6000))
 			plt.xlabel('Time(s)')
 			plt.ylabel('Fréquency(Hz)')
+<<<<<<< HEAD
 			plt.show()
 
 	def computeCQT(self):
 		#vect = self.data[:,]
 		self.CQT = np.abs(librosa.cqt(self.data, sr=self.sampleRate, fmin=30, n_bins=128, bins_per_octave=16))
+=======
+		plt.show()
+
+	def computeCQT(self, nbins=128):
+		vect = self.data[:,]
+		vect = vect[:,0]
+		self.CQT = np.abs(librosa.cqt(vect, sr=self.sampleRate, fmin=30, n_bins=nbins, bins_per_octave=16))
+>>>>>>> 2d8e66547586195e097e1c6a0d957ffaea2701f4
 
 	def getCQT(self):
 		if self.CQT is None:
@@ -177,6 +213,11 @@ class waveForm:
 
 		plt.figure()
 		plt.pcolormesh(np.arange(0,len(self.CQT[0,:])), np.arange(0,len(self.CQT[:,0])), self.CQT)
+<<<<<<< HEAD
+=======
+		plt.colorbar(format='%+2.0f dB')
+		plt.tight_layout()
+>>>>>>> 2d8e66547586195e097e1c6a0d957ffaea2701f4
 		plt.xlabel('Time')
 		plt.ylabel('Frequency bin')
 		plt.show()

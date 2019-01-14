@@ -2,140 +2,264 @@ import os
 from glob import glob
 import pickle
 from tqdm import tqdm
+import random
+import numpy as np
+import torch
 
 from Modules import score
 from Modules import waveForm
 
 # Parameters for the data extraction part
 WINDOW_SIZE = 10 # in beat
-STEP = 240 # in sample
+STEP = 50 # in sample
 
-FONTS = ["000_Florestan_Piano.sf2"] # TODO add more fonts
+TRAINSIZE = 0.6
+TESTSIZE = 0.2
+VALIDATIONSIZE = 0.2
+
+DEBUG = False
+
+FONTS = ["Full_Grand_Piano.sf2", "SteinwayGrandPiano_1.2.sf2"]
+
+
 
 class dataBase:
-	def __init__(self, name="database"):
+    def __init__(self, name="database"):
 
-		self.name = name
-		self.data = []
-		self.path = None
+        self.name = name
+        self.data = []
+        self.path = None
 
+    def constructDatabase(self, path, name=None):
+        # construct a dictionary wich contains, for every file, a tuple with the corresponding score and waveForm object
 
-	def constructDatabase(self, path, name=None):
-		# construct a dictionary wich contains, for every file, a tuple with the corresponding score and waveForm object
+        if os.path.isdir(path):
+            self.path = path
+            if name:
+                self.name = name
+            else:
+                self.name = str(path)
+            print()
+            print("________ We are working on '" + path + "'")
+            print()
+        else:
+            print("The path you gave is not a directory, please provide a correct directory.")
+            raise RuntimeError("Invalid database directory")
 
-		if os.path.isdir(path):
-			self.path = path
-			if name:
-				self.name = name
-			else:
-				self.name = str(path)
-			print()
-			print("________ We are working on '" + path + "'")
-			print()
-		else:
-			print("The path you gave is not a directory, please provide a correct directory.")
-			raise RuntimeError("Invalid database directory")
+        if not os.path.isdir(".TEMP"):
+            os.makedirs(".TEMP")
 
-		print("_____ Filling the database ...")
-		print()
+        print("_____ Filling the database ...")
+        print()
 
-		# Number of skiped files
-		skipedFiles = 0
-		# Total number of files
-		N = 0
-		scores = []
-		for filename in glob(self.path+'/**', recursive=True):
+        # Number of skiped files
+        skipedFiles = 0
+        # Total number of files
+        N = 0
+        scores = []
+        for filename in glob(self.path+'/**', recursive=True):
 
-			if filename[filename.rfind("."):] in [".mid", ".midi"]:
-				if os.path.isfile(filename):
-					print("	-", filename)
-					try : 
-						score_temp = score.score(filename)
-						scores.extend(score_temp.extractAllParts(WINDOW_SIZE, step=STEP))
-						
-					except RuntimeError:
-						skipedFiles += 1
-					N += 1
+            if filename[filename.rfind("."):] in [".mid", ".midi"]:
+                if os.path.isfile(filename):
+                    print(" -", filename)
+                    try : 
+                        #ore_temp = score.score(filename)
+                        #scores.extend(score_temp.extractAllParts(WINDOW_SIZE, step=STEP))
+                        scores.append(score.score(filename))
 
-		print()
-		print("We passed a total of ", N, "files.")
-		print(skipedFiles,"of them have been skiped.")
-		print()
+                    except RuntimeError:
+                        skipedFiles += 1
+                    N += 1
 
-		print("_____ Augmenting database ...")
-		print()
+        print()
+        print("We passed a total of ", N, "files.")
+        print(skipedFiles,"of them have been skiped.")
+        print()
 
-		scores = self.augmentData(scores)
+        print("_____ Augmenting database ...")
+        print()
 
-		print("_____ Computing the sound ...")
-		print()
+        #scores = self.augmentData(scores)
 
-		for s in tqdm(scores):
-			waveforms = []
-			for font in FONTS:
-				self.data.append( (s.getPianoRoll(), s.toWaveForm(font=font).getSTFTlog(), s.name + "-" + font) )
+        print("_____ Computing the sound ...")
+        print()
 
+        shapes1 = []
+        shapes2 = []
 
-	def save(self, path="../DataBase/Serialized/"):
-		# Save database as a pickle
+        for s in tqdm(scores):
+            waveforms = []
+            spectrum_temp = []
 
-		answer = "y"
+            N = s.length * s.quantization
+            windowSize = WINDOW_SIZE * s.quantization
+            retParts = []
+            r = []
 
-		if os.path.isfile(path+self.name+'.data'):
-			print(path + self.name + ".data" + " " + " already exists, do you want to replace it ? (Y/n)")
-			answer = input()
-
-			while answer not in ["", "y", "n"]:
-				print("We didn't understand, please type enter, 'y' or 'n'")
-				answer = input()
-
-		if answer in ["", "y"]:
-			os.remove(path+self.name + '.data')
-			print("____ Saving database ...")
-			f = open(path+self.name + '.data', 'wb') 
-			pickle.dump(self.data, f)
-			f.close()
-
-			print()
-			print("The new database is saved.")
-		else:
-			print()
-			print("We kept the old file.")
+            for f in range(len(FONTS)):
+                spectrum_temp.append(s.toWaveForm(font=FONTS[f]).getCQT())
+                r.append(spectrum_temp[f].shape[1] / s.getPianoRoll().shape[1])
 
 
-	def load(self, path):
-		# Load a database from a previous saved pickle
-		if not os.path.isfile(path):
-			print("The path you entered doesn't point to a file ...")
-			raise RuntimeError("Invalid file path")
+            tmpPart1 = []
+            tmpPart2 = []
+            for i in range((N-windowSize)//STEP):
+                tmpPart1 = s.extractPart(i*STEP, i*STEP+windowSize)
+                tmpPart2 = []
+                tmpNames = []
+                for f in range(len(FONTS)):
 
-		try:
-			self.data = pickle.load(open(path, 'rb'))
-			print("We successfully loaded the database.")
-			print()
-		except (RuntimeError, UnicodeDecodeError) as error:
-			print("The file you provided is not valid ...")
-			raise RuntimeError("Invalid file")
+                    tmpPart2.append(spectrum_temp[f][:,round(i*STEP*r[f]) : round(i*STEP*r[f]) + round(windowSize*r[f])])
+                    tmpNames.append(tmpPart1.name + "-" + FONTS[f])
 
-	def print(self):
-		# Print name of all items in database
-		print("____Printing database")
-		print()
-		for i in range(len(self.data)):
-			print(self.data[i][2])
+                self.data.append( (tmpPart1.getPianoRoll(), tmpPart2, tmpNames) )
 
-	def getData(self):
-		return self.data
+                if DEBUG:
+                    if str(tmpPart1.getPianoRoll().shape) not in shapes1:
+                        shapes1.append(str(tmpPart1.getPianoRoll().shape))
+                    if str(tmpPart2.shape) not in shapes2:
+                        shapes2.append(str(tmpPart2.shape))
 
-	def augmentData(self, scores):
-		# augment the data with some techniques like transposition
-		
-		augmentedData = []
+        random.shuffle(self.data)
 
-		for s in scores:
-			augmentedData.extend(s.getTransposed())
+        if DEBUG :
+            print("Shape 1")
+            print(shapes1)
+            print()
+            print("Shape 2")
+            print(shapes2)
+
+    def save(self, path="../DataBase/Serialized/"):
+        # Save database as a pickle
+
+        answer = "y"
+
+        if os.path.isfile(path+self.name+'.data'):
+            print(path + self.name + ".data" + " " + " already exists, do you want to replace it ? (Y/n)")
+            answer = input()
+
+            while answer not in ["", "y", "n"]:
+                print("We didn't understand, please type enter, 'y' or 'n'")
+                answer = input()
+
+            if answer in ["", "y"]:
+                os.remove(path+self.name + '.data')
+
+        if answer in ["", "y"]:
+            print("____ Saving database ...")
+            f = open(path+self.name + '.data', 'wb') 
+            pickle.dump(self.data, f)
+            f.close()
+
+            print()
+            print("The new database is saved.")
+        else:
+            print()
+            print("We kept the old file.")
 
 
-		return augmentedData
+    def load(self, path):
+        # Load a database from a previous saved pickle
+        if not os.path.isfile(path):
+            print("The path you entered doesn't point to a file ...")
+            raise RuntimeError("Invalid file path")
 
+        try:
+            self.data = pickle.load(open(path, 'rb'))
+            print("We successfully loaded the database.")
+            print()
+        except (RuntimeError, UnicodeDecodeError) as error:
+            print("The file you provided is not valid ...")
+            raise RuntimeError("Invalid file")
+
+    def print(self):
+        # Print name of all items in database
+        print("____Printing database")
+        print()
+        for i in range(len(self.data)):
+            print(self.data[i][2])
+
+    def getData(self):
+        return self.data
+
+    def augmentData(self, scores):
+        # augment the data with some techniques like transposition
+        
+        augmentedData = []
+
+        for s in tqdm(scores):
+            augmentedData.extend(s.getTransposed())
+
+
+        return augmentedData
+
+
+    def getBatches(self, batchSize):
+        # return efficiently valid batches from data if len(data) > 32
+
+        batches = []
+        for i in tqdm(range(int(TRAINSIZE * len(self.data)) // batchSize)):
+            batches.extend(self.getSmallSetofBatch(self.data[i*batchSize : (i+1)*batchSize], batchSize))
+
+        return batches
+
+    def getSmallSetofBatch(self, data, batchSize):
+        # construct valid batchs from data, is effiencient if len(data) <=32
+
+        numberofData = len(data)*len(data[0][2])
+        numberofBatches = numberofData // batchSize
+        batches = []
+        empty = []
+
+        for b in range(numberofBatches):
+
+            X1 = []
+            X2 = []
+            L1 = []
+            L2 = []
+            unseenX = np.delete(np.arange(len(data)), empty)
+            for i in range(batchSize):
+                k1 = np.random.randint(len(unseenX))
+                k = unseenX[k1]
+                X1.append(data[k][0])
+                k2 = np.random.randint(len(data[k][1]))
+                X2.append(data[k][1][k2])
+                L1.append(data[k][2][0][:data[k][2][0].find("-")])
+                L2.append(data[k][2][k2])
+                # We delete the indice we just saw
+                unseenX = np.concatenate((unseenX[:k1], unseenX[k1+1:]), axis=None)
+                # We also delete the spectrum we used
+                del data[k][1][k2]
+                del data[k][2][k2]
+
+                if len(data[k][2]) == 0 :
+                    empty.append(k)
+
+            # We shuffle X2 in order to don't the make matching indices in each batch
+            # We need to shuffle L2 the same way in order to get the right names
+            indices = np.arange(len(L1))
+            c = list(zip(X2, L2, indices))
+            random.shuffle(c)
+            X2, L2, indices = zip(*c)
+            
+            batches.append((X1, X2, L1, L2, indices))
+
+
+        return batches
+
+    def getTestSet(self, batchSize):
+
+        batches = []
+        for i in tqdm(range(int(TRAINSIZE * len(self.data)) // batchSize, int((TRAINSIZE + TESTSIZE) * len(self.data)) // batchSize)):
+            batches.extend(self.getSmallSetofBatch(self.data[i*batchSize : (i+1)*batchSize], batchSize))
+
+        return batches
+
+    def getValidationSet(self, batchSize):
+
+        batches = []
+        for i in tqdm(range(int((TRAINSIZE + TESTSIZE) * len(self.data)) // batchSize, len(self.data) // batchSize)):
+            batches.extend(self.getSmallSetofBatch(self.data[i*batchSize : (i+1)*batchSize], batchSize))
+
+        return batches
 

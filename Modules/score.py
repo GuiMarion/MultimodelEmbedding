@@ -2,13 +2,22 @@ from Modules import waveForm
 
 from pypianoroll import Multitrack as proll
 from pypianoroll import Track
-
-import matplotlib.pyplot as plt
+try:
+	import matplotlib.pyplot as plt
+	plot = True
+except ImportError:
+	plot = False
 import subprocess
 import os
 import numpy as np
 import copy
+from midi2audio import FluidSynth
 
+import sys
+
+class NullWriter(object):
+	def write(self, arg):
+		pass
 '''
 velocity : ok
 getpianoroll : ok
@@ -32,7 +41,9 @@ class score:
 		if fromArray[0] is None:
 			try:
 				# use pypianoroll to parse the midifile
-				self.pianoroll = proll(pathToMidi, beat_resolution=quantization).get_merged_pianoroll()
+				self.pianoroll = proll(pathToMidi, beat_resolution=quantization)
+				self.pianoroll.trim_trailing_silence()
+				self.pianoroll = self.pianoroll.get_merged_pianoroll()
 				self.name = os.path.splitext(os.path.basename(pathToMidi))[0]
 			except OSError:
 				raise RuntimeError("incorrect midi file.")
@@ -48,10 +59,12 @@ class score:
 		#store length in time beat
 		self.length = len(self.pianoroll)//self.quantization
 
+		self.transposition = 0
+
 	def getPianoRoll(self):
 		# return the np.array containing the pianoRoll
 
-		return self.pianoroll
+		return np.transpose(self.pianoroll)
 
 	def getLength(self):
 		# return the length in time beat
@@ -60,6 +73,12 @@ class score:
 
 	def plot(self):
 		# plot the pianoRoll representation
+<<<<<<< HEAD
+=======
+		if plot == False:
+			print("you cannot plot anything as matplotlib is not available")
+			return
+>>>>>>> 2d8e66547586195e097e1c6a0d957ffaea2701f4
 
 		plt.imshow(self.pianoroll.T, aspect='auto', origin='lower')
 		plt.xlabel('time (beat)')
@@ -114,9 +133,25 @@ class score:
 		pathFont = "../SoundFonts/" + font
 
 		self.writeToMidi(midiPath)
+<<<<<<< HEAD
 		process = subprocess.Popen("fluidsynth -F "+wavePath+" "+pathFont+" "+midiPath, shell=True,
 									stderr=subprocess.DEVNULL ,stdout=subprocess.DEVNULL)
 		process.wait()
+=======
+
+		nullwrite = NullWriter()
+		oldstdout = sys.stdout
+		oldstderr = sys.stderr
+		sys.stdout = nullwrite # disable output
+		sys.stderr = nullwrite
+
+		F = FluidSynth(pathFont)
+		F.midi_to_audio(midiPath, wavePath)
+
+		sys.stdout = oldstdout # enable output
+		sys.stderr = oldstderr
+
+>>>>>>> 2d8e66547586195e097e1c6a0d957ffaea2701f4
 		# should return on an object of type waveForm defined in this folder
 		newWaveForm = waveForm.waveForm(wavePath)
 
@@ -152,9 +187,15 @@ class score:
 		# And stores each transposition as a new score
 		for t in range(-6, 6):
 			transRoll = self.transpose(t) # transposed piano roll matrix
+<<<<<<< HEAD
 			newName = self.name + '_' + str(t)
 
+=======
+			newName = self.name + '_' + str(t) + "_"
+			
+>>>>>>> 2d8e66547586195e097e1c6a0d957ffaea2701f4
 			transposed_score = score("", fromArray=(transRoll, newName))
+			transposed_score.transposition = t
 			transposed_scores.append(transposed_score)
 
 		return transposed_scores
