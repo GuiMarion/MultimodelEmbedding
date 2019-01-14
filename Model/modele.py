@@ -202,11 +202,12 @@ class Modele():
 			self.losses.append(float(loss.item()))
 			self.losses_test.append(self.eval(self.testBatches))
 
-			print("Test Loss:", self.losses_test[t])
+			print("____ Test Loss:", self.losses_test[t])
 
 			if t > 15 and self.losses_test[t] < self.lastloss:
 				self.save_weights
 				self.lastloss = self.losses_test[t]
+				print("____ We saved the models.")
 
 			if self.is_over_fitting():
 				# stop learning
