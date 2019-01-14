@@ -90,7 +90,6 @@ class Modele():
 		loss = 0
 
 		for batch in batches:
-			tmpLoss = 0
 
 			N1 = np.array(batch[0]).astype(float)
 			N1 = N1.reshape(self.batch_size, 1, N1.shape[1], N1.shape[2])
@@ -100,15 +99,18 @@ class Modele():
 			N2 = N2.reshape(self.batch_size, 1, N2.shape[1], N2.shape[2])
 			X2 = torch.FloatTensor(N2)
 
+			if self.GPU:
+				X1 = X1.cuda()
+				X2 = X2.cuda()
+
 			y_pred1 = self.model1.forward(X1)
 			y_pred2 = self.model2.forward(X2)
 
+			L1 = batch[2]
+			L2 = batch[3]
+			indices = batch[4]
 
-			for i in range(min(len(y_pred1), len(y_pred2))):
-				tmpLoss += self.loss_test(y_pred1[i], y_pred2[i])
-
-			tmpLoss /= min(len(X1), len(X2))
-		loss += tmpLoss
+			loss += self.myloss((X1, X2, L1, L2 indices))
 
 		return loss/len(batches)
 
@@ -198,6 +200,8 @@ class Modele():
 			# appending losses
 			self.losses.append(float(loss.item()))
 			self.losses_test.append(self.eval(self.testBatches))
+
+			print("Test Loss:", self.loss_test[t])
 
 			if self.is_over_fitting():
 				# stop learning
