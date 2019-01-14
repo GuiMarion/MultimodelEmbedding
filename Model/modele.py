@@ -157,6 +157,24 @@ class Modele():
 
 		return rank
 
+	def constructDict(self):
+
+		dico = {}
+		model1.eval()
+
+		for batch in self.batches:
+
+			N1 = np.array(batch[0]).astype(float)
+			N1 = N1.reshape(self.batch_size, 1, N1.shape[1], N1.shape[2])
+			X1 = torch.FloatTensor(N1)
+
+			Y = model1.forward(X1).data
+			dico[Y] = batch[2]
+
+		pickle.dump(dico, open( "dico.p", "wb" ) )
+
+
+
 	def learn(self, EPOCHS, learning_rate=1e-7, momentum=0.9):
 
 		print("_____ Training")
@@ -216,5 +234,7 @@ class Modele():
 		print(self.losses_test)
 
 		self.plot_losses()
+
+
 
 
