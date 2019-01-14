@@ -93,13 +93,13 @@ class Modele():
 
 			N1 = np.array(batch[0]).astype(float)
 			N1 = N1.reshape(self.batch_size, 1, N1.shape[1], N1.shape[2])
-			X1 = torch.autograd.Variable(torch.FloatTensor(N1), requires_grad=True)
+			X1 = torch.autograd.Variable(torch.FloatTensor(N1), requires_grad=False)
 			if self.GPU:
 				X1 = X1.cuda()
 
 			N2 = np.array(batch[1]).astype(float)
 			N2 = N2.reshape(self.batch_size, 1, N2.shape[1], N2.shape[2])
-			X2 = torch.autograd.Variable(torch.FloatTensor(N2), requires_grad=True)
+			X2 = torch.autograd.Variable(torch.FloatTensor(N2), requires_grad=False)
 			if self.GPU:
 				X2 = X2.cuda()
 
