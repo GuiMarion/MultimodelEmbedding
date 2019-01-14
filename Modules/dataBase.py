@@ -11,7 +11,7 @@ from Modules import waveForm
 
 # Parameters for the data extraction part
 WINDOW_SIZE = 10 # in beat
-STEP = 3 # in sample
+STEP = 50 # in sample
 
 TRAINSIZE = 0.6
 TESTSIZE = 0.2
@@ -79,7 +79,7 @@ class dataBase:
         print("_____ Augmenting database ...")
         print()
 
-        scores = self.augmentData(scores)
+        #scores = self.augmentData(scores)
 
         print("_____ Computing the sound ...")
         print()
