@@ -202,7 +202,7 @@ class Modele():
 			self.losses.append(float(loss.item()))
 			self.losses_test.append(self.eval(self.testBatches))
 
-			print("Test Loss:", self.loss_test[t])
+			print("Test Loss:", self.losses_test[t])
 
 			if self.is_over_fitting():
 				# stop learning

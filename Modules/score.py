@@ -15,7 +15,7 @@ from midi2audio import FluidSynth
 
 import sys
 
-SERVER = False
+SERVER = True
 
 class NullWriter(object):
 	def write(self, arg):
