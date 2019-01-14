@@ -159,6 +159,9 @@ class Modele():
 
 	def constructDict(self):
 
+
+		print("____ Consctructing the dictionary")
+
 		dico = {}
 		model1.eval()
 
@@ -220,6 +223,8 @@ class Modele():
 			self.losses.append(float(loss.item()))
 			self.losses_test.append(self.TestEval(self.testBatches))
 
+			print("________ EPOCH ", t)
+			print("____ Train Loss:", loss.item())
 			print("____ Test Loss:", self.losses_test[t])
 
 			if t > 2 and self.losses_test[t] < self.lastloss:
@@ -234,6 +239,8 @@ class Modele():
 		print(self.losses_test)
 
 		self.plot_losses()
+
+		self.constructDict()
 
 
 
