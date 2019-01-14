@@ -40,6 +40,8 @@ class Modele():
 		self.losses = []
 		self.losses_test = []
 
+		# We don't store loss greater than that
+		self.lastloss = 100
 
 	def loadBatch(self):
 		# Load mini batch from file named batch_num
@@ -115,13 +117,11 @@ class Modele():
 
 		return loss/len(batches)
 
-	def save_weights(self, name):
+	def save_weights(self):
 		# save the weights of the model with the name name
 
-		# Passer en .cpu()
-		# et remettre en .cuda()
-
-		pass
+		self.model1.parameters().cpu().save("/fast-1/guilhem/params/model1.data")
+		self.model2.parameters().cpu().save("/fast-1/guilhem/params/model2.data")
 
 
 	def plot_losses(self):
@@ -203,6 +203,10 @@ class Modele():
 			self.losses_test.append(self.eval(self.testBatches))
 
 			print("Test Loss:", self.losses_test[t])
+
+			if t > 15 and self.losses_test[t] < self.lastloss:
+				self.save_weights
+				self.lastloss = self.losses_test[t]
 
 			if self.is_over_fitting():
 				# stop learning
