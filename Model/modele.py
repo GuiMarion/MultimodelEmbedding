@@ -84,7 +84,7 @@ class Modele():
 				#N2 = N2.reshape(self.batch_size, 1, N2.shape[1], N2.shape[2])
 				X2 = torch.autograd.Variable(torch.FloatTensor(N2), requires_grad=False)
 
-				if GPU:
+				if self.GPU:
 					X1 = X1.cuda()
 					X2 = X2.cuda()
 
