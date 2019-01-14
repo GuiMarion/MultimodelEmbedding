@@ -12,21 +12,20 @@ try:
 except ImportError:
 	plot = False
 
-GPU = False
 
 class Modele():
 
 	def __init__(self, databasePath=None, batch_size=32, gpu=None):
 
 		if gpu is None:
-			GPU = False
+			self.GPU = False
 		else :
-			GPU = True
+			self.GPU = True
 
 		self.model1 = network.Net()
 		self.model2 = network.Net()
 
-		if GPU:
+		if self.GPU:
 			torch.backends.cudnn.benchmark = True
 			torch.cuda.set_device(gpu)
 			self.model1 = self.model1.cuda()
@@ -170,13 +169,13 @@ class Modele():
 				N1 = np.array(batch[0]).astype(float)
 				N1 = N1.reshape(self.batch_size, 1, N1.shape[1], N1.shape[2])
 				X1 = torch.autograd.Variable(torch.FloatTensor(N1), requires_grad=True)
-				if GPU:
+				if self.GPU:
 					X1 = X1.cuda()
 
 				N2 = np.array(batch[1]).astype(float)
 				N2 = N2.reshape(self.batch_size, 1, N2.shape[1], N2.shape[2])
 				X2 = torch.autograd.Variable(torch.FloatTensor(N2), requires_grad=True)
-				if GPU:
+				if self.GPU:
 					X2 = X2.cuda()
 
 				y_pred1 = self.model1.forward(X1)
