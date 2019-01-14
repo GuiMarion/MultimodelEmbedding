@@ -120,8 +120,8 @@ class Modele():
 	def save_weights(self):
 		# save the weights of the model with the name name
 		print("____ Saving the models.")
-		self.model1.parameters().cpu().save("/fast-1/guilhem/params/model1.data")
-		self.model2.parameters().cpu().save("/fast-1/guilhem/params/model2.data")
+		self.model1.cpu().parameters().save("/fast-1/guilhem/params/model1.data")
+		self.model2.cpu().parameters().save("/fast-1/guilhem/params/model2.data")
 
 
 	def plot_losses(self):
