@@ -222,7 +222,7 @@ class Modele():
 
 			print("____ Test Loss:", self.losses_test[t])
 
-			if t > 15 and self.losses_test[t] < self.lastloss:
+			if t > 2 and self.losses_test[t] < self.lastloss:
 				self.save_weights()
 				self.lastloss = self.losses_test[t]
 
