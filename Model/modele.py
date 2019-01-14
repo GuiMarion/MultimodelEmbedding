@@ -41,7 +41,7 @@ class Modele():
 		self.losses_test = []
 
 		# We don't store loss greater than that
-		self.lastloss = 100
+		self.lastloss = 1000
 
 	def loadBatch(self):
 		# Load mini batch from file named batch_num
@@ -119,7 +119,7 @@ class Modele():
 
 	def save_weights(self):
 		# save the weights of the model with the name name
-
+		print("____ Saving the models.")
 		self.model1.parameters().cpu().save("/fast-1/guilhem/params/model1.data")
 		self.model2.parameters().cpu().save("/fast-1/guilhem/params/model2.data")
 
@@ -207,7 +207,6 @@ class Modele():
 			if t > 15 and self.losses_test[t] < self.lastloss:
 				self.save_weights
 				self.lastloss = self.losses_test[t]
-				print("____ We saved the models.")
 
 			if self.is_over_fitting():
 				# stop learning

@@ -2,8 +2,8 @@ import modele
 import torch
 import network
 
-EPOCHS = 2
+EPOCHS = 30
 
-model = modele.Modele("../DataBaseTest", gpu=None)
+model = modele.Modele("../DataBaseTest", gpu=2)
 
 model.learn(EPOCHS, learning_rate=1e-1)
