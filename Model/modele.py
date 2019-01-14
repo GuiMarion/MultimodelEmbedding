@@ -110,7 +110,7 @@ class Modele():
 			L2 = batch[3]
 			indices = batch[4]
 
-			loss += self.myloss((X1, X2, L1, L2 indices))
+			loss += self.myloss((X1, X2, L1, L2 indices)).item()
 
 		return loss/len(batches)
 
