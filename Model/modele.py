@@ -5,7 +5,7 @@ from Model import network
 import numpy as np
 import torch
 import pickle
-import tqdm
+from tqdm import tqdm
 try:
 	import matplotlib.pyplot as plt
 	plot = True
@@ -181,7 +181,7 @@ class Modele():
 		for t in range(EPOCHS):
 			# Make learn the two models with respects to x and y
 
-			for k in range(self.nbOfBatches):
+			for k in tqdm(range(self.nbOfBatches)):
 
 
 				y_pred1 = self.model1.forward(self.X1_L[k])
@@ -201,7 +201,7 @@ class Modele():
 			# appending losses
 			self.losses.append(float(loss.item()))
 			self.losses_test.append(self.TestEval(self.testBatches))
-
+			print("Training Loss:", loss.item())
 			print("____ Test Loss:", self.losses_test[t])
 
 			if t > 15 and self.losses_test[t] < self.lastloss:
