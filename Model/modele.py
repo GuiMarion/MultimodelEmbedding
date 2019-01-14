@@ -84,6 +84,10 @@ class Modele():
 				#N2 = N2.reshape(self.batch_size, 1, N2.shape[1], N2.shape[2])
 				X2 = torch.autograd.Variable(torch.FloatTensor(N2), requires_grad=False)
 
+				if GPU:
+					X1 = X1.cuda()
+					X2 = X2.cuda()
+
 				X1_L_tmp.append(X1)
 				X2_L_tmp.append(X2)
 				self.L1_L.append(batch[2])
@@ -99,6 +103,9 @@ class Modele():
 			self.X2_L =  self.X2_L.view(self.nbOfBatches, X1.shape[0], 1, X2.shape[1], X2.shape[2])
 
 			if self.GPU:
+				print()
+				print("ON GPUUUUUU")
+				print()
 				self.X1_L = self.X1_L.cuda()
 				self.X1_L = self.X2_L.cuda()
 
