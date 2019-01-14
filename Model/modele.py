@@ -77,11 +77,11 @@ class Modele():
 
 			for batch in batches:
 				N1 = np.array(batch[0]).astype(float)
-				N1 = N1.reshape(self.batch_size, 1, N1.shape[1], N1.shape[2])
+				#N1 = N1.reshape(self.batch_size, 1, N1.shape[1], N1.shape[2])
 				X1 = torch.autograd.Variable(torch.FloatTensor(N1), requires_grad=False)
 
 				N2 = np.array(batch[1]).astype(float)
-				N2 = N2.reshape(self.batch_size, 1, N2.shape[1], N2.shape[2])
+				#N2 = N2.reshape(self.batch_size, 1, N2.shape[1], N2.shape[2])
 				X2 = torch.autograd.Variable(torch.FloatTensor(N2), requires_grad=False)
 
 				X1_L_tmp.append(X1)
@@ -95,6 +95,8 @@ class Modele():
 
 			torch.cat(X1_L_tmp, out=self.X1_L)
 			torch.cat(X2_L_tmp, out=self.X2_L)
+			X1_L =  X1_L.view(self.nbOfBatches, X1.shape[0], X1.shape[1], X1.shape[2], X1.shape[3])
+			X2_L =  X2_L.view(self.nbOfBatches, X2.shape[0], X2.shape[1], X2.shape[2], X2.shape[3])
 
 			if self.GPU:
 				self.X1_L = self.X1_L.cuda()
