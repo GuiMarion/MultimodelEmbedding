@@ -90,13 +90,13 @@ class Modele():
 				self.L2_L.append(batch[3])
 				self.indices_L.append(batch[4])
 
-			self.X1_L = torch.FloatTensor(self.nbOfBatches, X1.shape[0], X1.shape[1], X1.shape[2], X1.shape[3])
-			self.X2_L = torch.FloatTensor(self.nbOfBatches, X2.shape[0], X2.shape[1], X2.shape[2], X2.shape[3])
+			self.X1_L = torch.FloatTensor(self.nbOfBatches, X1.shape[0], X1.shape[1], X1.shape[2])
+			self.X2_L = torch.FloatTensor(self.nbOfBatches, X2.shape[0], X2.shape[1], X2.shape[2])
 
 			torch.cat(X1_L_tmp, out=self.X1_L)
 			torch.cat(X2_L_tmp, out=self.X2_L)
-			X1_L =  X1_L.view(self.nbOfBatches, X1.shape[0], X1.shape[1], X1.shape[2], X1.shape[3])
-			X2_L =  X2_L.view(self.nbOfBatches, X2.shape[0], X2.shape[1], X2.shape[2], X2.shape[3])
+			X1_L =  X1_L.view(self.nbOfBatches, 1, X1.shape[1], X1.shape[2])
+			X2_L =  X2_L.view(self.nbOfBatches, 1, X2.shape[1], X2.shape[2])
 
 			if self.GPU:
 				self.X1_L = self.X1_L.cuda()
