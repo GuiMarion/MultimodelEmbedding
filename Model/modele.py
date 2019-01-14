@@ -248,8 +248,8 @@ class Modele():
 
 		self.plot_losses()
 
-		self.model1 = torch.load("/fast-1/guilhem/params/model1.data")
-		self.model2 = torch.load("/fast-1/guilhem/params/model2.data")
+		self.model1 = torch.load("/fast-1/guilhem/params/model1.data").cuda()
+		self.model2 = torch.load("/fast-1/guilhem/params/model2.data").cuda()
 
 		print("Test Loss for the best trained model:", self.TestEval(self.testBatches))
 
