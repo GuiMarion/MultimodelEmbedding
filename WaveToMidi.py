@@ -58,7 +58,7 @@ def getMidiFromWave(folder, file, dataBase="DataBase/"):
 		else:
 			pianoroll = np.concatenate((pianoroll, s.getPianoRoll()), axis=1)
 
-	out = score.score("", fromArray=(pianoroll, "out"))
+	out = score.score("", fromArray=(np.transpose(pianoroll), "out"))
 
 	out_name = file[:file.rfind(".")] + ".mid"
 	print(out_name)
