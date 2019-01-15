@@ -75,12 +75,9 @@ class score:
 
 	def plot(self):
 		# plot the pianoRoll representation
-<<<<<<< HEAD
-=======
 		if plot == False:
 			print("you cannot plot anything as matplotlib is not available")
 			return
->>>>>>> 2d8e66547586195e097e1c6a0d957ffaea2701f4
 
 		plt.imshow(self.pianoroll.T, aspect='auto', origin='lower')
 		plt.xlabel('time (beat)')
