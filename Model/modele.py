@@ -230,7 +230,7 @@ class Modele():
 
 				score += self.pianorollDistance(pianoroll1, pianoroll2)
 
-		score /= (len(self.testBatches) * self.testBatches[0][0])
+		score /= (len(self.testBatches) * len(self.testBatches[0][2]))
 
 		return score
 
