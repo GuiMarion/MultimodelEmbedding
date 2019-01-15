@@ -1,7 +1,7 @@
 from Modules import waveForm
 from Model import modele
 
-import numpy as numpy
+import numpy as np
 import torch
 import pickle
 import sys
