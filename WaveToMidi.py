@@ -50,6 +50,8 @@ def getMidiFromWave(folder, file, dataBase="DataBase/"):
 		end = elem[elem.rfind("_")+1:]
 		name = elem[:elem.rfind("_")]	
 
+		print(dataBase + name + ".mid")
+
 		s = score.score(dataBase + name + ".mid")
 		s = s.extract(start, end)
 
