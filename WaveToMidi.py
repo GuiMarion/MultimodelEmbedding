@@ -32,11 +32,14 @@ def getMidiFromWave(folder, file):
 	CQTs = []
 	for i in range(len(w[0])//172 -1):
 		CQTs.append(w[ : , i*window_size : (i+1)*window_size])
+		CQTs[i] = np.array(CQTs[i]).astype(float)
+		CQTs[i] = CQTs[i].reshape(1, 1, CQTs[i].shape[0], CQTs[i].shape[1])
+
 		print(CQTs[i].shape)
 
 	wraps = []
 	for elem in CQTs:
-		wraps.append(nearestNeighbor(dico, model2.forward(elem)))
+		wraps.append(nearestNeighbor(dico, model2.forward(elem).data))
 
 	print(wraps)
 
