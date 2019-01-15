@@ -206,7 +206,7 @@ class Modele():
 
 		return name
 
-	def pianorollDistance(p1, p2):
+	def pianorollDistance(self, p1, p2):
 
 		return np.count_nonzero(p1 == p2) / (len(p1)*len(p1[0]))
 
@@ -228,7 +228,7 @@ class Modele():
 				pianoroll1 = batch[0][batch[4][i]]
 				pianoroll2 = self.rollsFromName[self.nearestNeighbor(Y2)]
 
-				score += pianorollDistance(pianoroll1, pianoroll2)
+				score += self.pianorollDistance(pianoroll1, pianoroll2)
 
 		score /= (len(self.testBatches) * self.testBatches[0][0])
 
