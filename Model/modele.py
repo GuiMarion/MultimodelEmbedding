@@ -170,6 +170,9 @@ class Modele():
 		dico = {}
 		self.model1.eval()
 
+		rollsFromName = {}
+
+
 		for batch in self.batches:
 
 			N1 = np.array(batch[0]).astype(float)
@@ -183,9 +186,12 @@ class Modele():
 			for i in range(len(batch[2])):
 				dico[Y[i]] = batch[2][i]
 
+				rollsFromName[batch[2][i]] = batch[0][i]
+
 		pickle.dump(dico, open( "/fast-1/guilhem/params/dico.data", "wb" ) )
 
 		self.dico = dico
+		self.rollsFromName = rollsFromName
 
 
 	def nearestNeighbor(self, wavePosition):
@@ -199,6 +205,11 @@ class Modele():
 				name = self.dico[key]
 
 		return name
+
+	def pianorollDistance(p1, p2):
+
+		return np.count_nonzero(p1 == p2) / (len(p1)*len(p1[0]))
+
 
 
 	def testBenchmark(self):
@@ -214,10 +225,12 @@ class Modele():
 
 				Y2 = self.model2.forward(X2).data
 
-				if batch[3][i][:batch[3][i].find("-")] == self.nearestNeighbor(Y2):
-					score += 1
+				pianoroll1 = batch[0][batch[4][i]]
+				pianoroll2 = self.rollsFromName[self.nearestNeighbor(Y2)]
 
-		score /= (len(self.testBatches) * self.batch_size)
+				score += pianorollDistance(pianoroll1, pianoroll2)
+
+		score /= (len(self.testBatches) * self.testBatches[0][0])
 
 		return score
 
