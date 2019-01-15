@@ -196,7 +196,7 @@ class Modele():
 			tmp_dist = self.s(key, wavePosition[0])
 			if  tmp_dist < dist:
 				dist = tmp_dist
-				name = dico[key]
+				name = self.dico[key]
 
 		return name
 
@@ -213,8 +213,6 @@ class Modele():
 
 				Y2 = self.model2.forward(X2).data
 				print(batch[3][i], self.nearestNeighbor(Y2))
-
-
 
 
 	def learn(self, EPOCHS, learning_rate=1e-7, momentum=0.9):
