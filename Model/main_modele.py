@@ -6,8 +6,8 @@ from Model import modele
 import torch
 
 
-EPOCHS = 15
+EPOCHS = 50
 
-model = modele.Modele("../DataBaseTest", gpu=1)
+model = modele.Modele("../DataBase", gpu=1)
 
 model.learn(EPOCHS, learning_rate=1e-1)
