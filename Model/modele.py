@@ -203,6 +203,7 @@ class Modele():
 
 	def testBenchmark(self):
 
+		score = 0
 		for batch in self.testBatches:
 			for i in range(len(batch[1])):
 				N2 = np.array(batch[1][i]).astype(float)
@@ -212,7 +213,13 @@ class Modele():
 					X2 = X2.cuda()
 
 				Y2 = self.model2.forward(X2).data
-				print(batch[3][i], self.nearestNeighbor(Y2))
+
+				if batch[3][i][:batch[3][i].find("-")] == self.nearestNeighbor(Y2):
+					score += 1
+
+		score /= (len(self.testBatches) * self.batch_size)
+
+		return score
 
 
 	def learn(self, EPOCHS, learning_rate=1e-7, momentum=0.9):
@@ -289,10 +296,12 @@ class Modele():
 
 		self.constructDict()
 
-		self.testBenchmark()
+		score = self.testBenchmark()
+
+		print("Benchmark score:", score)
 
 		print(self.losses)
 		print(self.losses_test)
 
-		pickle.dump((self.losses, self.losses_test), open( "/fast-1/guilhem/params/losses.data", "wb" ) )
+		pickle.dump((self.losses, self.losses_test, score), open( "/fast-1/guilhem/params/losses.data", "wb" ) )
 
