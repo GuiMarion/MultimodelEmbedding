@@ -183,7 +183,7 @@ class Modele():
 			for i in range(len(batch[2])):
 				dico[Y[i]] = batch[2][i]
 
-		pickle.dump(dico, open( "/fast-1/guilhem/params/dico.p", "wb" ) )
+		pickle.dump(dico, open( "/fast-1/guilhem/params/dico.data", "wb" ) )
 
 		self.dico = dico
 
@@ -201,7 +201,7 @@ class Modele():
 		return name
 
 
-	def Testbenchmark(self):
+	def testBenchmark(self):
 
 		for batch in self.testBatches:
 			for i in range(len(batch[1])):
@@ -284,7 +284,10 @@ class Modele():
 
 		self.constructDict()
 
+		self.testBenchmark()
+
 		print(self.losses)
 		print(self.losses_test)
 
+		pickle.dump((self.losses, self.losses_test), open( "/fast-1/guilhem/params/losses.data", "wb" ) )
 
