@@ -43,6 +43,8 @@ def getMidiFromWave(folder, file):
 	for i in range(tqdm(len(CQTs))):
 		wraps.append(nearestNeighbor(dico, model2.forward(CQTs[i]).data))
 
+	print(wraps)
+
 if __name__ == "__main__":
 
 	if len(sys.argv) == 3 :
