@@ -11,7 +11,7 @@ def nearestNeighbor(dico, wavePosition):
 	dist = 1000000
 	name = ""
 	for key in dico:
-		tmp_dist = s(key.cpu(), wavePosition[0])
+		tmp_dist = s(key, wavePosition[0])
 		if  tmp_dist < dist:
 			dist = tmp_dist
 			name = dico[key]
@@ -28,6 +28,9 @@ def getMidiFromWave(folder, file):
 	dico = pickle.load(open(folder + "dico.data", "rb"))
 
 	w = waveForm.waveForm(file).getCQT()
+
+	for key in dico:
+		key = key.cpu()
 
 	CQTs = []
 	for i in range(len(w[0])//172 -1):
