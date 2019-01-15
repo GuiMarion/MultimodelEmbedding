@@ -11,6 +11,11 @@ D1 = db.dataBase()
 D1.data = data
 D = D1.getBatches(32)
 
+b = D[0]
+
+for i in range(len(b[2])):
+	print(b[2][b[4][i]], b[3][i])
+
 quit()
 
 # this script help you to understand the usages for the generateSyntheticData one. 

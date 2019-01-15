@@ -15,6 +15,8 @@ from midi2audio import FluidSynth
 
 import sys
 
+SERVER = True
+
 class NullWriter(object):
 	def write(self, arg):
 		pass
@@ -128,17 +130,19 @@ class score:
 
 	def toWaveForm(self, font="MotifES6ConcertPiano.sf2"):
 
-		midiPath = "../"+self.name+".mid"
-		wavePath = "../"+self.name+".wav"
+		if SERVER == True:
+			midiPath = "/fast-1/guilhem/"+self.name+".mid"
+			wavePath = "/fast-1/guilhem/"+self.name+".wav"
+		else:
+			midiPath = ".TEMP/"+self.name+".mid"
+			wavePath = ".TEMP/"+self.name+".wav"
+
 		pathFont = "../SoundFonts/" + font
 
 		self.writeToMidi(midiPath)
-<<<<<<< HEAD
 		process = subprocess.Popen("fluidsynth -F "+wavePath+" "+pathFont+" "+midiPath, shell=True,
 									stderr=subprocess.DEVNULL ,stdout=subprocess.DEVNULL)
 		process.wait()
-=======
-
 		nullwrite = NullWriter()
 		oldstdout = sys.stdout
 		oldstderr = sys.stderr
@@ -151,7 +155,6 @@ class score:
 		sys.stdout = oldstdout # enable output
 		sys.stderr = oldstderr
 
->>>>>>> 2d8e66547586195e097e1c6a0d957ffaea2701f4
 		# should return on an object of type waveForm defined in this folder
 		newWaveForm = waveForm.waveForm(wavePath)
 
@@ -187,13 +190,8 @@ class score:
 		# And stores each transposition as a new score
 		for t in range(-6, 6):
 			transRoll = self.transpose(t) # transposed piano roll matrix
-<<<<<<< HEAD
-			newName = self.name + '_' + str(t)
-
-=======
 			newName = self.name + '_' + str(t) + "_"
-			
->>>>>>> 2d8e66547586195e097e1c6a0d957ffaea2701f4
+
 			transposed_score = score("", fromArray=(transRoll, newName))
 			transposed_score.transposition = t
 			transposed_scores.append(transposed_score)

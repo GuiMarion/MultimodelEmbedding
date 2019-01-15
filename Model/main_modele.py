@@ -1,9 +1,13 @@
-import modele
+import sys 
+sys.path.append('../')
+
+from Model import modele
+
 import torch
-import network
 
-EPOCHS = 2
 
-model = modele.Modele("../dataBaseTest")
+EPOCHS = 5
+
+model = modele.Modele("../DataBaseTest", gpu=1)
 
 model.learn(EPOCHS, learning_rate=1e-1)

@@ -10,7 +10,7 @@ from Modules import score
 from Modules import waveForm
 
 # Parameters for the data extraction part
-WINDOW_SIZE = 10 # in beat
+WINDOW_SIZE = 4 # in beat
 STEP = 50 # in sample
 
 TRAINSIZE = 0.6
@@ -19,7 +19,7 @@ VALIDATIONSIZE = 0.2
 
 DEBUG = False
 
-FONTS = ["Full_Grand_Piano.sf2", "SteinwayGrandPiano_1.2.sf2"]
+FONTS = ["Full_Grand_Piano.sf2", "SteinwayGrandPiano_1.2.sf2", "FazioliGrandPiano .sf2"]
 
 
 
