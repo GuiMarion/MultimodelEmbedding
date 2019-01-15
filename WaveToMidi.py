@@ -70,6 +70,8 @@ if __name__ == "__main__":
 
 	if len(sys.argv) == 3 :
 		getMidiFromWave(sys.argv[1], sys.argv[2])
+	elif len(sys.argv) == 4:
+		getMidiFromWave(sys.argv[1], sys.argv[2], dataBase=sys.argv[3])
 
 
 	else:
