@@ -5,6 +5,7 @@ import numpy as np
 import torch
 import pickle
 import sys
+from tqdm import tqdm
 def nearestNeighbor(dico, wavePosition):
 
 	s = torch.nn.CosineSimilarity(dim=0)
