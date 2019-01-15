@@ -45,9 +45,9 @@ def getMidiFromWave(folder, file, dataBase="DataBase/"):
 	pianoroll = None
 
 	for elem in wraps:
-		start = int(elem[elem.rfind("_")+1:])
+		end = int(elem[elem.rfind("_")+1:])
 		name = elem[:elem.rfind("_")]
-		end = int(name[name.rfind("_")+1:])
+		start = int(name[name.rfind("_")+1:])
 		name = name[:name.rfind("_")]	
 
 		print(start, end)
