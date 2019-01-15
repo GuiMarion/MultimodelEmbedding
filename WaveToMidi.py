@@ -56,7 +56,7 @@ def getMidiFromWave(folder, file, dataBase="DataBase/"):
 		if pianoroll is None:
 			pianoroll = s.pianoroll
 		else:
-			pianoroll = np.concatenate((pianoroll, s.getPianoRoll()), axis=0)
+			pianoroll = np.concatenate((pianoroll, s.pianoroll), axis=0)
 
 	out = score.score("", fromArray=(pianoroll, "out"))
 
