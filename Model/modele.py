@@ -40,6 +40,9 @@ class Modele():
 		self.losses = []
 		self.losses_test = []
 
+		self.s = torch.nn.CosineSimilarity(dim=0)
+
+
 		# We don't store loss greater than that
 		self.lastloss = 1000
 
@@ -148,7 +151,6 @@ class Modele():
 
 	def myloss(self, batch, alpha=0.7):
 
-		s = torch.nn.CosineSimilarity(dim=0)
 		X1, X2, L1, L2, indices = batch
 
 		rank = 0
@@ -156,7 +158,7 @@ class Modele():
 		for x in range(len(X1)):
 			for y in range(len(X2)):
 				if y != x:
-					rank += max(0, alpha - s(X1[indices[x]], X2[x]) + s(X1[indices[x]], X2[y]))
+					rank += max(0, alpha - self.s(X1[indices[x]], X2[x]) + self.s(X1[indices[x]], X2[y]))
 
 		return rank
 
@@ -182,6 +184,29 @@ class Modele():
 				dico[Y[i]] = batch[2][i]
 
 		pickle.dump(dico, open( "/fast-1/guilhem/params/dico.p", "wb" ) )
+
+		self.dico = dico
+
+
+	def nearestNeighbor(self, wavePosition):
+
+		dist = 1000000
+		name = ""
+		for key in self.dico:
+			tmp_dist = self.s(key, wavePosition[0])
+			if  tmp_dist < dist:
+				dist = tmp_dist
+				name = dico[key]
+
+		return name
+
+
+	def Testbenchmark(self):
+
+		for batch in self.testBatches:
+			for i in range(len(batch[1])):
+				print(batch[3][i], nearestNeighbor(batch[1][i]))
+
 
 
 
@@ -248,8 +273,12 @@ class Modele():
 
 		self.plot_losses()
 
-		self.model1 = torch.load("/fast-1/guilhem/params/model1.data").cuda()
-		self.model2 = torch.load("/fast-1/guilhem/params/model2.data").cuda()
+		self.model1 = torch.load("/fast-1/guilhem/params/model1.data")
+		self.model2 = torch.load("/fast-1/guilhem/params/model2.data")
+
+		if self.GPU:
+			self.model1 = self.model1.cuda()
+			self.model2 = self.model2.cuda()
 
 		print("Test Loss for the best trained model:", self.TestEval(self.testBatches))
 
