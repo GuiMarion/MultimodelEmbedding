@@ -6,7 +6,7 @@ from Model import modele
 import torch
 
 
-EPOCHS = 5
+EPOCHS = 15
 
 model = modele.Modele("../DataBaseTest", gpu=1)
 
