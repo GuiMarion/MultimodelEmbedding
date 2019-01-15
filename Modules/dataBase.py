@@ -117,8 +117,8 @@ class dataBase:
                 if DEBUG:
                     if str(tmpPart1.getPianoRoll().shape) not in shapes1:
                         shapes1.append(str(tmpPart1.getPianoRoll().shape))
-                    if str(tmpPart2.shape) not in shapes2:
-                        shapes2.append(str(tmpPart2.shape))
+                    if str(tmpPart2[0].shape) not in shapes2:
+                        shapes2.append(str(tmpPart2[0].shape))
 
         random.shuffle(self.data)
 
