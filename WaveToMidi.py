@@ -45,9 +45,9 @@ def getMidiFromWave(folder, file, dataBase="DataBase/"):
 	pianoroll = None
 
 	for elem in wraps:
-		start = elem[elem.rfind("_")+1:]
+		start = int(elem[elem.rfind("_")+1:])
 		name = elem[:elem.rfind("_")]
-		end = name[name.rfind("_")+1:]
+		end = int(name[name.rfind("_")+1:])
 		name = name[:name.rfind("_")]	
 
 		s = score.score(dataBase + name + ".mid")
