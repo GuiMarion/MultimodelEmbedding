@@ -50,10 +50,8 @@ def getMidiFromWave(folder, file, dataBase="DataBase/"):
 		end = name[name.rfind("_")+1:]
 		name = name[:name.rfind("_")]	
 
-		print(dataBase + name + ".mid")
-
 		s = score.score(dataBase + name + ".mid")
-		s = s.extract(start, end)
+		s = s.extractPart(start, end)
 
 		if pianoroll is None:
 			pianoroll = s.getPianoRoll()
