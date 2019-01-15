@@ -30,8 +30,8 @@ def getMidiFromWave(folder, file):
 	w = waveForm.waveForm(file).getCQT()
 
 	CQTs = []
-	for i in range(len(w)//172 -1):
-		CQTs.append(w[i*window_size : (i+1)*window_size])
+	for i in range(len(w[0])//172 -1):
+		CQTs.append(:, w[i*window_size : (i+1)*window_size])
 
 	wraps = []
 	for elem in CQTs:
