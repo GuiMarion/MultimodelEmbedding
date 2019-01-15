@@ -22,10 +22,10 @@ def getMidiFromWave(folder, file):
 	
 	window_size = 172
 
-	model2 = torch.load(folder + "/model2.data")
+	model2 = torch.load(folder + "model2.data")
 	model2.eval()
 
-	dico = pickle.load(open(folder + "/dico.data"), "rb")
+	dico = pickle.load(open(folder + "dico.data", "rb"))
 
 	w = waveForm.waveForm(file).getCQT()
 
