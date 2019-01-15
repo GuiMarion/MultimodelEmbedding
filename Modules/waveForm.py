@@ -45,7 +45,7 @@ class waveForm:
 	"""
 
 	def __init__(self, path):
-		""" Initialises the waveform class.
+		""" Initialises a waveform object.
 
 		Note that only self.data, self.sampleRate and self.length are computed
 		from itself.
