@@ -34,12 +34,13 @@ def getMidiFromWave(folder, file):
 		CQTs.append(w[ : , i*window_size : (i+1)*window_size])
 		CQTs[i] = np.array(CQTs[i]).astype(float)
 		CQTs[i] = CQTs[i].reshape(1, 1, CQTs[i].shape[0], CQTs[i].shape[1])
+		CQTs[i] = torch.FloatTensor(CQTs[i])
 
 		print(CQTs[i].shape)
 
 	wraps = []
-	for elem in CQTs:
-		wraps.append(nearestNeighbor(dico, model2.forward(elem).data))
+	for i in range(len(CQTs)):
+		wraps.append(nearestNeighbor(dico, model2.forward(CQTs[i]).data))
 
 	print(wraps)
 
