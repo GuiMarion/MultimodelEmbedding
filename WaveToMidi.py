@@ -7,11 +7,11 @@ import pickle
 import sys
 def nearestNeighbor(dico, wavePosition):
 
-	s = torch.nn.CosineSimilarity(dim=0).cpu()
+	s = torch.nn.CosineSimilarity(dim=0)
 	dist = 1000000
 	name = ""
 	for key in dico:
-		tmp_dist = s(key, wavePosition[0])
+		tmp_dist = s(key.cpu(), wavePosition[0])
 		if  tmp_dist < dist:
 			dist = tmp_dist
 			name = dico[key]
