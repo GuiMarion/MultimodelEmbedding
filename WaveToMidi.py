@@ -1,5 +1,6 @@
 from Modules import waveForm
 from Model import modele
+from Modules import score
 
 import numpy as np
 import torch
@@ -19,7 +20,7 @@ def nearestNeighbor(dico, wavePosition):
 
 	return name
 
-def getMidiFromWave(folder, file):
+def getMidiFromWave(folder, file, dataBase="DataBase/"):
 	
 	window_size = 172
 
@@ -41,7 +42,29 @@ def getMidiFromWave(folder, file):
 	for i in tqdm(range(len(CQTs[:10]))):
 		wraps.append(nearestNeighbor(dico, model2.forward(CQTs[i]).data))
 
-	print(wraps)
+	pianoroll = None
+
+	for elem in wraps:
+		start = elem[elem.rfind("_")+1:]
+		name = elem[:elem.rfind("_")]
+		end = elem[elem.rfind("_")+1:]
+		name = elem[:elem.rfind("_")]	
+
+		s = score.score(dataBase + name + ".mid")
+		s = s.extract(start, end)
+
+		if pianoroll is None:
+			pianoroll = s.getPianoRoll()
+		else:
+			pianoroll = np.concatenate((pianoroll, s.getPianoRoll()), axis=1)
+
+	out = score("", fromArray=(pianoroll, "out"))
+
+	out_name = file[:file.rfind(".")] + ".mid"
+	print(out_name)
+	out.writeToMidi("out.mid")
+
+
 
 if __name__ == "__main__":
 
