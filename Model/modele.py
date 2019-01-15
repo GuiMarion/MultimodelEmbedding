@@ -205,7 +205,13 @@ class Modele():
 
 		for batch in self.testBatches:
 			for i in range(len(batch[1])):
-				print(batch[3][i], self.nearestNeighbor(batch[1][i]))
+				N2 = np.array(batch[1][i]).astype(float)
+				N2 = N2.reshape(self.batch_size, 1, N2.shape[1], N2.shape[2])
+				X2 = torch.FloatTensor(N2)
+				if self.GPU:
+					X2 = X2.cuda()
+
+				print(batch[3][i], self.nearestNeighbor(X2))
 
 
 
