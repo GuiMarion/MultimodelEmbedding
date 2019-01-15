@@ -292,13 +292,17 @@ class Modele():
 			self.model1 = self.model1.cuda()
 			self.model2 = self.model2.cuda()
 
+		print()
 		print("Test Loss for the best trained model:", self.TestEval(self.testBatches))
 
+		print()
 		self.constructDict()
 
+		print()
 		score = self.testBenchmark()
 
 		print("Benchmark score:", score)
+		print()
 
 		print(self.losses)
 		print(self.losses_test)
