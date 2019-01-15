@@ -41,7 +41,7 @@ def getMidiFromWave(folder, file):
 		CQTs[i] = torch.FloatTensor(CQTs[i])
 
 	wraps = []
-	for i in range(tqdm(len(CQTs))):
+	for i in tqdm(range(len(CQTs))):
 		wraps.append(nearestNeighbor(dico, model2.forward(CQTs[i]).data))
 
 	print(wraps)
