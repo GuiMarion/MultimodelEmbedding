@@ -47,8 +47,8 @@ def getMidiFromWave(folder, file, dataBase="DataBase/"):
 	for elem in wraps:
 		start = elem[elem.rfind("_")+1:]
 		name = elem[:elem.rfind("_")]
-		end = elem[elem.rfind("_")+1:]
-		name = elem[:elem.rfind("_")]	
+		end = name[name.rfind("_")+1:]
+		name = name[:name.rfind("_")]	
 
 		print(dataBase + name + ".mid")
 
