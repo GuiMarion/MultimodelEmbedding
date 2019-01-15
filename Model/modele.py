@@ -211,7 +211,8 @@ class Modele():
 				if self.GPU:
 					X2 = X2.cuda()
 
-				print(batch[3][i], self.nearestNeighbor(X2))
+				Y2 = self.model2.forward(X2).data
+				print(batch[3][i], self.nearestNeighbor(Y2))
 
 
 
