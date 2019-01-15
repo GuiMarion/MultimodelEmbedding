@@ -205,7 +205,7 @@ class Modele():
 
 		for batch in self.testBatches:
 			for i in range(len(batch[1])):
-				print(batch[3][i], nearestNeighbor(batch[1][i]))
+				print(batch[3][i], self.nearestNeighbor(batch[1][i]))
 
 
 
