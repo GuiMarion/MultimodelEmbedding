@@ -45,7 +45,7 @@ class waveForm:
 	"""
 
 	def __init__(self, path):
-		""" Initialises a waveform object.
+		""" Initialises the waveform class.
 
 		Note that only self.data, self.sampleRate and self.length are computed
 		from itself.
@@ -110,7 +110,6 @@ class waveForm:
 
 	def getData(self):
 		""" Returns raw data."""
-
 		return self.data
 
 	def play(self, length=None):
@@ -291,7 +290,6 @@ class waveForm:
 
 	def plotCQT(self):
 		""" Plots the CQT. Compute it if necessary."""
-		
 		if self.CQT is None:
 			self.computeCQT()
 

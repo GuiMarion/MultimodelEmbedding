@@ -20,6 +20,18 @@ SERVER = True
 class NullWriter(object):
 	def write(self, arg):
 		pass
+<<<<<<< HEAD
+=======
+'''
+velocity : ok
+getpianoroll : ok
+plot : ok
+length(in timebeat) : pas ok
+extract part: ok
+towaveform : ok
+transpose : ok
+'''
+>>>>>>> a3be14b5ba997a3daf301bbc5053b1510cc0b9d3
 
 '''
 TODO :
@@ -236,11 +248,17 @@ class score:
 	def transpose(self, t):
 		"""Return a transposed pianoroll.
 
+<<<<<<< HEAD
 		Parameters
 		----------
 		t : int
 			Value of transposition, in semitones.
 		"""
+=======
+		# Vertically shifts a matrix by t rows.
+		# Fills empty slots with zeros.
+
+>>>>>>> a3be14b5ba997a3daf301bbc5053b1510cc0b9d3
 	    result = np.empty_like(self.pianoroll)
 	    if t > 0:
 	        result[:,:t] = 0
