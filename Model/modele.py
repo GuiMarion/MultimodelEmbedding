@@ -44,7 +44,7 @@ class Modele():
 
 
 		# We don't store loss greater than that
-		self.lastloss = 1000
+		self.lastloss = 50
 
 	def loadBatch(self):
 		# Load mini batch from file named batch_num
@@ -70,8 +70,6 @@ class Modele():
 			self.testBatches = D.getTestSet(self.batch_size)
 
 			print("We have", len(self.batches), "batches for the training part.")
-
-
 
 
 
@@ -286,7 +284,7 @@ class Modele():
 			print("____ Train Loss:", loss.item())
 			print("____ Test Loss:", self.losses_test[t])
 
-			if t > 2 and self.losses_test[t] < self.lastloss:
+			if self.losses_test[t] < self.lastloss:
 				self.save_weights()
 				self.lastloss = self.losses_test[t]
 
@@ -320,5 +318,5 @@ class Modele():
 		print(self.losses)
 		print(self.losses_test)
 
-		pickle.dump((self.losses, self.losses_test, score), open( "/fast-1/guilhem/params/losses.data", "wb" ) )
+		pickle.dump((self.losses, self.losses_test, self.TestEval(self.testBatches), score), open( "/fast-1/guilhem/params/losses.data", "wb" ) )
 
