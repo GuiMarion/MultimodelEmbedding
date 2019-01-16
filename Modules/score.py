@@ -241,9 +241,6 @@ class score:
 		t : int
 			Value of transposition, in semitones.
 		"""
-		# Vertically shifts a matrix by t rows.
-		# Fills empty slots with zeros.
-
 	    result = np.empty_like(self.pianoroll)
 	    if t > 0:
 	        result[:,:t] = 0
@@ -259,8 +256,8 @@ class score:
 	def getTransposed(self):
 		"""Returns a list of 12 transposed score objects.
 
-		Notice that the list contains all the possible transpositions (in an
-		octave range) from midi data.
+		Notice that the returned list contains all the possible transpositions
+		(in an octave range) from midi data.
 		"""
 		transposed_scores = []
 

@@ -110,6 +110,7 @@ class waveForm:
 
 	def getData(self):
 		""" Returns raw data."""
+
 		return self.data
 
 	def play(self, length=None):
@@ -290,6 +291,7 @@ class waveForm:
 
 	def plotCQT(self):
 		""" Plots the CQT. Compute it if necessary."""
+		
 		if self.CQT is None:
 			self.computeCQT()
 
