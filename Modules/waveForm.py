@@ -1,9 +1,14 @@
-import sounddevice as sd # On importe sounddevice
+#import sounddevice as sd # On importe sounddevice
 import os
 import soundfile as sf
 import time
 import numpy as np
-import matplotlib.pyplot as plt
+try:
+	import matplotlib.pyplot as plt
+	plot = True
+except ImportError:
+	plot = False
+
 from scipy.sparse import hstack, vstack, coo_matrix
 import librosa
 

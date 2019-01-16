@@ -10,8 +10,8 @@ from Modules import score
 from Modules import waveForm
 
 # Parameters for the data extraction part
-WINDOW_SIZE = 10 # in beat
-STEP = 50 # in sample
+WINDOW_SIZE = 4 # in beat
+STEP = 2 # in sample
 
 TRAINSIZE = 0.6
 TESTSIZE = 0.2
@@ -19,7 +19,7 @@ VALIDATIONSIZE = 0.2
 
 DEBUG = False
 
-FONTS = ["Full_Grand_Piano.sf2", "SteinwayGrandPiano_1.2.sf2"]
+FONTS = ["Full_Grand_Piano.sf2", "SteinwayGrandPiano_1.2.sf2", "FazioliGrandPiano .sf2"]
 
 
 
@@ -117,8 +117,8 @@ class dataBase:
                 if DEBUG:
                     if str(tmpPart1.getPianoRoll().shape) not in shapes1:
                         shapes1.append(str(tmpPart1.getPianoRoll().shape))
-                    if str(tmpPart2.shape) not in shapes2:
-                        shapes2.append(str(tmpPart2.shape))
+                    if str(tmpPart2[0].shape) not in shapes2:
+                        shapes2.append(str(tmpPart2[0].shape))
 
         random.shuffle(self.data)
 

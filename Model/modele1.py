@@ -40,11 +40,8 @@ class Modele():
 		self.losses = []
 		self.losses_test = []
 
-		self.s = torch.nn.CosineSimilarity(dim=0)
-
-
 		# We don't store loss greater than that
-		self.lastloss = 50
+		self.lastloss = 1000
 
 	def loadBatch(self):
 		# Load mini batch from file named batch_num
@@ -65,12 +62,37 @@ class Modele():
 			## Construct and save database
 			D = dataBase.dataBase()
 			D.constructDatabase(self.databasePath)
-			self.batches = D.getBatches(self.batch_size)
+			batches = D.getBatches(self.batch_size)
 
 			self.testBatches = D.getTestSet(self.batch_size)
 
-			print("We have", len(self.batches), "batches for the training part.")
+			print("We have", len(batches), "batches for the training part.")
+			self.nbOfBatches = len(batches)
 
+			self.X1_L = []
+			self.X2_L = []
+			self.L1_L = []
+			self.L2_L = []
+			self.indices_L = []
+
+			for batch in batches:
+				N1 = np.array(batch[0]).astype(float)
+				N1 = N1.reshape(self.batch_size, 1, N1.shape[1], N1.shape[2])
+				X1 = torch.autograd.Variable(torch.FloatTensor(N1), requires_grad=True)
+
+				N2 = np.array(batch[1]).astype(float)
+				N2 = N2.reshape(self.batch_size, 1, N2.shape[1], N2.shape[2])
+				X2 = torch.autograd.Variable(torch.FloatTensor(N2), requires_grad=True)
+
+				if self.GPU:
+					X1 = X1.cuda()
+					X2 = X2.cuda()
+
+				self.X1_L.append(X1)
+				self.X2_L.append(X2)
+				self.L1_L.append(batch[2])
+				self.L2_L.append(batch[3])
+				self.indices_L.append(batch[4])
 
 
 	def loss_test(self, y_pred1, y_pred2):
@@ -97,14 +119,14 @@ class Modele():
 			N1 = np.array(batch[0]).astype(float)
 			N1 = N1.reshape(self.batch_size, 1, N1.shape[1], N1.shape[2])
 			X1 = torch.autograd.Variable(torch.FloatTensor(N1), requires_grad=False)
-			if self.GPU:
-				X1 = X1.cuda()
 
 			N2 = np.array(batch[1]).astype(float)
 			N2 = N2.reshape(self.batch_size, 1, N2.shape[1], N2.shape[2])
 			X2 = torch.autograd.Variable(torch.FloatTensor(N2), requires_grad=False)
+
 			if self.GPU:
-				X2 = X2.cuda()
+				X1 = X1.gpu()
+				X2 = X2.gpu()
 
 			y_pred1 = self.model1.forward(X1)
 			y_pred2 = self.model2.forward(X2)
@@ -124,9 +146,6 @@ class Modele():
 
 		torch.save(self.model1.cpu(), "/fast-1/guilhem/params/model1.data")
 		torch.save(self.model2.cpu(), "/fast-1/guilhem/params/model2.data")
-
-		self.model1 = self.model1.cuda()
-		self.model2 = self.model2.cuda()
 
 	def plot_losses(self):
 		# plot the losses over time
@@ -149,6 +168,7 @@ class Modele():
 
 	def myloss(self, batch, alpha=0.7):
 
+		s = torch.nn.CosineSimilarity(dim=0)
 		X1, X2, L1, L2, indices = batch
 
 		rank = 0
@@ -156,82 +176,9 @@ class Modele():
 		for x in range(len(X1)):
 			for y in range(len(X2)):
 				if y != x:
-					rank += max(0, alpha - self.s(X1[indices[x]], X2[x]) + self.s(X1[indices[x]], X2[y]))
+					rank += max(0, alpha - s(X1[indices[x]], X2[x]) + s(X1[indices[x]], X2[y]))
 
 		return rank
-
-	def constructDict(self):
-
-
-		print("____ Consctructing the dictionary")
-
-		dico = {}
-		self.model1.eval()
-
-		rollsFromName = {}
-
-
-		for batch in self.batches:
-
-			N1 = np.array(batch[0]).astype(float)
-			N1 = N1.reshape(self.batch_size, 1, N1.shape[1], N1.shape[2])
-			X1 = torch.FloatTensor(N1)
-
-			if self.GPU:
-				X1 = X1.cuda()
-
-			Y = self.model1.forward(X1).data
-			for i in range(len(batch[2])):
-				dico[Y[i]] = batch[2][i]
-
-				rollsFromName[batch[2][i]] = batch[0][i]
-
-		pickle.dump(dico, open( "/fast-1/guilhem/params/dico.data", "wb" ) )
-
-		self.dico = dico
-		self.rollsFromName = rollsFromName
-
-
-	def nearestNeighbor(self, wavePosition):
-
-		dist = 1000000
-		name = ""
-		for key in self.dico:
-			tmp_dist = self.s(key, wavePosition[0])
-			if  tmp_dist < dist:
-				dist = tmp_dist
-				name = self.dico[key]
-
-		return name
-
-	def pianorollDistance(self, p1, p2):
-
-		return np.count_nonzero(p1 == p2) / (len(p1)*len(p1[0]))
-
-
-
-	def testBenchmark(self):
-
-		score = 0
-		for batch in self.testBatches:
-			for i in range(len(batch[1])):
-				N2 = np.array(batch[1][i]).astype(float)
-				N2 = N2.reshape(1, 1, N2.shape[0], N2.shape[1])
-				X2 = torch.FloatTensor(N2)
-				if self.GPU:
-					X2 = X2.cuda()
-
-				Y2 = self.model2.forward(X2).data
-
-				pianoroll1 = batch[0][batch[4][i]]
-				pianoroll2 = self.rollsFromName[self.nearestNeighbor(Y2)]
-
-				score += self.pianorollDistance(pianoroll1, pianoroll2)
-
-		score /= (len(self.testBatches) * len(self.testBatches[0][2]))
-
-		return score
-
 
 	def learn(self, EPOCHS, learning_rate=1e-7, momentum=0.9):
 
@@ -244,28 +191,15 @@ class Modele():
 		for t in range(EPOCHS):
 			# Make learn the two models with respects to x and y
 
-			for batch in tqdm(self.batches):
-				N1 = np.array(batch[0]).astype(float)
-				N1 = N1.reshape(self.batch_size, 1, N1.shape[1], N1.shape[2])
-				X1 = torch.autograd.Variable(torch.FloatTensor(N1), requires_grad=True)
-				if self.GPU:
-					X1 = X1.cuda()
+			for k in tqdm(range(self.nbOfBatches)):
 
-				N2 = np.array(batch[1]).astype(float)
-				N2 = N2.reshape(self.batch_size, 1, N2.shape[1], N2.shape[2])
-				X2 = torch.autograd.Variable(torch.FloatTensor(N2), requires_grad=True)
-				if self.GPU:
-					X2 = X2.cuda()
 
-				y_pred1 = self.model1.forward(X1)
-				y_pred2 = self.model2.forward(X2)
+				y_pred1 = self.model1.forward(self.X1_L[k])
+				y_pred2 = self.model2.forward(self.X2_L[k])
 
-				L1 = batch[2]
-				L2 = batch[3]
-				indices = batch[4]
 
 				# Compute and print loss
-				loss = self.myloss((y_pred1, y_pred2, L1, L2, indices))
+				loss = self.myloss((y_pred1, y_pred2, self.L1_L[k], self.L2_L[k], self.indices_L[k]))
 				#print(t, loss.item())
 
 				# Zero gradients, perform a backward pass, and update the weights.
@@ -277,14 +211,10 @@ class Modele():
 			# appending losses
 			self.losses.append(float(loss.item()))
 			self.losses_test.append(self.TestEval(self.testBatches))
-
-			print()
-			print("________ EPOCH ", t)
-			print()
-			print("____ Train Loss:", loss.item())
+			print("Training Loss:", loss.item())
 			print("____ Test Loss:", self.losses_test[t])
 
-			if self.losses_test[t] < self.lastloss:
+			if t > 15 and self.losses_test[t] < self.lastloss:
 				self.save_weights()
 				self.lastloss = self.losses_test[t]
 
@@ -292,31 +222,9 @@ class Modele():
 				# stop learning
 				return
 
-
-
-		self.plot_losses()
-
-		self.model1 = torch.load("/fast-1/guilhem/params/model1.data")
-		self.model2 = torch.load("/fast-1/guilhem/params/model2.data")
-
-		if self.GPU:
-			self.model1 = self.model1.cuda()
-			self.model2 = self.model2.cuda()
-
-		print()
-		print("Test Loss for the best trained model:", self.TestEval(self.testBatches))
-
-		print()
-		self.constructDict()
-
-		print()
-		score = self.testBenchmark()
-
-		print("Benchmark score:", score)
-		print()
-
 		print(self.losses)
 		print(self.losses_test)
 
-		pickle.dump((self.losses, self.losses_test, self.TestEval(self.testBatches), score), open( "/fast-1/guilhem/params/losses.data", "wb" ) )
+		self.plot_losses()
+
 
