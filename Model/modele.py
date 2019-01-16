@@ -15,12 +15,14 @@ except ImportError:
 
 class Modele():
 
-	def __init__(self, databasePath=None, batch_size=32, gpu=None):
+	def __init__(self, databasePath=None, batch_size=32, gpu=None, outPath="/fast-1/guilhem/params/"):
 
 		if gpu is None:
 			self.GPU = False
 		else :
 			self.GPU = True
+
+		self.outPath = outPath
 
 		self.model1 = network.Net()
 		self.model2 = network.Net()
@@ -122,8 +124,8 @@ class Modele():
 		# save the weights of the model with the name name
 		print("____ Saving the models.")
 
-		torch.save(self.model1.cpu(), "/fast-1/guilhem/params/model1.data")
-		torch.save(self.model2.cpu(), "/fast-1/guilhem/params/model2.data")
+		torch.save(self.model1.cpu(), self.outPath + "model1.data")
+		torch.save(self.model2.cpu(), self.outPath + "model2.data")
 
 		self.model1 = self.model1.cuda()
 		self.model2 = self.model2.cuda()
@@ -171,7 +173,7 @@ class Modele():
 		rollsFromName = {}
 
 
-		for batch in self.batches:
+		for batch in tqdm(self.batches):
 
 			N1 = np.array(batch[0]).astype(float)
 			N1 = N1.reshape(self.batch_size, 1, N1.shape[1], N1.shape[2])
@@ -186,7 +188,7 @@ class Modele():
 
 				rollsFromName[batch[2][i]] = batch[0][i]
 
-		pickle.dump(dico, open( "/fast-1/guilhem/params/dico.data", "wb" ) )
+		pickle.dump(dico, open( self.outPath + "dico.data", "wb" ) )
 
 		self.dico = dico
 		self.rollsFromName = rollsFromName
@@ -318,5 +320,5 @@ class Modele():
 		print(self.losses)
 		print(self.losses_test)
 
-		pickle.dump((self.losses, self.losses_test, self.TestEval(self.testBatches), score), open( "/fast-1/guilhem/params/losses.data", "wb" ) )
+		pickle.dump((self.losses, self.losses_test, self.TestEval(self.testBatches), score), open( self.outPath + "losses.data", "wb" ) )
 
