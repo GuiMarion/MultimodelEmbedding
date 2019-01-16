@@ -13,6 +13,8 @@ print(len(D1.getData()))
 print()
 print("End of dataset Construction")
 print()
+
+quit()
 D = D1.getBatches(64)
 
 for elem in D:

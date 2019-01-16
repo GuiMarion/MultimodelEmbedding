@@ -11,7 +11,7 @@ from Modules import waveForm
 
 # Parameters for the data extraction part
 WINDOW_SIZE = 4 # in beat
-STEP = 50 # in sample
+STEP = 2 # in sample
 
 TRAINSIZE = 0.6
 TESTSIZE = 0.2
@@ -117,8 +117,8 @@ class dataBase:
                 if DEBUG:
                     if str(tmpPart1.getPianoRoll().shape) not in shapes1:
                         shapes1.append(str(tmpPart1.getPianoRoll().shape))
-                    if str(tmpPart2.shape) not in shapes2:
-                        shapes2.append(str(tmpPart2.shape))
+                    if str(tmpPart2[0].shape) not in shapes2:
+                        shapes2.append(str(tmpPart2[0].shape))
 
         random.shuffle(self.data)
 

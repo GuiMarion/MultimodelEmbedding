@@ -33,15 +33,14 @@ class score:
 	It uses the module pypianoroll, that allows the managing of numpy arrays
 	instead of raw midi files. Thus, score class can be defined from a midi
 	file, but also from a pypianoroll object extracted from a midi (see
-	extractPart and extractAllParts). Midi or pianoroll excerpts can be cropped,
-	plotted, transposed and written as new midi excerpts, and even converted
-	into waveForm objects.
+	extractPart and extractAllParts). Midi or pianoroll numpy arrays excerpts
+	can be cropped, plotted, transposed and written as new midi excerpts, and
+	even converted into waveForm objects.
 
 	Attributes
 	----------
 	self.pianoroll : :obj:'list' of :obj:'int'
-		A pypianoroll object that represents the midi data as a list of numpy
-		arrays.
+		A list of numpy arrays that represents the midi data.
 	self.name : str
 		If a score class is created from a raw midi file, this attributes is
 		corresponding to the name of the midi file without a '.mid' or '.midi'
