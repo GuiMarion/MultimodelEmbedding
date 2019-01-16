@@ -215,7 +215,7 @@ class Modele():
 	def testBenchmark(self):
 
 		score = 0
-		for batch in self.testBatches:
+		for batch in tqdm(self.testBatches):
 			for i in range(len(batch[1])):
 				N2 = np.array(batch[1][i]).astype(float)
 				N2 = N2.reshape(1, 1, N2.shape[0], N2.shape[1])
