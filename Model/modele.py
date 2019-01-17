@@ -158,6 +158,11 @@ class Modele():
 		for x in range(len(X1)):
 			for y in range(len(X2)):
 				if y != x:
+
+					if L1[indices[x]] != L2[x]:
+						print("ERREUR")
+					if L1[indices[x]] == L2[y]:
+						print("ERREUR")
 					rank += max(0, alpha - self.s(X1[indices[x]], X2[x]) + self.s(X1[indices[x]], X2[y]))
 
 		return rank

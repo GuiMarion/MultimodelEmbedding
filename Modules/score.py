@@ -15,7 +15,7 @@ from midi2audio import FluidSynth
 
 import sys
 
-SERVER = False
+SERVER = True
 
 class NullWriter(object):
 	def write(self, arg):
@@ -134,7 +134,7 @@ class score:
 			midiPath = ".TEMP/"+self.name+".mid"
 			wavePath = ".TEMP/"+self.name+".wav"	
 
-		pathFont = "../SoundFonts/" + font
+		pathFont = "SoundFonts/" + font
 
 		self.writeToMidi(midiPath)
 

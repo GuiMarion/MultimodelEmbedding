@@ -271,7 +271,7 @@ class waveForm:
 
 	def computeCQT(self, nbins=128):
 		vect = self.data[:,]
-		#vect = vect[:,0]
+		vect = vect[:,0]
 		self.CQT = np.abs(librosa.cqt(vect, sr=self.sampleRate, fmin=30, n_bins=nbins, bins_per_octave=16))
 
 	def getCQT(self, nbins=128):

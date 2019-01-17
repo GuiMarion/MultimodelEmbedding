@@ -6,8 +6,8 @@ from Model import modele
 import torch
 
 
-EPOCHS = 35
+EPOCHS = 1
 
-model = modele.Modele("../DataBase/MIDIs/mozart", gpu=0)
+model = modele.Modele("../DataBaseTest/", gpu=0, outPath=".TEMP")
 
 model.learn(EPOCHS, learning_rate=1e-2)
