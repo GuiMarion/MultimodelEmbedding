@@ -161,11 +161,11 @@ class Modele():
 					rank += max(0, alpha - self.s(X1[indices[x]], X2[x]) + self.s(X1[indices[x]], X2[y]))
 					if L1[indices[x]] != L2[x]:
 						print("ERREUR")
-						print("Should match", L1[indices[x]], L2[x])
+						print("Should match", L1[indices[x]], L2[x][:L2[x].find("-")])
 
 					if L1[indices[x]] == L2[y]:
 						print("ERREUR")
-						print("Should not match", L1[indices[x]], L2[y])
+						print("Should not match", L1[indices[x]], L2[y][:L2[x].find("-")])
 
 		return rank
 
