@@ -24,6 +24,22 @@ FONTS = ["Full_Grand_Piano.sf2", "SteinwayGrandPiano_1.2.sf2", "FazioliGrandPian
 
 
 class dataBase:
+    """Manages the database of music snippets ((piano roll, spectrogram, name) tuples).
+
+    This class contains methods to build a database of (piano roll, spectrogram, name) tuples of music snippets
+    from a repertory containing midi files, save this database in a file, or load a database from a file.
+    It can also creates batches to feed the neural networks.
+
+    Attributes
+    ----------
+    name : str
+        Name of the database.
+    data : :obj:`list`
+        List of (piano roll, spectrogram, name) tuples for each snippet.
+    self.path : str 
+        Path of the midi database to load.
+    """    
+    
     def __init__(self, name="database"):
 
         self.name = name
@@ -31,8 +47,16 @@ class dataBase:
         self.path = None
 
     def constructDatabase(self, path, name=None):
-        # construct a dictionary wich contains, for every file, a tuple with the corresponding score and waveForm object
+        """Construct the database of tuples from an existing midi database.
 
+        Parameters
+        ----------
+        path : str
+            The path to the folder to load (must contain midi files).
+        name : str, optional
+            The name to give to the database object.
+        """
+        
         if os.path.isdir(path):
             self.path = path
             if name:
@@ -130,7 +154,13 @@ class dataBase:
             print(shapes2)
 
     def save(self, path="../DataBase/Serialized/"):
-        # Save database as a pickle
+        """Saves the database as a pickle.
+
+        Parameters
+        ----------
+        path : str, optional
+            The path to the folder in which we save the file.
+        """
 
         answer = "y"
 
@@ -159,7 +189,14 @@ class dataBase:
 
 
     def load(self, path):
-        # Load a database from a previous saved pickle
+        """Loads  a database from a previously saved pickle.
+
+        Parameters
+        ----------
+        path : str
+            The path to the folder containing the previously saved database.
+        """
+        
         if not os.path.isfile(path):
             print("The path you entered doesn't point to a file ...")
             raise RuntimeError("Invalid file path")
@@ -173,17 +210,31 @@ class dataBase:
             raise RuntimeError("Invalid file")
 
     def print(self):
-        # Print name of all items in database
+        """Prints name of all items in the database."""
+        
         print("____Printing database")
         print()
         for i in range(len(self.data)):
             print(self.data[i][2])
 
     def getData(self):
+        """Returns the content of the database."""        
+        
         return self.data
 
     def augmentData(self, scores):
-        # augment the data with some techniques like transposition
+        """Augments the data with some techniques like transposition.
+        
+        Parameters
+        ----------
+        scores : :obj:'list'
+            List of scores to augment.
+
+        Returns
+        -------
+        augmentedData : :obj: 'list'
+            List containing the scores resulting from the augmentation.
+        """
         
         augmentedData = []
 
@@ -195,7 +246,18 @@ class dataBase:
 
 
     def getBatches(self, batchSize):
-        # return efficiently valid batches from data if len(data) > 32
+        """Returns efficiently valid batches from data if len(data) > 32.
+        
+        Parameters
+        ----------
+        batchSize : int
+            Size of the batches to create.        
+        
+        Returns
+        -------
+        batches : :obj: 'list'
+            List containing the resulting batches.
+        """
 
         batches = []
         for i in tqdm(range(int(TRAINSIZE * len(self.data)) // batchSize)):
@@ -204,7 +266,20 @@ class dataBase:
         return batches
 
     def getSmallSetofBatch(self, data, batchSize):
-        # construct valid batchs from data, is effiencient if len(data) <=32
+        """Constructs valid batches from data, is efficient if len(data) <= 32.
+        
+        Parameters
+        ----------
+        data : :obj: 'list'
+            Content of the database.        
+        batchSize : int
+            Size of the batches to create.
+
+        Returns
+        -------
+        batches : :obj: 'list'
+            List containing the resulting batches.
+        """
 
         numberofData = len(data)*len(data[0][2])
         numberofBatches = numberofData // batchSize
@@ -248,6 +323,18 @@ class dataBase:
         return batches
 
     def getTestSet(self, batchSize):
+        """Constructs batches for the test set.
+
+        Parameters
+        ----------    
+        batchSize : int
+            Size of the batches to create.
+
+        Returns
+        -------
+        batches : :obj: 'list'
+            List containing the resulting batches.
+        """ 
 
         batches = []
         for i in tqdm(range(int(TRAINSIZE * len(self.data)) // batchSize, int((TRAINSIZE + TESTSIZE) * len(self.data)) // batchSize)):
@@ -256,6 +343,18 @@ class dataBase:
         return batches
 
     def getValidationSet(self, batchSize):
+        """Constructs batches for the validation set.
+
+        Parameters
+        ----------    
+        batchSize : int
+            Size of the batches to create.
+
+        Returns
+        -------
+        batches : :obj: 'list'
+            List containing the resulting batches.
+        """ 
 
         batches = []
         for i in tqdm(range(int((TRAINSIZE + TESTSIZE) * len(self.data)) // batchSize, len(self.data) // batchSize)):
