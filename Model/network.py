@@ -22,8 +22,17 @@ stride_pool = 2
 
 dim_latent = 32 # Dimension of the embedding latent space 
 
-# define the CNN architecture
 class Net(nn.Module):
+    """Defines the convolutional neural network architecture.
+    This class defines a Pytorch convolutional neural network that can
+    be used to learn from either piano rolls or spectrograms.
+    
+    Attributes
+    ----------
+    dim_latent : int
+        Dimension of the embedding latent space.
+    """ 
+    
     def __init__(self):
         super(Net, self).__init__()
         
@@ -63,7 +72,18 @@ class Net(nn.Module):
 
 
     def forward(self, x):
-
+        """Defines the network's forward pass.
+        
+        Parameters
+        ----------
+        x
+            Input of the network (pytorch tensor).
+            
+        Returns
+        -------
+        x
+            Output of the network (pytorch tensor).
+        """
         N = x.size()[0]
 
         # First Layer Conv2d + Elu + BN
@@ -107,6 +127,30 @@ class Net(nn.Module):
         return x
 
     def learn(self, x, y, EPOCHS, learning_rate=1e-4, momentum=0.9, x_test=[], y_test=[]):
+        """Makes the network learn by comparing output with expected result.
+        
+        Computes the result of x passing through the network, and compares that
+        output with the expected result, y. Then adjusts the network's weights
+        to minimize the loss. The processus is repeated EPOCHS times.
+        
+        Parameters
+        ----------
+        x
+            Input of the network (pytorch tensor).
+        y
+            Expected output of the network (pytorch tensor).
+        EPOCHS : int
+            Number of passes through the network.
+        learning_rate : float
+            Learning rate of the network.
+        momentum : float
+            Parameter for the pytorch SGD optimizer.
+        x_test :
+            Input from the test data (pytorch tensor).
+        y_test :
+            Output of x_test through the network.
+        """
+        
         criterion = torch.nn.MSELoss(reduction='sum')
         #optimizer = torch.optim.SGD(self.parameters(), lr=learning_rate, momentum=momentum)
         optimizer = torch.optim.Adam(self.parameters(), lr=learning_rate)
@@ -133,7 +177,21 @@ class Net(nn.Module):
             
 
     def loss_test(self, y_pred, y):
-        # copute the loss for the final test part
+        """Computes the loss for the final test part.
+        
+        Parameters
+        ----------
+        y_pred
+            Result calculated by the network (pytorch tensor).
+        y
+            Actual result (pytorch tensor).
+            
+        Returns
+        -------
+        loss : float
+            The distance between calculated and actual result.
+        """
+        
         # use the MSE for now
         if len(y_pred) != dim_latent and len(y) != dim_latent:
             raise RuntimeError("y and y_pred dosn't have same shape for test.")
@@ -155,21 +213,36 @@ class Net(nn.Module):
         return loss
         
     def plot_losses(self):
-        # plot the losses over time
+        """Plots the losses over time."""
+        
         loss, = plt.plot(np.array(self.losses), label='Loss on training')
         lossTest, = plt.plot(np.array(self.losses_test), label='Loss on test')
         plt.legend(handles=[loss, lossTest])
         plt.show()
         
     def save_weights(self, name):
-        # save the weights of the model with the name name
+        """Saves the weights of the model.
+        
+        Parameters
+        ----------
+        name : str
+            Name of the saved file.
+        """
+        
         torch.save(self, "params/" + name + '.pt')
         
     def is_over_fitting(self):
-        # return True is the modele is overfitting
-        # find an algorithm that do the job i.e.
-        # if self.losses_test is not decreasing for T epochs
-        # with a threshold of K
+        """Returns True is the modele is overfitting.
+
+        The model is considered overfitting if the loss in respect to the test data is 
+        not decreasing for T epoch, with a threshold of K.
+        
+        Returns
+        -------
+        bool
+            True if the model is overfitting, False otherwise.
+        """
+        
         T = 10
         K = 0.1
         if(np.all(self.losses_test[-T:] > self.losses_test[-T]-K) == True):

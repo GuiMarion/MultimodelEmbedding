@@ -4,6 +4,8 @@ import random
 
 def generateSyntData(N, nbFonts, size1=(80,100), size2=(100, 128)):
 
+	# Generate synthetic data in order to test our functions
+
 	ret = []
 	for n in range(N):
 		tempX1 = np.random.random_sample(size1)
@@ -73,6 +75,7 @@ def getBatches(data, batchSize):
 
 
 def testMyBatchFunction(N, batchSize):
+	# Benchmark our batch generation function
 
 	data = generateSyntData(N, 4)
 	print("____ Executing the function")
@@ -91,7 +94,8 @@ def testMyBatchFunction(N, batchSize):
 
 
 def isBatchValid(batchSet, batchSize):
-		
+	# Chekc if a given batch set if valid or not. If it's not the functions says why.
+
 	if batchSet == "":
 		print("Seems that you need to code your function")
 		return False

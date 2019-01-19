@@ -15,26 +15,11 @@ from midi2audio import FluidSynth
 
 import sys
 
-SERVER = True
+SERVER = False
 
 class NullWriter(object):
 	def write(self, arg):
 		pass
-'''
-velocity : ok
-getpianoroll : ok
-plot : ok
-length(in timebeat) : pas ok
-extract part: ok
-towaveform : ok
-transpose : ok
-'''
-
-'''
-TODO :
-	- Test compatibility with other modules (database, waveform)
-	- Resoudre probleme de tempo
-'''
 
 class score:
 	def __init__(self, pathToMidi, velocity=False, quantization=24, fromArray=(None, "")):
@@ -125,7 +110,7 @@ class score:
 
 		return retParts
 
-	def toWaveForm(self, font="MotifES6ConcertPiano.sf2"):
+	def toWaveForm(self, font="SteinwayGrandPiano_1.2.sf2"):
 
 		if SERVER == True:
 			midiPath = "/fast-1/guilhem/"+self.name+".mid"

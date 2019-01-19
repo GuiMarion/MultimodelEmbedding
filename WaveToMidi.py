@@ -22,7 +22,7 @@ def nearestNeighbor(dico, wavePosition):
 
 	return name
 
-def getMidiFromWave(folder, file, dataBase="DataBase/"):
+def getMidiFromWave(folder, file, dataBase="DataBase/MIDIs/mozart/"):
 	
 	window_size = 172
 
@@ -77,7 +77,6 @@ if __name__ == "__main__":
 		getMidiFromWave(sys.argv[1], sys.argv[2])
 	elif len(sys.argv) == 4:
 		getMidiFromWave(sys.argv[1], sys.argv[2], dataBase=sys.argv[3])
-
 
 	else:
 		print("Usage: Python3 WaveToMidi.py <folder for model> <file to convert>")  
