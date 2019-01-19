@@ -36,7 +36,7 @@ class dataBase:
         Name of the database.
     data : :obj:`list`
         List of (piano roll, spectrogram, name) tuples for each snippet.
-    self.path : str 
+    path : str 
         Path of the midi database to load.
     """    
     
