@@ -14,7 +14,31 @@ except ImportError:
 
 
 class Modele():
-
+	"""Defines the general model, with two convolutional neural networks.
+	
+	This class defines the model that learns simultaneously from piano rolls and 
+	spectrograms, embedding both in a common latent space.
+	
+	Attributes
+	----------
+	GPU : bool
+		True if the GPU of the computer is used, False otherwise.
+	outPath : str
+		The path in which the parameters are to be stored.
+	model1
+		The first neural network.
+	model2
+		The second neural network.
+	batch_size : int
+		Size of the input data batches.
+	databasePath : str
+		The folder in which the database is stored.
+	losses : :obj: 'list' of :obj: 'float'
+		History of the losses over time (for plotting purpose).
+	losses_test : :obj: 'list' of :obj: 'float'
+		History of the losses over test data.
+	"""
+	
 	def __init__(self, databasePath=None, batch_size=32, gpu=None, outPath="/fast-1/guilhem/params/"):
 
 		if gpu is None:
@@ -49,8 +73,7 @@ class Modele():
 		self.lastloss = 50
 
 	def loadBatch(self):
-		# Load mini batch from file named batch_num
-
+		"""Loads mini batches from file."""
 
 		if self.databasePath is None:
 
@@ -76,7 +99,21 @@ class Modele():
 
 
 	def loss_test(self, y_pred1, y_pred2):
-		# copute the loss for the final test part
+		"""Computes the loss for the final test part.
+		
+		Parameters
+		----------
+		y_pred1
+			First prediction to compare (pytorch tensor).
+		y_pred2
+			Second prediction to compare (pytorch tensor).
+		
+		Returns
+		-------
+		loss : float
+			The distance between the two tensors.
+		"""
+		
 		# use the MSE for now
 		if len(y_pred1) != self.model1.dim_latent and len(y_pred2) != self.model2.dim_latent:
 			raise RuntimeError("y_pred1 and y_pred2 doesn't have same shape for test.")
@@ -89,9 +126,19 @@ class Modele():
 
 
 	def TestEval(self, batches):
-		# Evaluation fonction
-		# return the meaned loss for batches
-
+		"""Evaluation fonction that returns the meaned loss for all batches.
+		
+		Parameters
+		----------
+		batches : :obj: 'list'
+			List of all data batches.
+			
+		Returns
+		-------
+		float
+			Meaned loss for all batches.
+		"""
+		
 		loss = 0
 
 		for batch in batches:
@@ -121,7 +168,8 @@ class Modele():
 		return loss/len(batches)
 
 	def save_weights(self):
-		# save the weights of the model with the name name
+		""" Saves the weights of the models in two separates files."""
+		
 		print("____ Saving the models.")
 
 		torch.save(self.model1.cpu(), self.outPath + "model1.data")
@@ -131,7 +179,8 @@ class Modele():
 		self.model2 = self.model2.cuda()
 
 	def plot_losses(self):
-		# plot the losses over time
+		"""Plots the losses over time."""
+		
 		if plot == True:
 			loss, = plt.plot(np.array(self.losses), label='Loss on training')
 			lossTest, = plt.plot(np.array(self.losses_test), label='Loss on test')
@@ -141,11 +190,15 @@ class Modele():
 			print("Impossible to plot, tkinter not available.")
 
 	def is_over_fitting(self):
-		# return True of False is the modele is overfitting
-		# find an algorithm that do the job i.e. 
-
-		# if self.losses_test is not inscreasing for T epochs
-		# with a threshold of K
+		"""Returns True is the modele is overfitting.
+		The model is considered overfitting if the loss in respect to the test data is 
+		not decreasing for T epoch, with a threshold of K.
+		
+		Returns
+		-------
+		bool
+			True if the model is overfitting, False otherwise.
+		"""
 
 		return False
 
@@ -172,7 +225,7 @@ class Modele():
 	def constructDict(self):
 
 
-		print("____ Consctructing the dictionary")
+		print("____ Constructing the dictionary")
 
 		dico = {}
 		self.model1.eval()
