@@ -182,9 +182,22 @@ class Modele():
 
 
 	def myloss(self, batch, alpha=0.7):
-
-		# Loss we use for the training and the evaluation, same that the one used in the paper
-		# pairwise hinge loss, using cosine similarity
+		'''Loss to be used for training and evaluation.
+		
+		Same loss function that the one used in Dorfer et al. [2018].
+		Pairwise hinge loss, using cosine similarity.
+		
+		Parameters
+		----------
+		batch
+			Data batch over which we calculate the loss.
+		alpha : float, optional
+			Hinge loss parameter (defaults to 0.7).
+		Returns
+		-------
+		rank : float
+			Optimized pairwise ranking objective (the "hinge loss").
+		'''
 
 		X1, X2, L1, L2, indices = batch
 
@@ -205,10 +218,10 @@ class Modele():
 		return rank
 
 	def constructDict(self):
-
-		# Construct a dictionary allowing to match coordonate in the latent space with a 
-		# name of music piece and another one that match names with pianoroll matrix.
-
+		'''Constructs a dictionary allowing to match coordinates in the latent space.
+		
+		With a name of music piece and another one that match names with pianoroll matrices.
+		'''
 
 		print("____ Constructing the dictionary")
 
@@ -241,7 +254,17 @@ class Modele():
 
 
 	def learn(self, EPOCHS, learning_rate=1e-7, momentum=0.9):
-		# Learn mathod, that train the model on self.batches
+		'''Learn method of the model, that trains the model on self.batches.
+		
+		Parameters
+		----------
+		EPOCHS : int
+			Number of passes through the model.
+		learning_rate : float, optional
+			Learning rate of the neural networks.
+		momentum : float, optional
+			Parameter for the pytorch SGD optimizer.
+		'''
 
 		print("_____ Training")
 		parameters = [p for p in self.model1.parameters()] + [p for p in self.model2.parameters()]
@@ -334,12 +357,13 @@ class Modele():
 
 
 	def constructDictForTest(self):
+		'''Construct a dictionary allowing to match coordinates in the latent space.
+		
+		With a name of music piece and another one that match names with pianoroll matrices.
+		This function only does this with the validation dataset.
+		'''
 
-		# Construct a dictionary allowing to match coordonate in the latent space with a 
-		# name of music piece and another one that match names with pianoroll matrix.
-		# This function only do this for the validation set of data
-
-		print("____ Consctructing the dictionary")
+		print("____ Constructing the dictionary")
 
 		dico = {}
 		self.model1.eval()
@@ -367,7 +391,18 @@ class Modele():
 
 
 	def nearestNeighborEval(self, wavePosition):
-		# Search for the nearest neighbor in the evaluation set
+		'''Searchs for the nearest neighbor in the evaluation set.
+		
+		Parameters
+		----------
+		wavePosition
+			Coordinates of the wave object in the latent space.
+		
+		Returns
+		-------
+		name : str
+			The name of the nearest neighbor.
+		'''
 
 		dist = 1000000
 		name = ""
@@ -381,8 +416,17 @@ class Modele():
 
 
 	def nearestNeighbor(self, wavePosition):
-
-		# Search for the nearest neighbor in the training set
+		'''Searchs for the nearest neighbor in the training set.
+		
+		Parameters
+		----------
+		wavePosition
+			Coordinates of the wave object in the latent space.
+		Returns
+		-------
+		name : str
+			The name of the nearest neighbor.
+		'''
 
 		dist = 1000000
 		name = ""
@@ -395,8 +439,23 @@ class Modele():
 		return name
 
 	def pianorollDistance(self, p1, p2):
-		# Compute a distance between two pianoroll, using pairwise comparison only on non-zero elements
-		# in order to avoid false high similarity due to spasity.
+		'''Computes a distance between two pianorolls.
+		
+		Computes the distance using pairwise comparison only on non-zero elements
+		in order to avoid false high similarity due to sparsity.
+		
+		Parameters
+		----------
+		p1
+			First pianoroll.
+		p2
+			Second pianoroll.
+		
+		Returns
+		-------
+		float
+			The distance between the two pianorolls.
+		'''
 
 		TP = 0.
 		false = 0.
@@ -416,9 +475,17 @@ class Modele():
 
 
 	def testBenchmarkEval(self):
-		# Process an evaluation test we designed. It return the meaned quantity of non-zeros pianoroll element 
-		#that have been correctly predicted. Only on the evaluation set.
-
+		'''Processes an evaluation test we designed.
+		
+		It returns the meaned quantity of non-zeros pianoroll elements
+		that have been correctly predicted. Only on the evaluation set.
+		
+		Returns
+		-------
+		score : float
+			Meaned quantity of correctly predicted non-zeros pianoroll elements.
+		'''
+		
 		score = 0.0
 		for batch in self.testBatches:
 			for i in range(len(batch[1])):
@@ -440,8 +507,16 @@ class Modele():
 		return score
 
 	def testBenchmark(self):
-	# Process an evaluation test we designed. It return the meaned quantity of non-zeros pianoroll element 
-	#that have been correctly predicted. Only on the training set.
+		'''Processes an evaluation test we designed.
+		
+		It returns the meaned quantity of non-zeros pianoroll elements
+		that have been correctly predicted. Only on the training set.
+		
+		Returns
+		-------
+		score : float
+			Meaned quantity of correctly predicted non-zeros pianoroll elements.
+		'''
 
 		score = 0
 		for batch in self.testBatches:
@@ -464,7 +539,17 @@ class Modele():
 		return score
 
 	def RecallK(self, k, embedded, expected):
-		# compute the recall R@k for one element.
+		'''Computes the Recall@k (R@k) for one element.
+		
+		Parameters
+		----------
+		k : int
+			Rank of the R@k we want to compute.
+		embedded
+			Coordinates of the element in the latent space.
+		expected
+			Original piano roll.
+		'''
 
 		recall = {}
 		for key in self.dicoEval:
@@ -479,7 +564,18 @@ class Modele():
 		return False
 
 	def getRecallK(self, k):
-		# Return the meaned recall R@k for the all validation set
+		'''Returns the meaned Recall@k (R@k) for all of the validation set.
+		
+		Parameters
+		----------
+		k : int
+			Rank of the R@k we want to compute.
+		
+		Returns
+		-------
+		score : float
+			Meaned R@k for the validation set.
+		'''
 
 		score = 0
 		for batch in self.validationBatches:
@@ -501,7 +597,19 @@ class Modele():
 		return score
 
 	def MRR(self, embedded, expected):
-		# Compute the MRR (cf. article) for one element.
+		'''Computes the Mean Reciprocal Rank (MRR) for one element.
+
+		Parameters
+		----------
+		embedded
+			Coordinates of the element in the latent space.
+		expected
+			Original piano roll.
+		Returns
+		-------
+		float
+			Estimated MRR for the element.
+		'''
 
 		recall = {}
 		for key in self.dicoEval:
@@ -515,7 +623,14 @@ class Modele():
 				return 1/(i+1)
 
 	def getMRR(self):
-		# Compute the mRR for all elemtns from validation set.
+		'''Returns the Mean Reciprocical Rank (MRR) for all of the validation set.
+		
+		Returns
+		-------
+		score : float
+			Meaned MRR for the validation set.
+		'''
+		
 		score = 0
 		for batch in self.validationBatches:
 			for i in range(len(batch[1])):
@@ -536,7 +651,19 @@ class Modele():
 		return score
 
 	def MR(self, embedded, expected):
-		# Compute the MR for one element.
+		'''Computes the Median Rank (MR) for one element.
+
+		Parameters
+		----------
+		embedded
+			Coordinates of the element in the latent space.
+		expected
+			Original piano roll.
+		Returns
+		-------
+		int
+			Estimated MR for the element.
+		'''
 
 		recall = {}
 		for key in self.dicoEval:
@@ -550,7 +677,13 @@ class Modele():
 				return i+1
 
 	def getMR(self):
-		# Compute the MR for all element on validation set.
+		'''Returns the Median Rank (MR) for all of the validation set.
+		
+		Returns
+		-------
+		score : float
+			Median score for the validation set.
+		'''
 
 		scores = []
 		for batch in self.validationBatches:
@@ -570,7 +703,21 @@ class Modele():
 		return statistics.median(scores)
 
 	def whatIsThisSong(self, file):
-		# Return the name of predicted song.
+		'''Returns the name of the predicted song.
+		
+		Finds the nearest neighbors among snippets in the latent space,
+		and returns the song whose name occurs the most.
+		
+		Parameters
+		----------
+		file : str
+			Name of the audio file to test.
+			
+		Returns
+		-------
+		str
+			Name of the predicted song.
+		'''
 
 		self.model2.eval()
 
@@ -598,7 +745,17 @@ class Modele():
 		return sorted_counter[-1][0]
 
 	def addToDictionary(self, file, computeSound=True, pathTemp="/fast/guilhem/"):
-		# Add all pianoroll snippets extracted from a given file
+		'''Adds all pianoroll snippets extracted from a given file.
+		
+		Parameters
+		----------
+		file : str
+			Name of the file from which we extract the snippets.
+		computeSound : bool, optional
+			If True, creates a .wav file to inject in the latent space.
+		pathTemp : str, optional
+			The folder in which we save the temporary WaveForm files.
+		'''
 
 		windowSize = 4
 		STEP = 2
