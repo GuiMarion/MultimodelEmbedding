@@ -34,7 +34,7 @@ class dataBase:
     ----------
     name : str
         Name of the database.
-    data : :obj:`list`
+    data : list
         List of (piano roll, spectrogram, name) tuples for each snippet.
     path : str 
         Path of the midi database to load.
@@ -209,7 +209,7 @@ class dataBase:
             raise RuntimeError("Invalid file")
 
     def print(self):
-        """Prints name of all items in the database."""
+        """Prints the names of all items in the database."""
         
         print("____Printing database")
         print()
@@ -226,12 +226,12 @@ class dataBase:
         
         Parameters
         ----------
-        scores : :obj:'list'
+        scores : list of scores
             List of scores to augment.
 
         Returns
         -------
-        augmentedData : :obj: 'list'
+        augmentedData : list of scores
             List containing the scores resulting from the augmentation.
         """
         
@@ -254,7 +254,7 @@ class dataBase:
         
         Returns
         -------
-        batches : :obj: 'list'
+        batches : list
             List containing the resulting batches.
         """
 
@@ -269,14 +269,14 @@ class dataBase:
         
         Parameters
         ----------
-        data : :obj: 'list'
+        data : list
             Content of the database.        
         batchSize : int
             Size of the batches to create.
 
         Returns
         -------
-        batches : :obj: 'list'
+        batches : list
             List containing the resulting batches.
         """
 
@@ -331,7 +331,7 @@ class dataBase:
 
         Returns
         -------
-        batches : :obj: 'list'
+        batches : list
             List containing the resulting batches.
         """ 
 
@@ -351,7 +351,7 @@ class dataBase:
 
         Returns
         -------
-        batches : :obj: 'list'
+        batches : list
             List containing the resulting batches.
         """ 
 
