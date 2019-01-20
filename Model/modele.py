@@ -109,7 +109,6 @@ class Modele():
 
 
 	def TestEval(self, batches):
-
 		"""Evaluation fonction that returns the meaned loss for all batches.
 		
 		Parameters
