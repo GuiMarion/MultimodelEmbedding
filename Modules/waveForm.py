@@ -1,16 +1,20 @@
-#import sounddevice as sd # On importe sounddevice
 import os
 import soundfile as sf
 import time
 import numpy as np
+import librosa
+
 try:
 	import matplotlib.pyplot as plt
 	plot = True
 except ImportError:
 	plot = False
 
-from scipy.sparse import hstack, vstack, coo_matrix
-import librosa
+try:
+	import sounddevice as sd
+	sound = True
+except ImportError:
+	sound = False
 
 
 class waveForm:
@@ -86,8 +90,6 @@ class waveForm:
 		"""
 		self.data, self.sampleRate = sf.read(path)
 
-		return "Fichier chargé."
-
 
 	def loadFromData(self, sequence, sampleRate):
 		""" Loads data from a specified vector, assigns it to the class.
@@ -106,8 +108,6 @@ class waveForm:
 		self.sampleRate = sampleRate
 		self.length = len(sequence) / sampleRate
 
-		return "Data loaded."
-
 	def getData(self):
 		""" Returns raw data."""
 		return self.data
@@ -120,10 +120,13 @@ class waveForm:
 		length : float
 			Duration of the data to play. All of it by default.
 		"""
-		if length is None:
-			length = len(self.data)//self.sampleRate
-		sd.play(self.data, self.sampleRate)
-		time.sleep(length)
+		if sound is True:
+			if length is None:
+				length = len(self.data)//self.sampleRate
+			sd.play(self.data, self.sampleRate)
+			time.sleep(length)
+		else:
+			print("We cannot play any sound on this device.")
 
 	def save(self, path):
 		""" Save in a precised path the data into a wave file.
@@ -135,8 +138,6 @@ class waveForm:
 		"""
 
 		sf.write(path, self.data, self.sampleRate)
-
-		return "File saved."
 
 	def plot(self):
 		""" Plots the signal."""

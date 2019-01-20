@@ -1,3 +1,6 @@
+from Modules import score
+from Modules import waveForm
+
 import os
 from glob import glob
 import pickle
@@ -5,9 +8,6 @@ from tqdm import tqdm
 import random
 import numpy as np
 import torch
-
-from Modules import score
-from Modules import waveForm
 
 # Parameters for the data extraction part
 WINDOW_SIZE = 4 # in beat
@@ -40,11 +40,12 @@ class dataBase:
         Path of the midi database to load.
     """    
     
-    def __init__(self, name="database"):
+    def __init__(self, name="database", outPath=".TEMP"):
 
         self.name = name
         self.data = []
         self.path = None
+        self.outPath = outPath
 
     def constructDatabase(self, path, name=None):
         """Construct the database of tuples from an existing midi database.
@@ -87,9 +88,7 @@ class dataBase:
                 if os.path.isfile(filename):
                     print(" -", filename)
                     try : 
-                        #ore_temp = score.score(filename)
-                        #scores.extend(score_temp.extractAllParts(WINDOW_SIZE, step=STEP))
-                        scores.append(score.score(filename))
+                        scores.append(score.score(filename, outPath=self.outPath))
 
                     except RuntimeError:
                         skipedFiles += 1

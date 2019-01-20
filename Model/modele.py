@@ -10,6 +10,8 @@ import pickle
 from tqdm import tqdm
 import statistics
 import operator
+import os
+
 try:
 	import matplotlib.pyplot as plt
 	plot = True
@@ -94,7 +96,7 @@ class Modele():
 			print("____ Loading batches from file")
 
 			## Construct and save database
-			D = dataBase.dataBase()
+			D = dataBase.dataBase(outPath=self.outPath)
 			D.constructDatabase(self.databasePath)
 			self.batches = D.getBatches(self.batch_size)
 
@@ -104,33 +106,6 @@ class Modele():
 
 			print("We have", len(self.batches), "batches for the training part.")
 
-
-
-	def loss_test(self, y_pred1, y_pred2):
-		"""Computes the loss for the final test part.
-		
-		Parameters
-		----------
-		y_pred1
-			First prediction to compare (pytorch tensor).
-		y_pred2
-			Second prediction to compare (pytorch tensor).
-		
-		Returns
-		-------
-		loss : float
-			The distance between the two tensors.
-		"""
-		
-		# use the MSE for now
-		if len(y_pred1) != self.model1.dim_latent and len(y_pred2) != self.model2.dim_latent:
-			raise RuntimeError("y_pred1 and y_pred2 doesn't have same shape for test.")
-
-		loss = 0
-		for i in range(self.model1.dim_latent):
-			loss += (float(y_pred1[i]) - float(y_pred2[i]))**2
-
-		return loss
 
 
 	def TestEval(self, batches):
@@ -184,8 +159,11 @@ class Modele():
 		
 		print("____ Saving the models.")
 
-		torch.save(self.model1.cpu(), self.outPath + "model1.data")
-		torch.save(self.model2.cpu(), self.outPath + "model2.data")
+		if not os.path.exists(self.outPath + "params/"):
+			os.makedirs(self.outPath + "params/")
+
+		torch.save(self.model1.cpu(), self.outPath + "params/model1.data")
+		torch.save(self.model2.cpu(), self.outPath + "params/model2.data")
 
 		if self.GPU:
 			self.model1 = self.model1.cuda()
@@ -202,18 +180,6 @@ class Modele():
 		else:
 			print("Impossible to plot, tkinter not available.")
 
-	def is_over_fitting(self):
-		"""Returns True is the modele is overfitting.
-		The model is considered overfitting if the loss in respect to the test data is 
-		not decreasing for T epoch, with a threshold of K.
-		
-		Returns
-		-------
-		bool
-			True if the model is overfitting, False otherwise.
-		"""
-
-		return False
 
 	def myloss(self, batch, alpha=0.7):
 
@@ -324,20 +290,20 @@ class Modele():
 			print("____ Train Loss:", loss.item())
 			print("____ Test Loss:", self.losses_test[t])
 
+			# Store the model having the lowest loss on test set
 			if self.losses_test[t] < self.lastloss:
 				self.save_weights()
 				self.lastloss = self.losses_test[t]
 
-			if self.is_over_fitting():
-				# stop learning
-				return
-
-
 
 		self.plot_losses()
 
-		self.model1 = torch.load(self.outPath + "model1.data")
-		self.model2 = torch.load(self.outPath +  "model2.data")
+		try:
+			self.model1 = torch.load(self.outPath + "params/model1.data")
+			self.model2 = torch.load(self.outPath +  "params/model2.data")
+		except FileNotFoundError:
+			print("No model have been saved, the reason seems to be that no model was good enough, \
+				try to train it on more EPOCHS.")
 
 		if self.GPU:
 			self.model1 = self.model1.cuda()
@@ -650,6 +616,7 @@ class Modele():
 		N = s.length * s.quantization
 
 		for i in range((N-windowSize)//STEP):
+		#for i in range(10):
 			tmpPart1 = s.extractPart(i*STEP, i*STEP+windowSize)
 			N1 = np.array(tmpPart1.getPianoRoll()).astype(float)
 			N1 = N1.reshape(1, 1, N1.shape[0], N1.shape[1])

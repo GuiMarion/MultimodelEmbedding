@@ -4,6 +4,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 
+# Desable ploting if matplotlib if not available (usable if you want to use on server)
 try:
     import matplotlib.pyplot as plt
     plot = True

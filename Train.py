@@ -2,13 +2,17 @@ from Model import modele
 
 import torch
 import sys
+import os
 from optparse import OptionParser
 
 def main(database, EPOCHS=20, gpu=None, outPath=".TEMP/", learning_rate=1e-2):
 
-	model = modele.Modele(database, gpu=None, outPath=".TEMP/")
+	if not os.path.exists(outPath):
+   		os.makedirs(outPath)
 
-	model.learn(EPOCHS, learning_rate=1e-2)
+	model = modele.Modele(database, gpu=gpu, outPath=outPath)
+
+	model.learn(EPOCHS, learning_rate=learning_rate)
 
 
 if __name__ == "__main__":
@@ -26,7 +30,7 @@ if __name__ == "__main__":
 
 	parser.add_option("-o", "--outPath", type="string",
 	                  help="Path for the temporary folder.", 
-	                  dest="outPath", default=".TEMP/")
+	                  dest="outPath", default="OUT/")
 
 	parser.add_option("-l", "--learning_rate", type="float",
 	                  help="Value of the starting learning rate", 

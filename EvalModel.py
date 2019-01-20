@@ -2,8 +2,6 @@ from Model import modele
 
 import torch
 import datetime
-import sys
-import pickle
 import os
 from glob import glob
 from optparse import OptionParser
@@ -37,11 +35,10 @@ def addToDictionary(model, folder, pathTemp="/fast/guilhem/"):
 		if file[file.rfind("."):] in [".mid", ".midi"] and os.path.isfile(file):
 			model.addToDictionary(file, pathTemp=pathTemp)
 
-def evalOnTest(database, modelsPath, outPath="/fast-1/guilhem/", name="", gpu=None, testFolder="DataBaseForTest/"):
+def evalOnTest(database, modelsPath, outPath="/fast-1/guilhem/", gpu=None, testFolder="DataBaseForValidation/"):
 
-	if name == "":
-		now = datetime.datetime.now()
-		data = "eval_" + str(now.month) + "_" + str(now.day) + "_" + str(now.hour) + ".data"
+	if not os.path.exists(outPath):
+		os.makedirs(outPath)
 
 	model = modele.Modele(database, gpu=gpu, outPath=outPath)
 
@@ -74,37 +71,29 @@ def evalOnTest(database, modelsPath, outPath="/fast-1/guilhem/", name="", gpu=No
 
 
 
-
-	#pickle.dump((model.TestEval(model.testBatches), score), open(name, "wb" ) )
-
-
 if __name__ == "__main__":
 
 	usage = "usage: %prog [options] <path to database> <folder for model>"
 	parser = OptionParser(usage)
 
 	parser.add_option("-t", "--testFolder", type="string",
-	                  help="Path for the folder containing the songs to detect, by default it's DataBaseForTest/", 
-	                  dest="testFolder", default="DataBaseForTest/")
+					  help="Path for the folder containing the songs to detect, by default it's DataBaseForTest/", 
+					  dest="testFolder", default="DataBaseForValidation/")
 
 	parser.add_option("-o", "--outPath", type="string",
-	                  help="Path for the temporary folder.", 
-	                  dest="outPath", default="/fast-1/guilhem/")
-
-	parser.add_option("-n", "--name", type="string",
-	                  help="Name for the output file", 
-	                  dest="name", default="")
+					  help="Path for the temporary folder.", 
+					  dest="outPath", default="OUT/")
 
 	parser.add_option("-g", "--gpu", type="int",
-	                  help="ID of the GPU, run in CPU by default.", 
-	                  dest="gpu")
+					  help="ID of the GPU, run in CPU by default.", 
+					  dest="gpu")
 
 
 
 	options, arguments = parser.parse_args()
 	
 	if len(arguments) == 2:
-		evalOnTest(arguments[0], arguments[1], outPath=options.outPath, name=options.name, gpu=options.gpu, testFolder=options.testFolder)
+		evalOnTest(arguments[0], arguments[1], outPath=options.outPath, gpu=options.gpu, testFolder=options.testFolder)
 
 	else:
 		parser.error("You have to specify the path of the database and the models.")

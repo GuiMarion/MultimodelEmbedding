@@ -2,27 +2,19 @@ from Modules import waveForm
 
 from pypianoroll import Multitrack as proll
 from pypianoroll import Track
+import subprocess
+import os
+import numpy as np
+from midi2audio import FluidSynth
+
 try:
 	import matplotlib.pyplot as plt
 	plot = True
 except ImportError:
 	plot = False
-import subprocess
-import os
-import numpy as np
-import copy
-from midi2audio import FluidSynth
-
-import sys
-
-SERVER = False
-
-class NullWriter(object):
-	def write(self, arg):
-		pass
 
 class score:
-	def __init__(self, pathToMidi, velocity=False, quantization=24, fromArray=(None, "")):
+	def __init__(self, pathToMidi, velocity=False, quantization=24, fromArray=(None, ""), outPath=".TEMP"):
 
 
 		if fromArray[0] is None:
@@ -48,6 +40,8 @@ class score:
 
 		self.transposition = 0
 
+		self.outPath = outPath
+
 	def getPianoRoll(self):
 		# return the np.array containing the pianoRoll
 
@@ -69,7 +63,7 @@ class score:
 		plt.ylabel('midi note')
 		plt.grid(b=True, axis='y')
 		plt.yticks([0, 12, 24, 36, 48, 60, 72, 84, 96, 108, 120],
-           ["C-2", "C-1", "C0", "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8"])
+		   ["C-2", "C-1", "C0", "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8"])
 		color = plt.colorbar()
 		color.set_label('velocity', rotation=270)
 		plt.show()
@@ -112,28 +106,18 @@ class score:
 
 	def toWaveForm(self, font="SteinwayGrandPiano_1.2.sf2"):
 
-		if SERVER == True:
-			midiPath = "/fast-1/guilhem/"+self.name+".mid"
-			wavePath = "/fast-1/guilhem/"+self.name+".wav"
-		else:
-			midiPath = ".TEMP/"+self.name+".mid"
-			wavePath = ".TEMP/"+self.name+".wav"	
+		if not os.path.exists(self.outPath + "temp/"):
+			os.makedirs(self.outPath + "temp/")
+
+		midiPath = self.outPath + "temp/" +self.name + ".mid"
+		wavePath = self.outPath + "temp/" + self.name + ".wav"	
 
 		pathFont = "SoundFonts/" + font
 
 		self.writeToMidi(midiPath)
 
-		nullwrite = NullWriter()
-		oldstdout = sys.stdout
-		oldstderr = sys.stderr
-		sys.stdout = nullwrite # disable output
-		sys.stderr = nullwrite
-
 		F = FluidSynth(pathFont)
 		F.midi_to_audio(midiPath, wavePath)
-
-		sys.stdout = oldstdout # enable output
-		sys.stderr = oldstderr
 
 		# should return on an object of type waveForm defined in this folder
 		newWaveForm = waveForm.waveForm(wavePath)
@@ -149,17 +133,17 @@ class score:
 		# Vertically shifts a matrix by t rows.
 		# Fills empty slots with zeros.
 
-	    result = np.empty_like(self.pianoroll)
-	    if t > 0:
-	        result[:,:t] = 0
-	        result[:,t:] = self.pianoroll[:,:-t]
-	    elif t < 0:
-	        result[:,t:] = 0
-	        result[:,:t] = self.pianoroll[:,-t:]
-	    else:
-	        result = self.pianoroll
+		result = np.empty_like(self.pianoroll)
+		if t > 0:
+			result[:,:t] = 0
+			result[:,t:] = self.pianoroll[:,:-t]
+		elif t < 0:
+			result[:,t:] = 0
+			result[:,:t] = self.pianoroll[:,-t:]
+		else:
+			result = self.pianoroll
 
-	    return result
+		return result
 
 	def getTransposed(self):
 		# Should return a list of 12 scores corresponding to the 12 tonalities.
