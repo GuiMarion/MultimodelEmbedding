@@ -3,9 +3,28 @@ import time
 import random
 
 def generateSyntData(N, nbFonts, size1=(80,100), size2=(100, 128)):
-
-	# Generate synthetic data in order to test our functions
-
+	"""Generate synthetic data in order to test the project's functions and modules.
+	
+	Returns a list containing random numpy arrays that have the same shape as the 
+	multimodal data in the dataset, and are ordered by couples with a given name.
+	Notice that returned data simulate the fact that several audio (CQT or STFT) 
+	snippets (with different fonts) can be associated with one midi (pianoroll) 
+	snippet.
+	
+	Parameters
+	----------
+	N : int
+		Number of synthetical midi snippet computed.
+	nbFonts : int
+		Number of audio snippet associated with each midi snippet. Notice that
+		if nbFonts is more than one, several couples of data associated with a
+		same midi data will be computed
+	size1 : list of int
+		Shape of the synthetical midi snippet.
+	size2 : list of int
+		Shape of the synthetical audio snippet.
+	"""
+	
 	ret = []
 	for n in range(N):
 		tempX1 = np.random.random_sample(size1)
@@ -20,8 +39,21 @@ def generateSyntData(N, nbFonts, size1=(80,100), size2=(100, 128)):
 	return ret
 
 def getSmallSetofBatch(data, batchSize):
-	# construct valid batchs from data, is effiencient if len(data) <=32
-
+	""" Construct batchs from data that can be sent in the neural network.
+	
+	Returns a list of batchs from the input data. Each batch contains only one
+	matching couple. Notice that the function is efficient only if the length 
+	of the input data is inferior or equal to 32.
+	
+	Parameters
+	----------
+	data : list
+		Input data. Contains couple of snippets, associated with a given
+		name.
+	batchSize : int
+		Size of the batchs to compute. 
+	"""
+	
 	numberofData = len(data)*len(data[0][2])
 	numberofBatches = numberofData // batchSize
 	batches = []
@@ -59,11 +91,22 @@ def getSmallSetofBatch(data, batchSize):
 
 		batches.append((X1, X2, L1, L2))
 
-
 	return batches
 
 def getBatches(data, batchSize):
-	# return efficiently valid batches from data if len(data) > 32
+	""" Return efficiently valid batches from data if len(data) > 32
+	
+	Notice that it calls getSmallSetofBatch. 
+	
+	Parameters
+	----------
+	data : list
+		Input data. Contains couple of snippets, associated with a given
+		name.
+	batchSize : int
+		Size of the batchs to compute.
+	"""
+	
 	random.shuffle(data)
 
 	batches = []
@@ -73,9 +116,19 @@ def getBatches(data, batchSize):
 	return batches
 
 
-
 def testMyBatchFunction(N, batchSize):
-	# Benchmark our batch generation function
+	"""Tests the functions in this module.
+	
+	Returns a boolean that indicate if the functions are working properly.
+	
+	Parameters
+	----------
+	N : int
+		Number of midi snippet computed with generateSynthData. Notice that each
+		snippet will correspond to 4 different audio snippets.
+	batchSize : int
+		Size of the batches to compute.
+	"""
 
 	data = generateSyntData(N, 4)
 	print("____ Executing the function")
@@ -94,8 +147,20 @@ def testMyBatchFunction(N, batchSize):
 
 
 def isBatchValid(batchSet, batchSize):
-	# Chekc if a given batch set if valid or not. If it's not the functions says why.
-
+	""" Checks if a given set of batchs is valid to be send in the neural network.
+	
+	Notice that, to be valid, each batch on the set must have the same size, and
+	should contain only one matching midi/audio couple of snippets. Returns a 
+	boolean that indicate if the batch set is valid or not.
+	
+	Parameters
+	----------
+	batchSet : list
+		Contains the set of batchs to be checked.
+	batchSize : int
+		Length of the batchs in the set.
+	"""
+	
 	if batchSet == "":
 		print("Seems that you need to code your function")
 		return False
