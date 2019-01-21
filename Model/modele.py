@@ -732,6 +732,8 @@ class Modele():
 			N2 = np.array(snippet).astype(float)
 			N2 = N2.reshape(1, 1, N2.shape[0], N2.shape[1])
 			X2 = torch.FloatTensor(N2)   
+			if self.GPU:
+				X2 = X2.cuda()
 			embedded = self.model2.forward(X2)
 			name = self.nearestNeighbor(embedded)
 			if name in counter:
@@ -779,7 +781,7 @@ class Modele():
 			X1 = torch.FloatTensor(N1)  
 			if self.GPU:
 				X1 = X1.cuda()
-				
+
 			embedded = self.model1.forward(X1)[0]
 
 			self.dico[embedded] = tmpPart1.name
