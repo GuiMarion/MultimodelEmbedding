@@ -16,57 +16,36 @@ except ImportError:
 class score:
 	"""This class is used to manage midi data from the dataset.
 
-	It uses the module pypianoroll, that allows the managing of numpy arrays
-	instead of raw midi files. Thus, score class can be defined from a midi
-	file, but also from a pypianoroll object extracted from a midi (see
-	extractPart and extractAllParts). Midi or pianoroll numpy arrays excerpts
-	can be cropped, plotted, transposed and written as new midi excerpts, and
-	even converted into waveForm objects.
+	It uses the module pypianoroll to transform midi files in numpy arrays (piano rolls),
+	and vice versa. Thus, a score object can be created from a midi
+	file, but also from a numpy array representing a piano roll. 
+	Score objects can be divided into snippets, plotted, transposed,
+	written as new midi scores, or converted into waveForm objects.
 
 	Attributes
 	----------
-	self.pianoroll : :obj:'list' of :obj:'int'
-		A list of numpy arrays that represents the midi data.
+	self.pianoroll : ndarray
+		A numpy array representing the piano roll.
 	self.name : str
-		If a score class is created from a raw midi file, this attributes is
-		corresponding to the name of the midi file without a '.mid' or '.midi'
-		extension. If it is created from another score class (see extractPart
+		If a score class is created from a raw midi file, this attributes 
+		corresponds to the name of the midi file. 
+		If it is created from another score class (see extractPart
 		and extractAllParts), a new name is created, that indicates wich excerpt
 		of the midi file it corresponds to.
 	self.velocity : bool
-		False by default. Indicates if midi velocity is computed from the midi
-		file, or not.
+		True if midi velocity is considered, False otherwise.
 	self.quantization : int
 		MIDI quantization per beat. 24 by default.
 	self.length : int
-		Beat duration of the midi data.
+		Length of the midi data in time beats.
 	self.transposition : int
 		Indicates if the data is transposed from another score object. In
 		semitones.
+	self.outpath : str
+		Folder in which temporary .wav files are stored (see toWaveForm).
 	"""
 
 	def __init__(self, pathToMidi, velocity=False, quantization=24, fromArray=(None, ""), outPath=".TEMP/"):
-		"""Initialises a score object.
-
-		All the attributes of the class are computed from it.
-
-		Parameters
-		----------
-		pathToMidi : str
-			Path of the midi data associated to the class. Used only if a score
-			object is defined from a raw midi file.
-		velocity : bool
-			Initializes self.velocity. False by default.
-		quantization : int
-			Initializes self.quantization. 24 by default.
-		fromArray : :obj: 'list' of :obj: 'str'
-			By default, indicates that the score object is defined from a raw
-			midi file. If the score object is defined from extractPart or
-			extractAllParts, contains the name and the pianoroll of the excerpt,
-			that initializes self.name and self.pianoroll.
-		"""
-
-
 		if fromArray[0] is None:
 			try:
 				# use pypianoroll to parse the midifile
@@ -93,15 +72,17 @@ class score:
 		self.outPath = outPath
 
 	def getPianoRoll(self):
-		"""Return the np.array containing the pianoRoll."""
+		"""Returns the numpy array containing the pianoRoll."""
+		
 		return np.transpose(self.pianoroll)
 
 	def getLength(self):
-		"""Return the length in time beat."""
+		"""Returns the length in time beats."""
+		
 		return self.length
 
 	def plot(self):
-		"""Plot the pianoRoll representation."""
+		"""Plots the pianoRoll representation."""
 		
 		if plot == False:
 			print("you cannot plot anything as matplotlib is not available")
@@ -123,15 +104,21 @@ class score:
 		Parameters
 		----------
 		start : int
-			start of the desired excerpt. Can be expressed in quantisized or
+			Start position of the desired excerpt. Can be expressed in quantisized or
 			unquantisized beats.
 		end : int
-			end of the desired excerpt. Must be expressed in the same dimension
+			End position of the desired excerpt. Must be expressed in the same dimension
 			as start.
 		inBeats : bool
-			Indicates if start and end parameters are quantisized, or not. False
-			by default.
+			True if start and end parameters are quantisized. False otherwise.
+			
+		Returns
+		-------
+		scorePart : score
+			Extracted part of the score.
+		
 		"""
+		
 		if inBeats is True:
 			if start >= 0 and end < self.length:
 				pianoRollPart = self.pianoroll[start*self.quantization : end*self.quantization, : ]
@@ -155,7 +142,7 @@ class score:
 
 
 	def extractAllParts(self, length, step=1):
-		"""Extract parts of a given length and step size, through all the data.
+		"""Extracts parts of a given length and step size, through all the data.
 
 		Notice that it uses extractPart function for each excerpt, thus it
 		creates score objects.
@@ -164,8 +151,13 @@ class score:
 		----------
 		length : int
 			Length of desired excerpts in beat duration (unquantisized).
-		step : int
-			Length of the step between each excerpt in the file. 1 by default.
+		step : int, optional
+			Length of the step between each excerpts in the file. Defaults to 1.
+			
+		Returns
+		-------
+		retParts : list of score
+			List of all extracted score snippets.
 		"""
 		
 		N = self.length*self.quantization
@@ -178,18 +170,23 @@ class score:
 		return retParts
 
 	def toWaveForm(self, font="SteinwayGrandPiano_1.2.sf2"):
-		""" Converts data into a waveForm object.
+		""" Converts the data into a waveForm object.
 
 		It uses fluidsynth module to perform audio conversion. Notice that a
-		temporary wave sound file is created, which then is immediately erased.
-		Also, SERVER is a hypercriterion that indicates if the converted data
+		temporary wave sound file is created, which is then immediately erased.
+		SERVER is a hypercriterion that indicates if the converted data
 		has to be saved into a given path.
 
 		Parameters
 		----------
-		font : str
+		font : str, optional
 			Path to a soundfont which is used by fluidsynth to create audio
-			data from midi. "MotifES6ConcertPiano.sf2" by default.
+			data from midi. Defaults to "SteinwayGrandPiano_1.2.sf2".
+			
+		Returns
+		-------
+		newWaveForm : waveForm
+			Resulting WaveForm object.
 		"""
 		
 		if not os.path.exists(self.outPath + "temp/"):
@@ -215,12 +212,17 @@ class score:
 		return newWaveForm
 
 	def transpose(self, t):
-		"""Return a transposed pianoroll.
+		"""Returns the current pianoroll transposed by t semitones.
 
 		Parameters
 		----------
 		t : int
 			Value of transposition, in semitones.
+			
+		Returns
+		-------
+		result : ndarray
+			Resulting transposed piano roll.
 		"""
 		
 		result = np.empty_like(self.pianoroll)
@@ -238,8 +240,13 @@ class score:
 	def getTransposed(self):
 		"""Return a list of 12 transposed score objects.
 
-		Notice that the returned list contains all the possible transpositions
-		(in an octave range) from midi data.
+		The returned list contains all the possible transpositions
+		(in an octave range).
+		
+		Returns
+		-------
+		transposed_scores : list of score
+			List of all transposed scores.
 		"""
 		
 		transposed_scores = []
@@ -265,12 +272,12 @@ class score:
 
 
 	def writeToMidi(self, midiPath):
-		"""Save pianoroll data into midi data, in a given path.
+		"""Saves the piano roll data in a midi file.
 
 		Parameters
 		----------
 		midiPath : str
-			Path were the corresponding midi data is saved.
+			Folder in which the corresponding midi data is saved.
 		"""
 		
 		tempTrack = Track(pianoroll=self.pianoroll, program=0, is_drum=False,
