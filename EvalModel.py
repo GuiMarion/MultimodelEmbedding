@@ -42,8 +42,6 @@ def evalOnTest(database, modelsPath, outPath="/fast-1/guilhem/", gpu=None, testF
 
 	model = modele.Modele(database, gpu=gpu, outPath=outPath)
 
-	print("Test Loss for the best trained model:", model.TestEval(model.testBatches))
-
 	model.model1 = torch.load(modelsPath + "model1.data")
 	model.model2 = torch.load(modelsPath + "model2.data")
 
@@ -53,10 +51,8 @@ def evalOnTest(database, modelsPath, outPath="/fast-1/guilhem/", gpu=None, testF
 
 	print("Test Loss for the best trained model:", model.TestEval(model.testBatches))
 
-	quit()
 
-
-	addToDictionary(model, testFolder, pathTemp=outPath)
+	#addToDictionary(model, testFolder, pathTemp=outPath)
 
 	print()
 	print("Test Loss for the best trained model:", model.TestEval(model.testBatches))
