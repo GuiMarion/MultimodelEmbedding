@@ -7,7 +7,7 @@ from glob import glob
 from optparse import OptionParser
 import warnings
 
-warnings.filterwarnings("ignore")
+#warnings.filterwarnings("ignore")
 
 def evalSongDetection(model, folder, pathTemp="/fast/guilhem/"):
 
@@ -40,10 +40,15 @@ def evalOnTest(database, modelsPath, outPath="/fast-1/guilhem/", gpu=None, testF
 	if not os.path.exists(outPath):
 		os.makedirs(outPath)
 
-	model = modele.Modele(database, gpu=gpu, outPath=outPath)
+	model = modele.Modele("Papers/", gpu=gpu, outPath=outPath)
+
+	print("Test Loss for the best trained model:", model.TestEval(model.testBatches))
 
 	model.model1 = torch.load(modelsPath + "model1.data")
 	model.model2 = torch.load(modelsPath + "model2.data")
+
+	print("Test Loss for the best trained model:", model.TestEval(model.testBatches))
+
 
 	if model.GPU:
 		model.model1 = model.model1.cuda()
