@@ -39,9 +39,9 @@ class Modele():
 		Size of the input data batches.
 	databasePath : str
 		The folder in which the database is stored.
-	losses : :obj: 'list' of :obj: 'float'
+	losses : list of float
 		History of the losses over time (for plotting purpose).
-	losses_test : :obj: 'list' of :obj: 'float'
+	losses_test : list of float
 		History of the losses over test data.
 	"""
 	
@@ -113,7 +113,7 @@ class Modele():
 		
 		Parameters
 		----------
-		batches : :obj: 'list'
+		batches : list
 			List of all data batches.
 			
 		Returns
