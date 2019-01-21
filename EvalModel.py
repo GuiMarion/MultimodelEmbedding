@@ -40,7 +40,7 @@ def evalOnTest(database, modelsPath, outPath="/fast-1/guilhem/", gpu=None, testF
 	if not os.path.exists(outPath):
 		os.makedirs(outPath)
 
-	model = modele.Modele("Papers/", gpu=gpu, outPath=outPath)
+	model = modele.Modele(database, gpu=gpu, outPath=outPath)
 
 	print("Test Loss for the best trained model:", model.TestEval(model.testBatches))
 
@@ -49,6 +49,7 @@ def evalOnTest(database, modelsPath, outPath="/fast-1/guilhem/", gpu=None, testF
 
 	print("Test Loss for the best trained model:", model.TestEval(model.testBatches))
 
+	quit()
 
 	if model.GPU:
 		model.model1 = model.model1.cuda()
