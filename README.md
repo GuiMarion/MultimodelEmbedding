@@ -13,8 +13,6 @@ The report associated with this project can be found [here]
 
 ### Dependecies
 
-What things you need to install the software and how to install them
-
 ```shell
 pip3 install numpy
 pip3 install torch torchvision
