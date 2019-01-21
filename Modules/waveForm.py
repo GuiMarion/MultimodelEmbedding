@@ -13,7 +13,7 @@ except ImportError:
 try:
 	import sounddevice as sd
 	sound = True
-except ImportError:
+except OSError:
 	sound = False
 
 
