@@ -762,7 +762,7 @@ class Modele():
 
 		self.model1.eval()
 
-		s = score.score(file)
+		s = score.score(file, outPath=pathTemp)
 		if computeSound is True:
 			file = file[file.rfind("/")+1:]
 			file = file[:file.rfind(".")]
@@ -771,8 +771,8 @@ class Modele():
 		windowSize *= s.quantization
 		N = s.length * s.quantization
 
-		for i in range((N-windowSize)//STEP):
-		#for i in range(10):
+		#for i in range((N-windowSize)//STEP):
+		for i in range(10):
 			tmpPart1 = s.extractPart(i*STEP, i*STEP+windowSize)
 			N1 = np.array(tmpPart1.getPianoRoll()).astype(float)
 			N1 = N1.reshape(1, 1, N1.shape[0], N1.shape[1])

@@ -45,7 +45,7 @@ class score:
 		semitones.
 	"""
 
-	def __init__(self, pathToMidi, velocity=False, quantization=24, fromArray=(None, ""), outPath=".TEMP"):
+	def __init__(self, pathToMidi, velocity=False, quantization=24, fromArray=(None, ""), outPath=".TEMP/"):
 		"""Initialises a score object.
 
 		All the attributes of the class are computed from it.
