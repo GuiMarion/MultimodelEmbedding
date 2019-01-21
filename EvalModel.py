@@ -47,13 +47,14 @@ def evalOnTest(database, modelsPath, outPath="/fast-1/guilhem/", gpu=None, testF
 	model.model1 = torch.load(modelsPath + "model1.data")
 	model.model2 = torch.load(modelsPath + "model2.data")
 
+	if model.GPU:
+		model.model1 = model.model1.cuda()
+		model.model2 = model.model2.cuda()
+
 	print("Test Loss for the best trained model:", model.TestEval(model.testBatches))
 
 	quit()
 
-	if model.GPU:
-		model.model1 = model.model1.cuda()
-		model.model2 = model.model2.cuda()
 
 	addToDictionary(model, testFolder, pathTemp=outPath)
 
