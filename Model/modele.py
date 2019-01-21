@@ -777,6 +777,9 @@ class Modele():
 			N1 = np.array(tmpPart1.getPianoRoll()).astype(float)
 			N1 = N1.reshape(1, 1, N1.shape[0], N1.shape[1])
 			X1 = torch.FloatTensor(N1)  
+			if self.GPU:
+				X1 = X1.cuda()
+				
 			embedded = self.model1.forward(X1)[0]
 
 			self.dico[embedded] = tmpPart1.name
