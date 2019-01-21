@@ -1,7 +1,7 @@
 # Automatic transcription using embedding latent space
 
 This work adresses the problem of automatic transcription of musical audio pieces to midi sheets. We propose a method
-based on recent research by Dorfer et al.[Link](https://github.com/GuiMarion/MultimodelEmbedding/blob/master/Papers/Article_Dorfer.pdf) that learns joint embedding spaces for short excerpts of musical audio and
+based on recent research by Dorfer et al. [[Link]](https://github.com/GuiMarion/MultimodelEmbedding/blob/master/Papers/Article_Dorfer.pdf) that learns joint embedding spaces for short excerpts of musical audio and
 their respective counterparts in midi scores, using multimodal convolutional neural networks. The dataset is based on Pianomidi.de, a midi sheet collection of classical music played on piano and splitted by Poliner and Ellis [2006] comprising 314
 midi scores from 25 composers.
 
