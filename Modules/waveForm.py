@@ -20,36 +20,33 @@ except ImportError:
 class waveForm:
 	"""This class is used to manage waveform audio data from the dataset.
 
-	Each class is associated with a unique wave file. Then, a dimensionnaly
+	Each object is associated with a unique wave file. Then, a dimensionally
 	reduced spectrogram or CQT can be computed.
 
 	Attributes
 	----------
-	self.data : :obj:'list' of :obj:'float'
-	    Contains the sound data itselfs in an array.
+	self.data : ndarray
+	    Contains the sound data in an numpy array.
 	self.sampleRate : int
 		Sample Rate of the data.
 	self.length : int
 		Length of the data in seconds.
-	self.FFT : :obj:'list' of :obj:'float'
+	self.FFT : ndarray
 		Complex Fourier transform of the data.
-	self.STFT : :obj:'list' of :obj:'float'
+	self.STFT : ndarray
 		Power-spectrogram of the data.
-	self.STFTlog : :obj:'list' of :obj:'float'
-		A dimensionnaly reduced spectrogram based on a logaritmic band-filter of
-		self.STFT
-	self.CQT : :obj:'list' of :obj:'float'
-		Constant Quality factor Transform of the data. A good alternative to the
-		STFT.
-	self.STFTsec : :obj:'list' of :obj:'float'
-		Computed with computeSTFT. Vector containing temporal indicies of STFT.
-	self.STFTfreq : :obj:'list' of :obj:'float'
-		Computed with computeSTFT. Vector containing frequencial indicies of
-		STFT.
+	self.STFTlog : ndarray
+		A dimensionnaly reduced spectrogram based on a logaritmic band-filter of self.STFT.
+	self.CQT : ndarray
+		Constant Quality factor Transform of the data. A good alternative to the STFT.
+	self.STFTsec : ndarray
+		Computed with computeSTFT. Vector containing temporal indices of STFT.
+	self.STFTfreq : ndarray
+		Computed with computeSTFT. Vector containing frequencial indices of STFT.
 	"""
 
 	def __init__(self, path):
-		""" Initialises the waveform class.
+		""" Initializes a waveForm object.
 
 		Note that only self.data, self.sampleRate and self.length are computed
 		from itself.
@@ -57,7 +54,7 @@ class waveForm:
 		Parameters
 		----------
 		path : str
-			Path of the audio data associated to the class.
+			Path of the audio data.
 		"""
 
 		if path is not None:
@@ -79,29 +76,29 @@ class waveForm:
 		self.name = os.path.splitext(os.path.basename(path))[0]
 
 	def loadFromFile(self, path):
-		""" Loads data from a file. Update the attributes to initializationself.
+		""" Loads data from a file.
 
 		Only loadFromData should be used.
 
 		Parameters
 		----------
 		path : str
-			Path of the audio data associated to the class.
+			Path of the audio data.
 		"""
 		self.data, self.sampleRate = sf.read(path)
 
 
 	def loadFromData(self, sequence, sampleRate):
-		""" Loads data from a specified vector, assigns it to the class.
+		""" Loads data from a numpy array and a sample rate.
 
 		Should work for a mono file as well as a stereo one.
 
 		Parameters
 		----------
-		sequence : :obj:'list' of :obj:'float'
-			Input vector.
+		sequence : ndarray
+			Data array.
 		sampleRate : int
-			Sample Rate of the input vector.
+			Sample rate of the data.
 		"""
 
 		self.data = sequence
@@ -109,15 +106,14 @@ class waveForm:
 		self.length = len(sequence) / sampleRate
 
 	def getData(self):
-		""" Returns raw data."""
 		return self.data
 
 	def play(self, length=None):
-		""" Plays the data.
+		""" Plays the audio data.
 
 		Parameters
 		----------
-		length : float
+		length : float, optional
 			Duration of the data to play. All of it by default.
 		"""
 		if sound is True:
@@ -129,12 +125,12 @@ class waveForm:
 			print("We cannot play any sound on this device.")
 
 	def save(self, path):
-		""" Save in a precised path the data into a wave file.
+		""" Saves the data into a wave file.
 
 		Parameters
 		----------
 		path : str
-			Were to save the data.
+			File in which the data is saved.
 		"""
 
 		sf.write(path, self.data, self.sampleRate)
@@ -154,14 +150,14 @@ class waveForm:
 
 
 	def getFFT(self):
-		""" Return and store the complex Fourier transform from data."""
+		""" Stores the complex Fourier transform from data."""
 
 		self.FFT = np.fft.fft(self.data)
 		self.freq = np.fft.fftfreq(len(self.data))
 
 
 	def plotFFT(self):
-		""" Plot Fourier transform from self.FFT. Compute it if necessary."""
+		""" Plots Fourier transform from self.FFT. Computes it if necessary."""
 
 		if self.FFT is None:
 			self.getFFT()
@@ -178,14 +174,23 @@ class waveForm:
 		""" Returns the spectrogram of the data, computed with computeSTFT.
 
 		By default, window's size of the several FFT is 4096, with a zero
-		padding up to four times the window's size. All the Fourier transforms
+		padding up to four times the window size. All the Fourier transforms
 		are computed with a Hamming window, and the step factor is approximately
 		20 per second.
 
 		Parameters
 		----------
-		L_n : int
-			Window's size of the FFTs. 4096 by default.
+		L_n : int, optional
+			Window size of the FFTs. Defaults to 4096.
+			
+		Returns
+		-------
+		self.STFT : ndarray
+			Spectrogram of the data.
+		self.STFTsec : ndarray
+			Array containing temporal indices of the spectrogram.
+		self.STFTfreq : ndarray
+			Array containing frequencial indices of the spectrogram.
 		"""
 
 		if self.STFT is None:
@@ -193,6 +198,19 @@ class waveForm:
 		return self.STFT, self.STFTsec, self.STFTfreq
 
 	def computeSTFT(self, L_n = 4096):
+		""" Computes the spectrogram of the data.
+
+		By default, window size of the several FFT is 4096, with a zero
+		padding up to four times the window size. All the Fourier transforms
+		are computed with a Hamming window, and the step factor is approximately
+		20 per second.
+
+		Parameters
+		----------
+		L_n : int, optional
+			Window size of the FFTs. Defaults to 4096.
+		"""
+		
 		STEP_n = int(self.sampleRate // 20)
 		Nfft =  L_n * 4
 		nLim = int((len(self.data)-L_n) / (STEP_n))
@@ -210,7 +228,7 @@ class waveForm:
 			self.STFT[:,fen] = np.abs(Fft_m[0:round(Nfft/2)+1, fen])
 
 	def getSTFTlog(self, b=16):
-		""" Return a dimensionnaly reduced spectrogram.
+		""" Returns a dimensionally reduced spectrogram.
 
 		Converts a classic STFT (self.STFT) by operating logaritmic filter
 		bands and, for each temporal sample of the TFCT, computing the mean in
@@ -221,12 +239,30 @@ class waveForm:
 		b : int
 			Number of bands per octave used to the reduction of the STFT. 16 by
 			default. Influences the frequency resolution.
+		Returns
+		-------
+		self.STFTlog : ndarray
+			The logarithmic Short Term Fourier Transform.
 		"""
+		
 		if self.STFTlog is None:
 			self.computeSTFTlog(b)
 		return self.STFTlog
 
 	def computeSTFTlog(self, b=16):
+		"""Computes a dimensionally reduced spectrogram.
+
+		Converts a classic STFT (self.STFT) by operating logaritmic filter
+		bands and, for each temporal sample of the TFCT, computing the mean in
+		the resulting frequency bin.
+
+		Parameters
+		----------
+		b : int, optional
+			Number of bands per octave used to the reduction of the STFT. 
+			Affects the frequency resolution. Defaults to 16.
+		"""
+		
 		if self.STFT is None:
 			self.computeSTFT()
 
@@ -242,14 +278,15 @@ class waveForm:
 				self.STFTlog[bin,fen] = np.mean(tronc) / (up_lim - down_lim)
 
 	def plotSTFT(self, log=True):
-		""" Plot the spectrogram or the log-spectrogram.
+		""" Plots the spectrogram or the log-spectrogram.
 
 		Parameters
 		----------
-		log : bool
-			The fonction plots the log-spectrogram if it's True, and the classic
-			spectrogram else.
+		log : bool, optional
+			If True, plots the log-spectrogram. Plots the classic
+			spectrogram otherwise. Defaults to True.
 		"""
+		
 		if log:
 			if self.STFTlog is None:
 				self.computeSTFTlog()
@@ -271,6 +308,15 @@ class waveForm:
 		plt.show()
 
 	def computeCQT(self, nbins=128):
+		""" Computes the Constant Quality Factor.
+
+		Parameters
+		----------
+		nbins : int, optional
+			Number of frequency bins of the resulting CQT. Affects the Frequency
+			resolution. Defaults to 128.
+		"""
+		
 		vect = self.data[:,]
 		vect = vect[:,0]
 		self.CQT = np.abs(librosa.cqt(vect, sr=self.sampleRate, fmin=30, n_bins=nbins, bins_per_octave=16))
@@ -280,9 +326,13 @@ class waveForm:
 
 		Parameters
 		----------
-		nbins : int
+		nbins : int, optional
 			Number of frequency bins of the resulting CQT. Affects the Frequency
-			resolution.
+			resolution. Defaults to 128.
+		Returns
+		-------
+		self.CQT : ndarray
+			The constant quality factor.
 		"""
 
 		if self.CQT is None:
@@ -290,7 +340,8 @@ class waveForm:
 		return self.CQT
 
 	def plotCQT(self):
-		""" Plots the CQT. Compute it if necessary."""
+		""" Plots the CQT. Computes it if necessary."""
+		
 		if self.CQT is None:
 			self.computeCQT()
 
