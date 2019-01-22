@@ -15,7 +15,7 @@ The report associated with this project can be found [here]
 
 We use the following python librairies: numpy, torch, pypianoroll, midi2audio, librosa, tqdm, soundfile, sounddevice, matplotlib.
 
-You can use our script 'dependencies.sh' in order to install all in once: 
+You can use our script in order to install all in once: 
 
 ```shell
 ./dependencies.sh
