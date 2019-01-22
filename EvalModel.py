@@ -7,7 +7,7 @@ from glob import glob
 from optparse import OptionParser
 import warnings
 
-#warnings.filterwarnings("ignore")
+warnings.filterwarnings("ignore")
 
 def evalSongDetection(model, folder, pathTemp="/fast/guilhem/"):
 
@@ -49,18 +49,13 @@ def evalOnTest(database, modelsPath, outPath="/fast-1/guilhem/", gpu=None, testF
 		model.model1 = model.model1.cuda()
 		model.model2 = model.model2.cuda()
 
-	print("Test Loss for the best trained model:", model.TestEval(model.testBatches))
-
-
-	#addToDictionary(model, testFolder, pathTemp=outPath)
-
 	print()
 	print("Test Loss for the best trained model:", model.TestEval(model.testBatches))
 
 	print()
 	model.constructDictForTest()
 	model.constructDict()
-
+	addToDictionary(model, testFolder, pathTemp=outPath)
 
 	print("___ Benchmark")
 

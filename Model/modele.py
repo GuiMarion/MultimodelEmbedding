@@ -240,12 +240,12 @@ class Modele():
 				X1 = X1.cuda()
 
 			Y = self.model1.forward(X1).data
+
 			for i in range(len(batch[2])):
 				dico[Y[i]] = batch[2][i]
-
 				rollsFromName[batch[2][i]] = batch[0][i]
 
-		pickle.dump(dico, open( self.outPath + "dico.data", "wb" ) )
+		pickle.dump((dico, rollsFromName), open( self.outPath + "dico.data", "wb" ) )
 
 		self.dico = dico
 		self.rollsFromName = rollsFromName
@@ -406,7 +406,7 @@ class Modele():
 		dist = 1000000
 		name = ""
 		for key in self.dicoEval:
-			tmp_dist = self.s(key, wavePosition[0])
+			tmp_dist = 1 - self.s(key, wavePosition[0])
 			if  tmp_dist < dist:
 				dist = tmp_dist
 				name = self.dicoEval[key]
@@ -430,7 +430,7 @@ class Modele():
 		dist = 1000000
 		name = ""
 		for key in self.dico:
-			tmp_dist = self.s(key, wavePosition[0])
+			tmp_dist = 1 - self.s(key, wavePosition[0])
 			if  tmp_dist < dist:
 				dist = tmp_dist
 				name = self.dico[key]
@@ -461,15 +461,18 @@ class Modele():
 
 		if np.count_nonzero(p1) == 0:
 			TP = 1
+			false = 1
 
 		for i in range(len(p1)):
 			for j in range(len(p1[i])):
-				if p1[i][j] == p2[i][j]:
-					if p1[i][j] == 1:
-						TP +=1 
+				if p1[i][j] != 0 and p2[i][j] != 0:
+					TP +=1 
+					false += 1
+				elif p1[i][j] == 0 and p2[i][j] == 0:
+					pass
 				else:
 					false += 1
-
+		
 		return TP / false
 
 
@@ -486,7 +489,7 @@ class Modele():
 		'''
 		
 		score = 0.0
-		for batch in self.testBatches:
+		for batch in self.validationBatches:
 			for i in range(len(batch[1])):
 				N2 = np.array(batch[1][i]).astype(float)
 				N2 = N2.reshape(1, 1, N2.shape[0], N2.shape[1])
@@ -518,7 +521,7 @@ class Modele():
 		'''
 
 		score = 0
-		for batch in self.testBatches:
+		for batch in self.validationBatches:
 			for i in range(len(batch[1])):
 				N2 = np.array(batch[1][i]).astype(float)
 				N2 = N2.reshape(1, 1, N2.shape[0], N2.shape[1])
@@ -552,15 +555,15 @@ class Modele():
 
 		recall = {}
 		for key in self.dicoEval:
-			recall[self.s(key, embedded[0])] = self.dicoEval[key]
+			recall[float(1 - self.s(key, embedded[0]).data)] = self.dicoEval[key]
 
-		keylist = list(recall.keys())
+		keylist = np.asarray(list(recall.keys())).astype(float)
 		keylist.sort()
 
 		for i in range(k):
 			if np.array_equal(self.rollsFromNameEval[recall[keylist[i]]], expected):
-				return True
-		return False
+				return 1.
+		return 0.
 
 	def getRecallK(self, k):
 		'''Returns the meaned Recall@k (R@k) for all of the validation set.
@@ -591,7 +594,7 @@ class Modele():
 				
 				score += self.RecallK(k, Y2, pianoroll1)
 
-		score /= (len(self.validationBatches) * len(self.validationBatches[0][2]))
+		score /= (len(self.validationBatches) * len(self.validationBatches[1][2]))
 
 		return score
 
@@ -612,14 +615,16 @@ class Modele():
 
 		recall = {}
 		for key in self.dicoEval:
-			recall[self.s(key, embedded[0])] = self.dicoEval[key]
+			recall[float(1 - self.s(key, embedded[0]))] = self.dicoEval[key]
 
-		keylist = list(recall.keys())
+		keylist = np.asarray(list(recall.keys())).astype(float)
 		keylist.sort()
 
 		for i in range(len(keylist)):
 			if np.array_equal(self.rollsFromNameEval[recall[keylist[i]]], expected):
 				return 1/(i+1)
+
+		return -1
 
 	def getMRR(self):
 		'''Returns the Mean Reciprocical Rank (MRR) for all of the validation set.
@@ -629,7 +634,7 @@ class Modele():
 		score : float
 			Meaned MRR for the validation set.
 		'''
-		
+		missing = 0
 		score = 0
 		for batch in self.validationBatches:
 			for i in range(len(batch[1])):
@@ -643,14 +648,20 @@ class Modele():
 
 				pianoroll1 = batch[0][batch[4][i]]
 				
-				score += self.MRR(Y2, pianoroll1)
+				tmp = self.MRR(Y2, pianoroll1)
 
-		score /= (len(self.validationBatches) * len(self.validationBatches[0][2]))
+				if tmp == -1:
+					missing += 1
+				else:
+
+					score += tmp
+
+		score /= (len(self.validationBatches) * len(self.validationBatches[0][2])) - missing
 
 		return score
 
 	def MR(self, embedded, expected):
-		'''Computes the Median Rank (MR) for one element.
+		'''Return the rank of the matching element.
 
 		Parameters
 		----------
@@ -666,14 +677,16 @@ class Modele():
 
 		recall = {}
 		for key in self.dicoEval:
-			recall[self.s(key, embedded[0])] = self.dicoEval[key]
+			recall[float(1-self.s(key, embedded[0]))] = self.dicoEval[key]
 
-		keylist = list(recall.keys())
+		keylist = np.asarray(list(recall.keys())).astype(float)
 		keylist.sort()
 
-		for i in range(len(keylist)):
+		for i in reversed(range(len(keylist))):
 			if np.array_equal(self.rollsFromNameEval[recall[keylist[i]]], expected):
 				return i+1
+
+		return -1
 
 	def getMR(self):
 		'''Returns the Median Rank (MR) for all of the validation set.
@@ -697,7 +710,10 @@ class Modele():
 
 				pianoroll1 = batch[0][batch[4][i]]
 				
-				scores.append(self.MR(Y2, pianoroll1))
+				tmp = self.MR(Y2, pianoroll1)
+
+				if tmp != -1:
+					scores.append(tmp)
 
 		return statistics.median(scores)
 
@@ -758,8 +774,10 @@ class Modele():
 			The folder in which we save the temporary WaveForm files.
 		'''
 
+		print("____ Adding new snippets into latent space")
+
 		windowSize = 4
-		STEP = 2
+		STEP = 200
 		snippets = []
 
 		self.model1.eval()
@@ -773,8 +791,7 @@ class Modele():
 		windowSize *= s.quantization
 		N = s.length * s.quantization
 
-		#for i in range((N-windowSize)//STEP):
-		for i in range(10):
+		for i in tqdm(range((N-windowSize)//STEP)):
 			tmpPart1 = s.extractPart(i*STEP, i*STEP+windowSize)
 			N1 = np.array(tmpPart1.getPianoRoll()).astype(float)
 			N1 = N1.reshape(1, 1, N1.shape[0], N1.shape[1])
@@ -785,5 +802,6 @@ class Modele():
 			embedded = self.model1.forward(X1)[0]
 
 			self.dico[embedded] = tmpPart1.name
+			self.rollsFromName[tmpPart1.name] = tmpPart1.getPianoRoll()
 
 
