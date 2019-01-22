@@ -11,7 +11,7 @@ import torch
 
 # Parameters for the data extraction part
 WINDOW_SIZE = 4 # in beat
-STEP = 200 # in sample
+STEP = 2 # in sample
 
 TRAINSIZE = 0.6
 TESTSIZE = 0.2

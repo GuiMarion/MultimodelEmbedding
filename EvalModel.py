@@ -35,7 +35,7 @@ def addToDictionary(model, folder, pathTemp="/fast/guilhem/"):
 		if file[file.rfind("."):] in [".mid", ".midi"] and os.path.isfile(file):
 			model.addToDictionary(file, pathTemp=pathTemp)
 
-def evalOnTest(database, modelsPath, outPath="/fast-1/guilhem/", gpu=None, testFolder="DataBaseForValidation/"):
+def evalOnTest(database, modelsPath, outPath="/fast-1/guilhem/", gpu=None, testFolder="DataBaseForValidation/", N=2000):
 
 	if not os.path.exists(outPath):
 		os.makedirs(outPath)
@@ -51,6 +51,8 @@ def evalOnTest(database, modelsPath, outPath="/fast-1/guilhem/", gpu=None, testF
 
 	print()
 	print("Test Loss for the best trained model:", model.TestEval(model.testBatches))
+
+	model.validationBatches = model.validationBatches[:N]
 
 	print()
 	model.constructDictForTest()
@@ -86,12 +88,14 @@ if __name__ == "__main__":
 					  help="ID of the GPU, run in CPU by default.", 
 					  dest="gpu")
 
-
+	parser.add_option("-n", "--number", type="int",
+					  help="Number of elements to process the queries on.", 
+					  dest="N", default=2000)
 
 	options, arguments = parser.parse_args()
 	
 	if len(arguments) == 2:
-		evalOnTest(arguments[0], arguments[1], outPath=options.outPath, gpu=options.gpu, testFolder=options.testFolder)
+		evalOnTest(arguments[0], arguments[1], outPath=options.outPath, gpu=options.gpu, testFolder=options.testFolder, N=N)
 
 	else:
 		parser.error("You have to specify the path of the database and the models.")
