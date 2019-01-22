@@ -13,17 +13,25 @@ The report associated with this project can be found [here]
 
 ### Dependecies
 
+We use the following python librairies: numpy, torch, pypianoroll, midi2audio, librosa, tqdm, soundfile, sounddevice, matplotlib.
+
+You can use our script in order to install all in once: 
+
 ```shell
-pip3 install numpy
-pip3 install torch torchvision
-pip3 install pypianoroll
-pip3 install midi2audio
-pip3 install pyFluidSynth
-pip3 install librosa
-pip3 install tqdm
+sh dependencies.sh
+``` 
 
+If you enconter issues with midi2audio, consider installing FluidSynth, on macOs:
 
-```
+```shell
+brew install fluidsynth --with-libsndfile
+``` 
+
+On linux: 
+
+```shell
+sudo apt-get install fluidsynth
+``` 
 
 ### Usage
 
