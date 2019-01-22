@@ -52,7 +52,7 @@ class score:
 				self.pianoroll = proll(pathToMidi, beat_resolution=quantization)
 				self.pianoroll.trim_trailing_silence()
 				if velocity is False:
-					self.pianoroll = self.pianoroll.binarize()
+					self.pianoroll.binarize()
 				self.pianoroll = self.pianoroll.get_merged_pianoroll()
 				self.name = os.path.splitext(os.path.basename(pathToMidi))[0]
 			except OSError:
