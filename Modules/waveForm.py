@@ -1,4 +1,4 @@
-#import sounddevice as sd # On importe sounddevice
+import sounddevice as sd
 import os
 import soundfile as sf
 import time
