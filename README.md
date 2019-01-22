@@ -18,7 +18,7 @@ We use the following python librairies: numpy, torch, pypianoroll, midi2audio, l
 You can use our script in order to install all in once: 
 
 ```shell
-./dependencies.sh
+sh dependencies.sh
 ``` 
 
 If you enconter issues with midi2audio, consider installing FluidSynth, on macOs:
