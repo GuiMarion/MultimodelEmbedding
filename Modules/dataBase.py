@@ -10,7 +10,7 @@ import numpy as np
 import torch
 
 # Parameters for the data extraction part
-WINDOW_SIZE = 4 # in beat
+WINDOW_SIZE = 1 # in beat
 STEP = 2 # in sample
 
 TRAINSIZE = 0.6
