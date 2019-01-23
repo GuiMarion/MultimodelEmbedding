@@ -52,7 +52,18 @@ def evalOnTest(database, modelsPath, outPath="/fast-1/guilhem/", gpu=None, testF
 	print()
 	print("Test Loss for the best trained model:", model.TestEval(model.testBatches))
 
-	model.validationBatches = model.validationBatches[:N]
+	# In order to have only 2000 elements in the validation set
+	tmp1 = model.validationBatches[:(N//model.batch_size)]
+	tmp2 = model.batches[:(N//model.batch_size)]
+	tmp3 = model.testBatches[:(N//model.batch_size)]
+
+	del model.validationBatches
+	del model.batches
+	del model.testBatches
+
+	model.validationBatches = tmp1
+	model.batches = tmp2
+	model.testBatches = tmp3
 
 	print()
 	model.constructDictForTest()
@@ -95,7 +106,7 @@ if __name__ == "__main__":
 	options, arguments = parser.parse_args()
 	
 	if len(arguments) == 2:
-		evalOnTest(arguments[0], arguments[1], outPath=options.outPath, gpu=options.gpu, testFolder=options.testFolder, N=N)
+		evalOnTest(arguments[0], arguments[1], outPath=options.outPath, gpu=options.gpu, testFolder=options.testFolder, N=options.N)
 
 	else:
 		parser.error("You have to specify the path of the database and the models.")
