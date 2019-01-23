@@ -87,11 +87,11 @@ All function and class are commented following the standart numpydoc, so one can
 
 ## Authors
 
-* **Guilhem Marion** 
-* **Valérian Fraisse** 
-* **Clément Le Moine Veillon**
-* **Félix Rohrlich**
-* **Gabriel Dias Neto**
+* **Guilhem Marion** (Project direction, code embedding, measures)
+* **Valérian Fraisse** (Signal Processing part, database)
+* **Clément Le Moine Veillon** (Batch generation)
+* **Félix Rohrlich** (Training part, database)
+* **Gabriel Dias Neto** (Network design, database)
 
 
 ## License
