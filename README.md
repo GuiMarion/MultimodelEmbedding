@@ -100,4 +100,4 @@ This project is open source.
 
 ## Acknowledgments
 
-We would like to thank Mathieu Prang, PhD student at IRCAM and Philippe Esling, associate professor at IRCAM and Sorbonne Université, for their help and support during this project.
+We would like to thank Mathieu Prang, PhD student at IRCAM and Philippe Esling, associate professor at IRCAM and all IRCAM team, for their help and support during this project.
