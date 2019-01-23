@@ -75,15 +75,15 @@ Usage: EvalModel.py [options]
 
 #### Running WaveToMidi.py
 
-This program makes automatic transcription from a wave file to a midi one.
+This program makes automatic transcription from a wave file to a midi one, one can find examples on WaveToMidiExamples/
 ```shell
 Usage: Python3 WaveToMidi.py <folder for model> <file to convert>
 ```
 
 
-### Docs
+### Documentation
 
-All function and class are commented following the standart numpydoc, so one can generate a proper doc for official release.
+All function and class are commented following the standart numpydoc, so one can generate a proper documentation for official release.
 
 ## Authors
 
