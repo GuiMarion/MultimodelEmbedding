@@ -776,7 +776,7 @@ class Modele():
 
 		print("____ Adding new snippets into latent space")
 
-		windowSize = 4
+		windowSize = 1
 		STEP = 2
 		snippets = []
 
@@ -792,7 +792,7 @@ class Modele():
 		N = s.length * s.quantization
 
 		#for i in tqdm(range((N-windowSize)//STEP)):
-		for i in range(200):
+		for i in range(400):
 			tmpPart1 = s.extractPart(i*STEP, i*STEP+windowSize)
 			N1 = np.array(tmpPart1.getPianoRoll()).astype(float)
 			N1 = N1.reshape(1, 1, N1.shape[0], N1.shape[1])
