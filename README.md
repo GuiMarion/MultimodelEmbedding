@@ -7,7 +7,7 @@ midi scores from 25 composers.
 
 ## Report
 
-The report associated with this project can be found [[here]](Report/Marion_Dias-Neto_Fraisse_Le-Moine_Rohrlich_Automatic transcription using embedding latent space.pdf)
+The report associated with this project can be found [[here]](https://github.com/GuiMarion/MultimodelEmbedding/blob/master/Report/Marion_Dias-Neto_Fraisse_Le-Moine_Rohrlich_Automatic transcription using embedding latent space.pdf)
 
 ## How to use
 
