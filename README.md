@@ -73,7 +73,17 @@ Usage: EvalModel.py [options]
   -g GPU, —gpu=GPU     ID of the GPU, run in CPU by default.
 ```
 
+#### Running WaveToMidi.py
 
+This program makes automatic transcription from a wave file to a midi one.
+```shell
+Usage: Python3 WaveToMidi.py <folder for model> <file to convert>
+```
+
+
+### Docs
+
+All function and class are commented following the standart numpydoc, so one can generate a proper doc for official release.
 
 ## Authors
 
