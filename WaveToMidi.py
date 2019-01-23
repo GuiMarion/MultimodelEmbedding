@@ -24,12 +24,12 @@ def nearestNeighbor(dico, wavePosition):
 
 def getMidiFromWave(folder, file, dataBase="DataBase/MIDIs/mozart/"):
 	
-	window_size = 172
+	window_size = 43
 
 	model2 = torch.load(folder + "model2.data")
 	model2.eval()
 
-	dico = pickle.load(open(folder + "dico.data", "rb"))
+	dico = pickle.load(open(folder + "dico.data", "rb"))[0]
 
 	w = waveForm.waveForm(file).getCQT()
 
@@ -61,9 +61,6 @@ def getMidiFromWave(folder, file, dataBase="DataBase/MIDIs/mozart/"):
 			pianoroll = np.concatenate((pianoroll, s.pianoroll), axis=0)
 
 	out = score.score("", fromArray=(pianoroll, "out"))
-
-	print(out.getPianoRoll())
-	print(out.getPianoRoll().shape)
 
 	out_name = file[:file.rfind(".")] + ".mid"
 	out.writeToMidi("out.mid")
