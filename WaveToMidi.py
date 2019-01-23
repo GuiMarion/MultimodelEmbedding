@@ -63,7 +63,7 @@ def getMidiFromWave(folder, file, dataBase="DataBase/MIDIs/mozart/"):
 	out = score.score("", fromArray=(pianoroll, "out"))
 
 	out_name = file[:file.rfind(".")] + ".mid"
-	out.writeToMidi("out.mid")
+	out.writeToMidi(out_name)
 
 	print("File saved in", out_name)
 
